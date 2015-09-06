@@ -1,0 +1,113 @@
+digraph G {
+# Legend
+	subgraph cluster_legend {
+		node [ style=filled ];
+		Aggregate [ color=green,shape=box ];
+		Event [ color=orange ];
+		Query [ color=lightblue ];
+		Command [ color=yellow ];
+		Service [ color=grey, shape=box ];
+		Version [ label="version 20150904.2", shape=box ];
+		edge[style=invis];
+		Aggregate -> Event -> Query -> Command -> Service -> Version;
+		label="legend";
+		color=blue;
+	}
+
+	subgraph cluster_model {
+	# Aggregates
+		node [color=green, style=filled, shape=oval];
+		ACat [ label=Catalogue ];
+		ACart [ label="Shopping Cart" ];
+		AShip [ label=Shipment ];
+		//AInv [ label=Inventory ];
+		APayment [ label=Payment ];
+		AOrder [ label=Order ]
+
+	# Services
+		node [color=grey, style=filled, shape=box];
+		SCat [ label=Catalogue ];
+		SCart [ label="Shop" ];
+		SShip [ label=Shipping ];
+		//AInv [ label=Inventory ];
+		SPayment [ label=Payment ];
+
+
+	# Events
+		node [color=orange, style=filled, shape=oval];
+		//E2 [ label="Item added to Shopping Cart" ];
+		E3 [ label="4. Items Ordered" ];
+		//E4 [ label="Shipping Address provided" ];
+		//E8 [ label="Items reserved" ];
+		//E9 [ label="Inventory changed" ];
+		//E10 [ label="Items not in stock" ];
+		E12 [ label="6. Order Paid" ];
+		E13 [ label="Product Added"];
+		E14 [ label="7. Order Shipped"];
+		
+
+	# Queries
+		node [color=lightblue, style=filled, shape=oval];
+		Q1 [ label="Search Products" ];
+		//Q2 [ label="Show Product Details" ];
+		Q3 [ label="Show Shopping Cart" ];
+		//Q4 [ label="Show Delivery Time" ];
+		
+
+	# Commands
+		node [color=yellow, style=filled, shape=oval];
+		C1 [ label="1. Add Product to Shopping Cart" ];
+		C2 [ label="2. Order Shopping Cart Contents" ];
+		C12 [ label="3. Add Account to Order" ];
+		//C3 [ label="Set Shipping Address" ];
+		C4 [ label="4. Pay Order" ];
+		C6 [ label="5. Pay" ];
+
+		
+		C5 [ label="Add Product to Catalogue" ];
+		
+		
+	# Commands and Queries to Aggregates
+		{ Q1 } -> SCat;
+		{ Q3, C1, C2 } -> SCart;
+		//{ C3, Q4 } -> AShip;
+		{ C4 } -> SCart;
+		{ C5 } -> SCat;
+		{ C6 } -> SPayment;
+			C12 -> SCart;
+ 
+
+
+
+	# Events to Aggregates
+		//E2 -> { };
+		//E4 -> { };
+		//E8 -> { ACart };
+		//E9 -> { ACat };
+		//E10 -> { ACart };
+		E3 -> { SPayment, SShip };
+		E12 -> { SCart, SShip };
+		{ E13, E14 } -> { SCart };
+		
+	# Aggregates generate events
+		SCat -> { E13 };
+		SCart -> { E3 };
+		SShip -> { E14 };
+		//AInv -> { E8, E9, E10 };
+		SPayment -> { E12 };
+
+	# Services to Aggregates
+	edge [ dir=none, style=dotted ];
+	SCat -> ACat;
+	SCart -> ACart;
+	SCart -> AOrder;
+	SShip -> AShip;
+	SPayment -> APayment;
+
+		label="model";
+		color=blue;
+
+
+	}
+}
+
