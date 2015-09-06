@@ -28,7 +28,7 @@ digraph G {
 		node [color=grey, style=filled, shape=box];
 		SCat [ label=Catalogue ];
 		SCart [ label="Shop" ];
-		SShip [ label=Shipping ];
+		SShip [ label=Fulfillment ];
 		//AInv [ label=Inventory ];
 		SPayment [ label=Payment ];
 
