@@ -1,0 +1,10 @@
+rabbitmqadmin list queues
+
+#publish routing_key=... [exchange=... payload=... payload_encoding=... properties=...]
+
+#Publish dummy payment message
+rabbitmqadmin publish routing_key="payments" exchange="shop" payload='{"orderUUID":"b20d9560-6003-4da0-a072-4d35c96cc0d1","paymentReceived":true}'
+
+
+#Approve order:
+curl -v -H "Accept: application/json" -H "Content-type: application/json" -X PUT -d ''  http://user1:password@localhost:9002/cart/orders/b20d9560-6003-4da0-a072-4d35c96cc0d1/approve
