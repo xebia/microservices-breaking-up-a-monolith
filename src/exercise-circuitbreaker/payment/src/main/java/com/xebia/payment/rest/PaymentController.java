@@ -37,7 +37,7 @@ public class PaymentController {
         LOG.info("Payment service received request to start payment process for order: " + orderrResource.getUuid());
         LOG.info("URL: "+ request.getRequestURL()+ ", METHOD: "+ request.getMethod()+ ", CONTENT: "+orderrResource.toString());
         try {
-            Thread.sleep(10000);
+            Thread.sleep(9000);
         } catch(InterruptedException ex) {
             Thread.currentThread().interrupt();
         }
@@ -46,7 +46,7 @@ public class PaymentController {
     }
 
     @RequestMapping(method = RequestMethod.PUT, value = "/pay/{id}/creditcard/{cardNo}", produces = "application/json")
-    public ResponseEntity<PaymentResource> pay(@PathVariable UUID id, @PathVariable String cardNo, HttpServletRequest request) {
+    public ResponseEntity<PaymentResource> pay(@PathVariable UUID id, @PathVariable String cardNo, @RequestHeader String registerurl, HttpServletRequest request) {
         LOG.info("URL: "+ request.getRequestURL()+ ", METHOD: "+ request.getMethod()+ ", CONTENT: paymentId="+id+", cardNo="+cardNo);
         Payment payment = paymentRepository.findOne(id);
         if (payment == null) {
@@ -56,16 +56,18 @@ public class PaymentController {
         payment.setDatePaid(new Date());
         paymentRepository.save(payment);
 
-        //register payment with shop service
-        RestTemplate restTemplate = new RestTemplate();
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON);
-        Map<String, String> params = new HashMap<String, String>();
-        params.put("id", payment.getOrderUuid().toString());
-        restTemplate.put("http://localhost:9002/cart/orders/registerPayment/{id}", String.class, params);
-
+        if (!registerurl.isEmpty() && (registerurl.startsWith("http") || registerurl.startsWith("HTTP"))) {
+            //register payment with shop service
+            RestTemplate restTemplate = new RestTemplate();
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.APPLICATION_JSON);
+            Map<String, String> params = new HashMap<String, String>();
+            params.put("id", payment.getOrderUuid().toString());
+            restTemplate.put(registerurl, String.class, params);     //"http://localhost:9002/cart/orders/registerPayment/{id}"
+        }
         PaymentResource resource = new PaymentResourceAssembler().toResource(payment);
         LOG.info("End method: pay");
+
         return new ResponseEntity<PaymentResource>(resource, HttpStatus.OK);
     }
 

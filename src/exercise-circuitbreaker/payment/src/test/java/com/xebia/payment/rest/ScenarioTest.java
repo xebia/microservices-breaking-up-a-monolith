@@ -10,6 +10,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.SpringApplicationConfiguration;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
@@ -73,10 +74,13 @@ public class ScenarioTest {
                 .contentType(jsonContentType))
                 .andExpect(status().isCreated())
                 .andReturn()
-        ;
+                ;
         String data = resultActions.getResponse().getContentAsString().trim();
-        //Payment payment = objectMapper.readValue(data, UUID.class);
-        resultActions = mockMvc.perform(put("/payment/pay/" + data + "/creditcard/c123")
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("registerurl","");
+        resultActions = mockMvc.perform(put("/payment/pay/" + UUID.fromString(data) + "/creditcard/c123")
+                .headers(headers)
                 .contentType(jsonContentType))
                 .andExpect(status().isOk())
                 .andReturn()
@@ -84,6 +88,7 @@ public class ScenarioTest {
         data = resultActions.getResponse().getContentAsString();
         Payment payment = objectMapper.readValue(data, Payment.class);
         assertEquals("c123", payment.getCardId());
+
     }
 
     @Test
@@ -95,7 +100,7 @@ public class ScenarioTest {
                 .contentType(jsonContentType))
                 .andExpect(status().isOk())
                 .andReturn()
-        ;
+                ;
         String data = resultActions.getResponse().getContentAsString();
         List<Payment> payments = objectMapper.readValue(data, new TypeReference<List<Payment>>() {
         });
@@ -123,7 +128,7 @@ public class ScenarioTest {
                 .contentType(jsonContentType))
                 .andExpect(status().isOk())
                 .andReturn()
-        ;
+                ;
         String data = resultActions.getResponse().getContentAsString();
         List<Payment> payments = objectMapper.readValue(data, new TypeReference<List<Payment>>() {
         });
@@ -146,7 +151,8 @@ public class ScenarioTest {
     }
 
     private void registerOrderAndPay(String description) throws Exception {
-        OrderrResource orderr = new OrderrResource(UUID.randomUUID(), 10.0, description);
+        UUID orderUuid = UUID.randomUUID();
+        OrderrResource orderr = new OrderrResource(orderUuid, 10.0, description);
         MvcResult resultActions = mockMvc.perform(post("/payment/")
                 .content(this.json(orderr))
                 .contentType(jsonContentType))
@@ -154,11 +160,15 @@ public class ScenarioTest {
                 .andReturn()
                 ;
         String data = resultActions.getResponse().getContentAsString();
-        //Payment payment = objectMapper.readValue(data, Payment.class);
-        mockMvc.perform(put("/payment/pay/" + data + "/creditcard/c123")
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("registerurl","");
+        mockMvc.perform(put("/payment/pay/" + UUID.fromString(data) + "/creditcard/c123")
+                .headers(headers)
                 .contentType(jsonContentType))
                 .andExpect(status().isOk())
         ;
+
     }
 
     private void waitAWhile(long intervalInMs) {
@@ -185,5 +195,6 @@ public class ScenarioTest {
         org.junit.Assert.assertNotNull("the JSON message converter must not be null",
                 this.mappingJackson2HttpMessageConverter);
     }
+
 
 }
