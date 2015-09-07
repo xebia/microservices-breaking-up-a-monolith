@@ -66,7 +66,7 @@ public class ScenarioTest extends TestBase {
 
            receivePaymentCompleteMessage(orderr);
 
-           approveOrder(orderr);
+           //approveOrder(orderr);
 
            i++;
        }

@@ -50,7 +50,6 @@ public class ScenarioTest  {
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
 
-        // to allow the circuit breaker to act on too many requests we simulate multiple requests by looping
         // as there is no cleanup of the shopping cart and order yet, we need to create a new user, account and cart for each request
        Product[] products = new Product[10];
        for(int i=0; i<10; i++){
@@ -58,7 +57,7 @@ public class ScenarioTest  {
        }
         
        int i = 0;
-     //  while (i < 4) {
+       // while (i < 4) {
 
            WebUser webUser = createWebUser(objectMapper);
            WebUser remoteUser = getWebUser(objectMapper, webUser);
@@ -98,6 +97,7 @@ public class ScenarioTest  {
         RestTemplate restTemplate = new RestTemplate();
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
+        headers.add("registerurl","http://localhost:9002/cart/orders/registerPayment/{id}");
         HttpEntity<String> requestEntity = new HttpEntity<String>("", headers);
         Map<String, String> params = new HashMap<String, String>();
         params.put("payid", paymentResponse.getUuid().toString());

@@ -43,7 +43,7 @@ public class StartPaymentCommand extends HystrixCommand<PaymentResponse> {
             paymentid = restTemplate.postForObject("http://localhost:9001/payment", orderrResource, String.class);
             LOG.info("PAYMENT ID for Card from Payment Service: " + paymentid);
         }catch (RuntimeException re){
-            //LOG.error(re.getMessage());
+            LOG.error(re.getMessage());
             throw re;
         }
         return new PaymentResponse(UUID.fromString(paymentid), "CARD");
