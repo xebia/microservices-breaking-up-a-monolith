@@ -3,6 +3,8 @@ package com.xebia.shop.rest;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
 
 import com.netflix.hystrix.HystrixCommandKey;
 import com.netflix.hystrix.HystrixCommandMetrics;
@@ -140,22 +142,27 @@ public class OrderController {
         Orderr orderr = orderRepository.findOne(orderId);
 
         HystrixRequestContext context = HystrixRequestContext.initializeContext();
-
+        PaymentResponse resp = null;
         try{
 
-            PaymentResponse paymentResponse = new StartPaymentCommand(orderr).execute();
-
+            //Future<PaymentResponse> paymentResponse = new StartPaymentCommand(orderr).queue();
+            resp = new StartPaymentCommand(orderr).execute();
             LOG.info("Logged Requests: "+HystrixRequestLog.getCurrentRequest().getExecutedCommandsAsString());
-            if (paymentResponse.getUuid() == null){
-                return new ResponseEntity<PaymentResponse>(new PaymentResponse(UUID.randomUUID(), ""), HttpStatus.INTERNAL_SERVER_ERROR);
-            }
-            else {
-                return new ResponseEntity<PaymentResponse>(paymentResponse, HttpStatus.OK);
+            //resp = paymentResponse.get();
+           // if (paymentResponse.get().getUuid() == null){
+           //     return new ResponseEntity<PaymentResponse>(new PaymentResponse(UUID.randomUUID(), ""), HttpStatus.INTERNAL_SERVER_ERROR);
+           // }
+            //else {
 
-            }
+            //}
+        } catch (Exception e) {
+            e.printStackTrace();
+
         } finally {
             context.shutdown();
         }
+        return new ResponseEntity<PaymentResponse>(resp, HttpStatus.OK);
+
     }
 
     @RequestMapping(method = RequestMethod.POST, value = "add", produces = "application/json", consumes = "application/json")

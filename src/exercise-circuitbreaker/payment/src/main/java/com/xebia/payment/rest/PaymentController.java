@@ -34,13 +34,15 @@ public class PaymentController {
 
     @RequestMapping(method =RequestMethod.POST, consumes = "application/json", produces = "text/plain")
     public ResponseEntity<String> startnewPaymentProcess(@RequestBody OrderrResource orderrResource, HttpServletRequest request) {
-        LOG.info("Payment service received request to start payment process for order: " + orderrResource.getUuid());
-        LOG.info("URL: "+ request.getRequestURL()+ ", METHOD: "+ request.getMethod()+ ", CONTENT: "+orderrResource.toString());
         try {
-            Thread.sleep(9000);
+            Thread.sleep(1000);
         } catch(InterruptedException ex) {
             Thread.currentThread().interrupt();
         }
+
+        LOG.info("URL: "+ request.getRequestURL()+ ", METHOD: "+ request.getMethod()+ ", CONTENT: "+orderrResource.toString());
+        LOG.info("Payment service received request to start payment process for order: " + orderrResource.getUuid());
+
         Payment payment = paymentRepository.save(new Payment(orderrResource));
         return new ResponseEntity<String>(payment.getUuid().toString(), HttpStatus.CREATED);
     }

@@ -57,7 +57,7 @@ public class ScenarioTest  {
        }
         
        int i = 0;
-       // while (i < 4) {
+        while (i < 5) {
 
            WebUser webUser = createWebUser(objectMapper);
            WebUser remoteUser = getWebUser(objectMapper, webUser);
@@ -70,7 +70,7 @@ public class ScenarioTest  {
            addAccountToOrder(objectMapper, account, orderr);
 
            PaymentResponse paymentResponse = initiateOrderPayment(objectMapper, orderr);
-           if (paymentResponse.getDescription()=="CARD") {
+           if (paymentResponse.getDescription().equals("CARD")) {
                PaymentResource paymentResource = payPayment(objectMapper, paymentResponse);
            }
            else{
@@ -81,7 +81,7 @@ public class ScenarioTest  {
            shipOrder(orderr.getUuid());
 
            i++;
-      // }
+       }
     }
 
     private void shipOrder(UUID orderID) throws Exception {
@@ -121,16 +121,7 @@ public class ScenarioTest  {
         LOG.info("Initiated payment for orderr: " + orderr.getUuid());
         return paymentResponse;
     }
-           /*
-    private void receivePaymentCompleteMessage(Orderr orderr) throws Exception {
-        mockMvc.perform(put("/cart/orders/registerPayment/" + orderr.getUuid())
-                .contentType(jsonContentType))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.paymentReceived", is(true)))
-        ;
-    }
 
-             */    
     private void approveOrder(Orderr orderr) throws Exception {
     	RestTemplate restTemplate = new RestTemplate();       
         HttpHeaders headers = new HttpHeaders();

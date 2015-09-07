@@ -25,7 +25,8 @@ public class StartPaymentCommand extends HystrixCommand<PaymentResponse> {
     public StartPaymentCommand(Orderr orderr) {
         super(Setter.withGroupKey(HystrixCommandGroupKey.Factory.asKey("Shop"))
                         .andCommandPropertiesDefaults(HystrixCommandProperties.Setter().withExecutionTimeoutInMilliseconds(5000))
-                        //.andCommandPropertiesDefaults(HystrixCommandProperties.Setter().withCircuitBreakerRequestVolumeThreshold(2))
+                //.andCommandPropertiesDefaults(HystrixCommandProperties.Setter().withCircuitBreakerRequestVolumeThreshold(6))
+                //.andCommandPropertiesDefaults(HystrixCommandProperties.Setter().withCircuitBreakerErrorThresholdPercentage(2))
         );
         this.orderr = orderr;
     }
@@ -35,7 +36,6 @@ public class StartPaymentCommand extends HystrixCommand<PaymentResponse> {
         // call payment service via REST call to provide info for payment interaction
         String paymentid = "";
         try {
-
             RestTemplate restTemplate = new RestTemplate();
             OrderrResource orderrResource = new OrderrResource(orderr.getUuid(), orderr.getTotal(), "");
             HttpHeaders headers = new HttpHeaders();

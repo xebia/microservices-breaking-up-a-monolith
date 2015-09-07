@@ -96,10 +96,10 @@ public class Application {
                     HystrixCommandMetrics.HealthCounts health = metrics.getHealthCounts();
                     m.append("Requests: ").append(health.getTotalRequests()).append(" ");
                     m.append("Errors: ").append(health.getErrorCount()).append(" (").append(health.getErrorPercentage()).append("%)   ");
-                    m.append("Mean: ").append(metrics.getExecutionTimePercentile(50)).append(" ");
-                    m.append("75th: ").append(metrics.getExecutionTimePercentile(75)).append(" ");
-                    m.append("90th: ").append(metrics.getExecutionTimePercentile(90)).append(" ");
-                    m.append("99th: ").append(metrics.getExecutionTimePercentile(99)).append(" ");
+                    //m.append("Mean: ").append(metrics.getExecutionTimePercentile(50)).append(" ");
+                    //m.append("75th: ").append(metrics.getExecutionTimePercentile(75)).append(" ");
+                    //m.append("90th: ").append(metrics.getExecutionTimePercentile(90)).append(" ");
+                    //m.append("99th: ").append(metrics.getExecutionTimePercentile(99)).append(" ");
                 }
                 return m.toString();
             }
