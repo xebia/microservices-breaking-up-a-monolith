@@ -13,7 +13,7 @@ In the src/exercise-queues subdirectory.
 The exercise above shows how to use queues to transport events between services. 
 If you feel like it, implement the missing Events shown in domain-meetup-ex2.gv: OrderShipped and ProductAdded.
 
-Another area to explore is the code in payment. Look at the classes in com.xebia.payment.domain. You'll find that these classes were copied from shop, which means payment knows too much about what an order looks like in shop. This isn�t necessary and by using a feature from Spring's JSON parsing. ShipmentController in fulfillment shows how to ignore JSON data you don't need. This allows us to define an Order class in payment that contains only the attributes we do need.
+Another area to explore is the code in payment. Look at the classes in com.xebia.payment.domain. You'll find that these classes were copied from shop, which means payment knows too much about what an order looks like in shop. This isn't necessary and by using a feature from Spring's JSON parsing. ShipmentController in fulfillment shows how to ignore JSON data you don't need. This allows us to define an Order class in payment that contains only the attributes we do need.
 
 TODO: check this...
 Finally, the test in scenarioTest includes a call to Thread.sleep(). This is necessary because we have to make sure the itemsOrdered event is processed by payment before we send the pay command. Implement logic in payment that allows out of order processing. 
