@@ -6,7 +6,7 @@ To run the exercises, you will need the following:
 - RabbitMQ
 - Git command line or GUI client
 - A Java IDE like IntelliJ might help
-- A virtual machine running Linux is a good idea, but not strictly necessary. We’ll assume you’re using Linux or OSX. 
+- A virtual machine running Linux is a good idea, but not strictly necessary. We'll assume you're using Linux or OSX. 
 
 To install proceed as follows:
 - Install tools above using their default installers
@@ -14,5 +14,6 @@ To install proceed as follows:
 - Open a shell, cd into the src directory for the exercise and run: mvn test
 
 To run all services:
+- go to one of the exercise-* directories in src
 - ./runAllServices.sh
-- or start the Application in each services' src/main/java folder from your IDE
+- but it is probably easier to run the Application for each services in the src/main/java folder from your IDE
