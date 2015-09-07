@@ -3,6 +3,8 @@ package com.xebia.shop;
 import com.netflix.hystrix.HystrixCommandKey;
 import com.netflix.hystrix.HystrixCommandMetrics;
 import com.netflix.hystrix.contrib.metrics.eventstream.HystrixMetricsStreamServlet;
+import com.netflix.hystrix.contrib.requestservlet.HystrixRequestContextServletFilter;
+import com.netflix.hystrix.contrib.requestservlet.HystrixRequestLogViaLoggerServletFilter;
 import com.xebia.shop.domain.*;
 import com.xebia.shop.repositories.*;
 import com.xebia.shop.rest.StartPaymentCommand;
@@ -55,6 +57,16 @@ public class Application {
         return registrationBean;
     }
 
+    @Bean
+    public FilterRegistrationBean HystrixRequestContextServletFilter()
+    {
+        final FilterRegistrationBean registrationBean = new FilterRegistrationBean();
+        registrationBean.setFilter(new HystrixRequestContextServletFilter());
+        return registrationBean;
+    }
+
+
+
 
     public static void startMetricsMonitor() {
         Thread t = new Thread(new Runnable() {
@@ -62,13 +74,7 @@ public class Application {
             @Override
             public void run() {
                 while (true) {
-                    /**
-                     * Since this is a simple example and we know the exact HystrixCommandKeys we are interested in
-                     * we will retrieve the HystrixCommandMetrics objects directly.
-                     *
-                     * Typically you would instead retrieve metrics from where they are published which is by default
-                     * done using Servo: https://github.com/Netflix/Hystrix/wiki/Metrics-and-Monitoring
-                     */
+
 
                     // wait 5 seconds on each loop
                     try {

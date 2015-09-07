@@ -19,7 +19,7 @@ Please look at `*/scenarioTest/src/test/java/com/xebia/shop/rest/ScenarioTest.ja
     - Fulfillment service. Run: `*/fulfillment/src/main/java/com/xebia/fulfillment/Application.java*`  
    and rerun the ScenarioTest.
 
-4. The log file should now show no failures anymore. The Shop log should show 'PAYMENT ID for Card from Payment Service:'. This means that the shop was able to succesfully call the payment service.
+4. The log file should now show no failures anymore. The **SHOP LOG** should show 'PAYMENT ID for Card from Payment Service:'. This means that the shop was able to succesfully call the payment service.
 
 5. We will now make the Payment service unresponsive by increasing the response time. the circuit should close if the payment service response time > 5000. 
      Default setting of Hystrix is 5000 ms. Please go to method 'startNewPaymentProcess' in `*/payment/src/main/java/com/xebia/payment/rest/PaymentController.java*` and increase the delay.

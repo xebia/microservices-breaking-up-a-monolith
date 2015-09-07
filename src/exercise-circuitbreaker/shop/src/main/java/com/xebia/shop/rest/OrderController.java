@@ -141,25 +141,16 @@ public class OrderController {
         LOG.info("Order ID to pay: " + orderId);
         Orderr orderr = orderRepository.findOne(orderId);
 
-        HystrixRequestContext context = HystrixRequestContext.initializeContext();
         PaymentResponse resp = null;
         try{
 
-            //Future<PaymentResponse> paymentResponse = new StartPaymentCommand(orderr).queue();
-            resp = new StartPaymentCommand(orderr).execute();
-            LOG.info("Logged Requests: "+HystrixRequestLog.getCurrentRequest().getExecutedCommandsAsString());
-            //resp = paymentResponse.get();
-           // if (paymentResponse.get().getUuid() == null){
-           //     return new ResponseEntity<PaymentResponse>(new PaymentResponse(UUID.randomUUID(), ""), HttpStatus.INTERNAL_SERVER_ERROR);
-           // }
-            //else {
+            // Exercise: this is the call to the Hystrix Command
+            resp = new StartPaymentCommand(orderr, false).execute();
 
-            //}
+            LOG.info("Logged Requests: "+HystrixRequestLog.getCurrentRequest().getExecutedCommandsAsString());
+
         } catch (Exception e) {
             e.printStackTrace();
-
-        } finally {
-            context.shutdown();
         }
         return new ResponseEntity<PaymentResponse>(resp, HttpStatus.OK);
 

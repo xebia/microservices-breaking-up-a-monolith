@@ -61,7 +61,7 @@ public class ScenarioTest  {
 
            WebUser webUser = createWebUser(objectMapper);
            WebUser remoteUser = getWebUser(objectMapper, webUser);
-           LOG.info("Read back user: " + remoteUser.toString());
+           //LOG.info("Read back user: " + remoteUser.toString());
 
            Account account = createAcccount(objectMapper, webUser);           
            ShoppingCart cart = createShoppingCart(objectMapper, webUser);
