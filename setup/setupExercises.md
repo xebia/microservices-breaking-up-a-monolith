@@ -3,7 +3,7 @@
 ### To run the exercises, you will need the following:
 - Java 1.8
 - Maven 3
-- RabbitMQ
+- RabbitMQ (including rabbitmqadmin by `rabbitmq-plugins enable rabbitmq_management`)
 - Git command line or GUI client
 - A Java IDE like IntelliJ might help
 - A virtual machine running Linux is a good idea, but not strictly necessary. We'll assume you're using Linux or OSX. 
