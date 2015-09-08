@@ -71,6 +71,11 @@
             <artifactId>hystrix-metrics-event-stream</artifactId>
             <version>1.4.14</version>
         </dependency>
+        <dependency>
+            <groupId>com.netflix.hystrix</groupId>
+            <artifactId>hystrix-request-servlet</artifactId>
+            <version>1.4.14</version>
+        </dependency>
     </dependencies>
 
     <repositories>

@@ -3,6 +3,7 @@ package com.xebia.shop.rest;
 import com.netflix.hystrix.HystrixCommand;
 import com.netflix.hystrix.HystrixCommandGroupKey;
 import com.netflix.hystrix.HystrixCommandProperties;
+import com.netflix.hystrix.HystrixThreadPoolProperties;
 import com.netflix.hystrix.exception.HystrixRuntimeException;
 import com.xebia.shop.domain.Orderr;
 import org.slf4j.Logger;
@@ -21,14 +22,24 @@ public class StartPaymentCommand extends HystrixCommand<PaymentResponse> {
     private static Logger LOG = LoggerFactory.getLogger(StartPaymentCommand.class);
 
     private final Orderr orderr;
+    private boolean fail = false;
 
-    public StartPaymentCommand(Orderr orderr) {
+    public StartPaymentCommand(Orderr orderr, boolean fail) {
+
+        // Excercise: set the execution timeout to < 1000 to make Hystrix call the Fallback service
+
         super(Setter.withGroupKey(HystrixCommandGroupKey.Factory.asKey("Shop"))
                         .andCommandPropertiesDefaults(HystrixCommandProperties.Setter().withExecutionTimeoutInMilliseconds(5000))
-                //.andCommandPropertiesDefaults(HystrixCommandProperties.Setter().withCircuitBreakerRequestVolumeThreshold(6))
-                //.andCommandPropertiesDefaults(HystrixCommandProperties.Setter().withCircuitBreakerErrorThresholdPercentage(2))
+                                //.andCommandPropertiesDefaults(HystrixCommandProperties.Setter().withCircuitBreakerRequestVolumeThreshold(50))
+                                //.andCommandPropertiesDefaults(HystrixCommandProperties.Setter().withCircuitBreakerForceOpen(true))
+                            // .andCommandPropertiesDefaults(HystrixCommandProperties.Setter().withCircuitBreakerForceClosed(true))
+                        //.andCommandPropertiesDefaults(HystrixCommandProperties.Setter().withCircuitBreakerErrorThresholdPercentage(5))
+                        //.andThreadPoolPropertiesDefaults(HystrixThreadPoolProperties.Setter().withMetricsRollingStatisticalWindowInMilliseconds(30000))
+                        //.andThreadPoolPropertiesDefaults(HystrixThreadPoolProperties.Setter().withCoreSize(1))
+
         );
         this.orderr = orderr;
+        this.fail = fail;
     }
 
     @Override
@@ -36,12 +47,17 @@ public class StartPaymentCommand extends HystrixCommand<PaymentResponse> {
         // call payment service via REST call to provide info for payment interaction
         String paymentid = "";
         try {
+            if (fail) {
+                throw new RuntimeException("TEST EXCEPTION");
+            }
+
             RestTemplate restTemplate = new RestTemplate();
             OrderrResource orderrResource = new OrderrResource(orderr.getUuid(), orderr.getTotal(), "");
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(MediaType.APPLICATION_JSON);
             paymentid = restTemplate.postForObject("http://localhost:9001/payment", orderrResource, String.class);
             LOG.info("PAYMENT ID for Card from Payment Service: " + paymentid);
+
         }catch (RuntimeException re){
             LOG.error(re.getMessage());
             throw re;

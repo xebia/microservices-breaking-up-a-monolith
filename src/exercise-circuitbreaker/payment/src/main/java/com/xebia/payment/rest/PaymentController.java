@@ -34,6 +34,9 @@ public class PaymentController {
 
     @RequestMapping(method =RequestMethod.POST, consumes = "application/json", produces = "text/plain")
     public ResponseEntity<String> startnewPaymentProcess(@RequestBody OrderrResource orderrResource, HttpServletRequest request) {
+
+        // Excercise: you can play with sleep() to make Hystrix trigger a call to the Fallback service.
+
         try {
             Thread.sleep(1000);
         } catch(InterruptedException ex) {
