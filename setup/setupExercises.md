@@ -3,13 +3,14 @@
 ### To run the exercises, you will need the following:
 - Java 1.8
 - Maven 3
-- RabbitMQ (including rabbitmqadmin by `rabbitmq-plugins enable rabbitmq_management`)
+- RabbitMQ (including rabbitmqadmin)
 - Git command line or GUI client
 - A Java IDE like IntelliJ might help
-- A virtual machine running Linux is a good idea, but not strictly necessary. We'll assume you're using Linux or OSX. 
+- A virtual machine running Linux is a good idea, but not strictly necessary. We'll assume you're using Linux or OSX. Consider using a VM and/or a Vagrant box.
 
 ### To install proceed as follows:
 - Install tools above using their default installers
+-- rabbitmqadmin can be activated by executing `rabbitmq-plugins enable rabbitmq_management`
 - Clone the repo at https://github.com/xebia/microservices-breaking-up-a-monolith
 - Open a shell, cd into the src directory for the exercise and run: `mvn test`
 
@@ -17,3 +18,9 @@
 - go to one of the exercise-* directories in src
 - ./runAllServices.sh
 - but it is probably easier to run the Application for each services in the src/main/java folder from your IDE
+
+### Useful links
+- https://www.rabbitmq.com/management.html
+- https://www.vagrantup.com/
+- https://www.virtualbox.org/wiki/Downloads
+
