@@ -10,7 +10,7 @@
 
 ### To install proceed as follows:
 - Install tools above using their default installers
--- rabbitmqadmin can be activated by executing `rabbitmq-plugins enable rabbitmq_management`
+ - `rabbitmqadmin` can be activated by executing `rabbitmq-plugins enable rabbitmq_management`
 - Clone the repo at https://github.com/xebia/microservices-breaking-up-a-monolith
 - Open a shell, cd into the src directory for the exercise and run: `mvn test`
 
