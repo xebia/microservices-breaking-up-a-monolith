@@ -141,6 +141,7 @@ public class OrderController {
         LOG.info("Order ID to pay: " + orderId);
         Orderr orderr = orderRepository.findOne(orderId);
 
+        HystrixRequestContext context = HystrixRequestContext.initializeContext();
         PaymentResponse resp = null;
         try{
 
@@ -152,6 +153,10 @@ public class OrderController {
         } catch (Exception e) {
             e.printStackTrace();
         }
+        finally {
+            context.shutdown();
+        }
+
         return new ResponseEntity<PaymentResponse>(resp, HttpStatus.OK);
 
     }
