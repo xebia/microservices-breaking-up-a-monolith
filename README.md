@@ -2,7 +2,7 @@
 
 This repository is used in the meetup about refactoring a monolith to Microservices (http://www.meetup.com/devops-engineers/events/216306592/).
 
-You can find the presentation from the meetup in the doc folder (meetup-dde-refactoring-mono2micro-20150808-v2.pdf).
+The presentation of this meetup: [meetup-dde-refactoring-mono2micro-20150808-v2.pdf](https://github.com/xebia/microservices-breaking-up-a-monolith/blob/master/meetup-dde-refactoring-mono2micro-20150808-v2.pdf).
 
 
 How to use this repository:
