@@ -2,7 +2,7 @@ package com.xebia.fulfillment.rest;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.xebia.fulfillment.Application;
+import com.xebia.fulfillment.FulfillmentApplication;
 import com.xebia.fulfillment.domain.*;
 import org.junit.Assert;
 import org.junit.Test;
@@ -13,16 +13,13 @@ import org.springframework.mock.http.MockHttpOutputMessage;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 
-import javax.sound.sampled.Line;
 import java.io.IOException;
-import java.util.Date;
-import java.util.UUID;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@SpringApplicationConfiguration(classes = Application.class)
+@SpringApplicationConfiguration(classes = FulfillmentApplication.class)
 @WebAppConfiguration
 public class ShipmentTest extends TestBase {
 

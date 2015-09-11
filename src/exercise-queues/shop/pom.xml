@@ -97,7 +97,7 @@
 
 
     <properties>
-        <start-class>com.xebia.shop.Application</start-class>
+        <start-class>com.xebia.shop.ShopApplication</start-class>
     </properties>
 
     <build>

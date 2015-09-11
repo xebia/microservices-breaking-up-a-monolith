@@ -1,7 +1,7 @@
 package com.xebia.fulfillment.rest;
 
 
-import com.xebia.fulfillment.Application;
+import com.xebia.fulfillment.FulfillmentApplication;
 import com.xebia.fulfillment.domain.*;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -21,7 +21,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@SpringApplicationConfiguration(classes = Application.class)
+@SpringApplicationConfiguration(classes = FulfillmentApplication.class)
 @WebAppConfiguration
 public class ScenarioTest extends TestBase {
     private static Logger LOG = LoggerFactory.getLogger(ScenarioTest.class);

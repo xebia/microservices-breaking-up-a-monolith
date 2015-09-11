@@ -13,15 +13,15 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 @EnableAutoConfiguration
 @ComponentScan
-public class Application {
+public class PaymentApplication {
 
-    private static Logger LOG = LoggerFactory.getLogger(Application.class);
+    private static Logger LOG = LoggerFactory.getLogger(PaymentApplication.class);
 
     @Autowired
     private PaymentRepository paymentRepository;
 
     public static void main(String[] args) {
-        ApplicationContext applicationContext = SpringApplication.run(Application.class, args);
-        applicationContext.getBean(Application.class);
+        ApplicationContext applicationContext = SpringApplication.run(PaymentApplication.class, args);
+        applicationContext.getBean(PaymentApplication.class);
     }
 }

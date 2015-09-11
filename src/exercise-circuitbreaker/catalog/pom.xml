@@ -62,7 +62,7 @@
 
 
     <properties>
-        <start-class>com.xebia.catalog.Application</start-class>
+        <start-class>com.xebia.catalog.CatalogApplication</start-class>
     </properties>
 
     <build>

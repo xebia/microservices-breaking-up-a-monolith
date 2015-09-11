@@ -13,7 +13,7 @@ import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.web.context.WebApplicationContext;
 
-import com.xebia.shop.Application;
+import com.xebia.shop.ShopApplication;
 import com.xebia.shop.domain.*;
 import com.xebia.shop.repositories.*;
 
@@ -29,7 +29,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.setup.MockMvcBuilders.webAppContextSetup;
 
-@SpringApplicationConfiguration(classes = Application.class)
+@SpringApplicationConfiguration(classes = ShopApplication.class)
 @WebAppConfiguration
 public class TestBase {
 

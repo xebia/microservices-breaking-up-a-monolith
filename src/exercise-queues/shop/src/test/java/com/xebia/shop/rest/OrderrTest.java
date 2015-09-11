@@ -7,7 +7,7 @@ import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 
-import com.xebia.shop.Application;
+import com.xebia.shop.ShopApplication;
 import com.xebia.shop.domain.*;
 
 import static org.hamcrest.Matchers.*;
@@ -18,7 +18,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@SpringApplicationConfiguration(classes = Application.class)
+@SpringApplicationConfiguration(classes = ShopApplication.class)
 @WebAppConfiguration
 public class OrderrTest extends TestBase {
 

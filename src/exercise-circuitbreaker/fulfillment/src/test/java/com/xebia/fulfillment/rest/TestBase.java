@@ -1,8 +1,7 @@
 package com.xebia.fulfillment.rest;
 
 
-import com.xebia.fulfillment.Application;
-import com.xebia.fulfillment.domain.*;
+import com.xebia.fulfillment.FulfillmentApplication;
 import com.xebia.fulfillment.repositories.*;
 import org.junit.Assert;
 import org.junit.Before;
@@ -19,8 +18,6 @@ import org.springframework.web.context.WebApplicationContext;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.util.Arrays;
-import java.util.Date;
-import java.util.UUID;
 
 import static org.hamcrest.Matchers.is;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -28,7 +25,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.setup.MockMvcBuilders.webAppContextSetup;
 
-@SpringApplicationConfiguration(classes = Application.class)
+@SpringApplicationConfiguration(classes = FulfillmentApplication.class)
 @WebAppConfiguration
 public class TestBase {
 

@@ -2,7 +2,7 @@ package com.xebia.shop.rest;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.xebia.shop.Application;
+import com.xebia.shop.ShopApplication;
 import com.xebia.shop.domain.*;
 
 import org.junit.Test;
@@ -15,7 +15,6 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MvcResult;
-import org.springframework.util.Assert;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.*;
@@ -28,7 +27,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@SpringApplicationConfiguration(classes = Application.class)
+@SpringApplicationConfiguration(classes = ShopApplication.class)
 @WebAppConfiguration
 public class ScenarioTest extends TestBase {
     private static Logger LOG = LoggerFactory.getLogger(ScenarioTest.class);

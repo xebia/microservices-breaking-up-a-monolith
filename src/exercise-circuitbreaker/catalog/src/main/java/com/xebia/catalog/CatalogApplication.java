@@ -17,16 +17,16 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 @EnableAutoConfiguration
 @ComponentScan
-public class Application {
+public class CatalogApplication {
 
-    private static Logger LOG = LoggerFactory.getLogger(Application.class);
+    private static Logger LOG = LoggerFactory.getLogger(CatalogApplication.class);
 
     @Autowired
     private ProductRepository productRepository;
 
     public static void main(String[] args) {
-        ApplicationContext applicationContext = SpringApplication.run(Application.class, args);
-        Application application = applicationContext.getBean(Application.class);
+        ApplicationContext applicationContext = SpringApplication.run(CatalogApplication.class, args);
+        CatalogApplication application = applicationContext.getBean(CatalogApplication.class);
         
         Product product = new Product(UUID.randomUUID(),"product 1","supplier 1", new Double(112.10));
         product = application.productRepository.save(product);

@@ -68,7 +68,7 @@
 
 
     <properties>
-        <start-class>com.xebia.fulfillment.Application</start-class>
+        <start-class>com.xebia.fulfillment.FulfillmentApplication</start-class>
     </properties>
 
     <build>

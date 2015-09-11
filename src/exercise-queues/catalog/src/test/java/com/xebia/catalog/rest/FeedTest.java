@@ -1,7 +1,7 @@
 package com.xebia.catalog.rest;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.xebia.catalog.Application;
+import com.xebia.catalog.CatalogApplication;
 import com.xebia.catalog.domain.Product;
 import org.junit.Before;
 import org.junit.Test;
@@ -25,7 +25,7 @@ import static org.springframework.test.web.servlet.setup.MockMvcBuilders.webAppC
 
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@SpringApplicationConfiguration(classes = Application.class)
+@SpringApplicationConfiguration(classes = CatalogApplication.class)
 @WebAppConfiguration
 public class FeedTest extends TestBase {
 

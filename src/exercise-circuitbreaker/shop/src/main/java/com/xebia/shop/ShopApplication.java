@@ -1,8 +1,12 @@
 package com.xebia.shop;
 
-import java.util.Date;
-import java.util.UUID;
-
+import com.netflix.hystrix.HystrixCommandKey;
+import com.netflix.hystrix.HystrixCommandMetrics;
+import com.netflix.hystrix.contrib.metrics.eventstream.HystrixMetricsStreamServlet;
+import com.netflix.hystrix.contrib.requestservlet.HystrixRequestContextServletFilter;
+import com.xebia.shop.domain.*;
+import com.xebia.shop.repositories.*;
+import com.xebia.shop.rest.StartPaymentCommand;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,28 +18,17 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
-
-import com.netflix.hystrix.contrib.metrics.eventstream.HystrixMetricsStreamServlet;
-import com.xebia.shop.domain.Account;
-import com.xebia.shop.domain.LineItem;
-import com.xebia.shop.domain.Orderr;
-import com.xebia.shop.domain.Product;
-import com.xebia.shop.domain.ShoppingCart;
-import com.xebia.shop.domain.WebUser;
-import com.xebia.shop.repositories.AccountRepository;
-import com.xebia.shop.repositories.LineItemRepository;
-import com.xebia.shop.repositories.OrderRepository;
-import com.xebia.shop.repositories.ProductRepository;
-import com.xebia.shop.repositories.ShoppingCartRepository;
-import com.xebia.shop.repositories.WebUserRepository;
 import org.springframework.web.filter.CommonsRequestLoggingFilter;
+
+import java.util.Date;
+import java.util.UUID;
 
 @Configuration
 @EnableAutoConfiguration
 @ComponentScan
-public class Application {
+public class ShopApplication {
 
-    private static Logger LOG = LoggerFactory.getLogger(Application.class);
+    private static Logger LOG = LoggerFactory.getLogger(ShopApplication.class);
 
     @Autowired
     private WebUserRepository webUserRepository;
@@ -63,12 +56,69 @@ public class Application {
         return registrationBean;
     }
 
+    @Bean
+    public FilterRegistrationBean HystrixRequestContextServletFilter()
+    {
+        final FilterRegistrationBean registrationBean = new FilterRegistrationBean();
+        registrationBean.setFilter(new HystrixRequestContextServletFilter());
+        return registrationBean;
+    }
+
+
+
+
+    public static void startMetricsMonitor() {
+        Thread t = new Thread(new Runnable() {
+
+            @Override
+            public void run() {
+                while (true) {
+
+
+                    // wait 5 seconds on each loop
+                    try {
+                        Thread.sleep(10000);
+                    } catch (Exception e) {
+                        // ignore
+                    }
+
+                    // we are using default names so can use class.getSimpleName() to derive the keys
+                    HystrixCommandMetrics callMetrics = HystrixCommandMetrics.getInstance(HystrixCommandKey.Factory.asKey(StartPaymentCommand.class.getSimpleName()));
+
+                    // print out metrics
+                    StringBuilder out = new StringBuilder();
+                    out.append("\n");
+                    out.append("#####################################################################################").append("\n");
+                    out.append("# StartPaymentCommand: " + getStatsStringFromMetrics(callMetrics)).append("\n");
+                    out.append("#####################################################################################").append("\n");
+                    System.out.println(out.toString());
+                }
+            }
+
+            private String getStatsStringFromMetrics(HystrixCommandMetrics metrics) {
+                StringBuilder m = new StringBuilder();
+                if (metrics != null) {
+                    HystrixCommandMetrics.HealthCounts health = metrics.getHealthCounts();
+                    m.append("Requests: ").append(health.getTotalRequests()).append(" ");
+                    m.append("Errors: ").append(health.getErrorCount()).append(" (").append(health.getErrorPercentage()).append("%)   ");
+                    //m.append("Mean: ").append(metrics.getExecutionTimePercentile(50)).append(" ");
+                    //m.append("75th: ").append(metrics.getExecutionTimePercentile(75)).append(" ");
+                    //m.append("90th: ").append(metrics.getExecutionTimePercentile(90)).append(" ");
+                    //m.append("99th: ").append(metrics.getExecutionTimePercentile(99)).append(" ");
+                }
+                return m.toString();
+            }
+
+        });
+        t.setDaemon(true);
+        t.start();
+    }
 
     public static void main(String[] args) {
     	//RestTemplate client  = new RestTemplate();
     	
-        ApplicationContext applicationContext = SpringApplication.run(Application.class, args);
-        Application application = applicationContext.getBean(Application.class);
+        ApplicationContext applicationContext = SpringApplication.run(ShopApplication.class, args);
+        ShopApplication application = applicationContext.getBean(ShopApplication.class);
 
         WebUser user1 = new WebUser(UUID.fromString("1bb1e93f-a56d-4dad-b7d7-c24e28abb913"), "user1", "password");
         user1 = application.webUserRepository.save(user1);
@@ -98,18 +148,12 @@ public class Application {
         user1.setAccount(account);
         application.webUserRepository.save(user1);
         
-        /*
-        Orderr orderr = new Orderr();
-        orderr.setUuid(UUID.fromString("b20d9560-6003-4da0-a072-4d35c96cc0d1"));
-        orderr.setShoppingCart(cart);
-        orderr.setAccount(account);
-        application.orderRepository.save(orderr);
-        */
-        
         LOG.info("Read webuser back from database");
         WebUser webUser = application.webUserRepository.findByUuid(user1.getUuid());
         LOG.info(webUser.toString());
-        
+
+        startMetricsMonitor();
+
     }
 
 }

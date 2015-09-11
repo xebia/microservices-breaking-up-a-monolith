@@ -70,7 +70,7 @@
 
 
     <properties>
-        <start-class>com.xebia.payment.Application</start-class>
+        <start-class>com.xebia.payment.PaymentApplication</start-class>
     </properties>
 
     <build>

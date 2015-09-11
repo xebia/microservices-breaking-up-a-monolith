@@ -1,9 +1,7 @@
 package com.xebia.fulfillment;
 
-import com.xebia.fulfillment.repositories.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.context.embedded.FilterRegistrationBean;
@@ -16,14 +14,14 @@ import org.springframework.web.filter.CommonsRequestLoggingFilter;
 @Configuration
 @EnableAutoConfiguration
 @ComponentScan
-public class Application {
+public class FulfillmentApplication {
 
-    private static Logger LOG = LoggerFactory.getLogger(Application.class);
+    private static Logger LOG = LoggerFactory.getLogger(FulfillmentApplication.class);
 
 
     public static void main(String[] args) {
-        ApplicationContext applicationContext = SpringApplication.run(Application.class, args);
-        Application application = applicationContext.getBean(Application.class);
+        ApplicationContext applicationContext = SpringApplication.run(FulfillmentApplication.class, args);
+        FulfillmentApplication application = applicationContext.getBean(FulfillmentApplication.class);
     }
 
     @Bean
