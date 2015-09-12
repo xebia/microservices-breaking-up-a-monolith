@@ -3,6 +3,10 @@ package com.xebia.shop;
 import java.util.Date;
 import java.util.UUID;
 
+import com.mangofactory.swagger.configuration.SpringSwaggerConfig;
+import com.mangofactory.swagger.models.dto.ApiInfo;
+import com.mangofactory.swagger.plugin.EnableSwagger;
+import com.mangofactory.swagger.plugin.SwaggerSpringMvcPlugin;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,6 +36,7 @@ import org.springframework.web.filter.CommonsRequestLoggingFilter;
 @Configuration
 @EnableAutoConfiguration
 @ComponentScan
+@EnableSwagger
 public class ShopApplication {
 
     private static Logger LOG = LoggerFactory.getLogger(ShopApplication.class);
@@ -48,6 +53,30 @@ public class ShopApplication {
     private LineItemRepository lineItemRepository;
     @Autowired
     private ProductRepository productRepository;
+
+    private SpringSwaggerConfig springSwaggerConfig;
+
+    @Autowired
+    public void setSpringSwaggerConfig(SpringSwaggerConfig springSwaggerConfig) {
+        this.springSwaggerConfig = springSwaggerConfig;
+    }
+
+    @Bean
+    public SwaggerSpringMvcPlugin customImplementation() {
+        return new SwaggerSpringMvcPlugin(this.springSwaggerConfig)
+                //Root level documentation
+                .apiInfo(new ApiInfo(
+                        "Shop API",
+                        "This page provides details of the REST API for the Shop service",
+                        "Go and explore ...",
+                        null,
+                        null,
+                        null
+                ))
+                .useDefaultResponseMessages(false)
+                        //Map the specific URL patterns into Swagger
+                .includePatterns("/.*");
+    }
 
     @Bean
     public ServletRegistrationBean hystrixStreamServlet(){

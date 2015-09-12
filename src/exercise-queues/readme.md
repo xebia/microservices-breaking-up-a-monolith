@@ -15,6 +15,8 @@ If you feel like it, implement the missing Events shown in domain-meetup-ex2.gv:
 
 Another area to explore is the code in payment. Look at the classes in `com.xebia.payment.domain`. You'll find that these classes were copied from shop, which means payment knows too much about what an order looks like in shop. This isn't necessary and by using a feature from Spring's JSON parsing. ShipmentController in fulfillment shows how to ignore JSON data you don't need. This allows us to define an Order class in payment that contains only the attributes we do need.
 
+You can use Swagger UI to explore the APIs of the services. Please open http://localhost:PORT/docs/index.html.
+
 TODO: check this...
 Finally, the test in scenarioTest includes a call to Thread.sleep(). This is necessary because we have to make sure the itemsOrdered event is processed by payment before we send the pay command. Implement logic in payment that allows out of order processing.
 

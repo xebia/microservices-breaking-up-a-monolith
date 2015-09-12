@@ -7,6 +7,10 @@ import java.util.UUID;
 import com.netflix.hystrix.HystrixCommandKey;
 import com.netflix.hystrix.HystrixCommandMetrics;
 import com.netflix.hystrix.HystrixRequestLog;
+import com.wordnik.swagger.annotations.Api;
+import com.wordnik.swagger.annotations.ApiOperation;
+import com.wordnik.swagger.annotations.ApiResponse;
+import com.wordnik.swagger.annotations.ApiResponses;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
@@ -40,7 +44,6 @@ import javax.servlet.http.HttpServletRequest;
 
 @RestController
 @RequestMapping("/cart/orders/")
-
 public class OrderController {
 	
     private static Logger LOG = LoggerFactory.getLogger(OrderController.class);
@@ -66,6 +69,12 @@ public class OrderController {
     @Autowired
     private AccountRepository accountRepository;
 
+    @ApiOperation(value = "Returns a list of all orders", notes = "Returns the list of orders"
+            , response = OrderResource.class, responseContainer = "List")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Success"),
+            @ApiResponse(code = 500, message = "Internal server error")
+    })
     @RequestMapping(method = RequestMethod.GET)
     public List<OrderResource> allOrders(HttpServletRequest request) {
         LOG.info("URL: "+ request.getRequestURL()+ ", METHOD: "+ request.getMethod());
