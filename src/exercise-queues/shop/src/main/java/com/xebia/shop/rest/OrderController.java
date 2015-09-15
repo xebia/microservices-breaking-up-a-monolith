@@ -69,12 +69,12 @@ public class OrderController {
     @Autowired
     private AccountRepository accountRepository;
 
-    @ApiOperation(value = "Returns a list of all orders", notes = "Returns the list of orders"
-            , response = OrderResource.class, responseContainer = "List")
-    @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Success"),
-            @ApiResponse(code = 500, message = "Internal server error")
-    })
+    //@ApiOperation(value = "Returns a list of all orders", notes = "Returns the list of orders"
+    //        , response = OrderResource.class, responseContainer = "List")
+   // @ApiResponses(value = {
+   //         @ApiResponse(code = 200, message = "Success"),
+   //         @ApiResponse(code = 500, message = "Internal server error")
+   // })
     @RequestMapping(method = RequestMethod.GET)
     public List<OrderResource> allOrders(HttpServletRequest request) {
         LOG.info("URL: "+ request.getRequestURL()+ ", METHOD: "+ request.getMethod());
