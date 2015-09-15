@@ -85,18 +85,6 @@ public class PaymentController {
 
     private static final DateFormat dataFormat = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss z");
 
-    @RequestMapping(method = RequestMethod.GET, value ="/list", produces = "application/json", headers = {"If-Modified-Since" })
-    public ResponseEntity<PaymentResource> getListOfPayments(
-            @RequestHeader("If-Modified-Since")
-            @DateTimeFormat(pattern = "EEE, dd MMM yyyy HH:mm:ss z") final Date ifModifiedSince
-            , HttpServletRequest request
-    ) {
-        LOG.info("URL: "+ request.getRequestURL()+ ", METHOD: "+ request.getMethod());
-        List<Payment> payments = paymentRepository.findByDatePaidGreaterThan(ifModifiedSince);
-        List<PaymentResource> paymentResources = new PaymentResourceAssembler().toResource(payments);
-        return new ResponseEntity(paymentResources, HttpStatus.OK);
-    }
-
     @RequestMapping(method = RequestMethod.GET, value ="/all", produces = "application/json")
     public ResponseEntity<PaymentResource> getAllPayments(HttpServletRequest request) {
         LOG.info("URL: "+ request.getRequestURL()+ ", METHOD: "+ request.getMethod());

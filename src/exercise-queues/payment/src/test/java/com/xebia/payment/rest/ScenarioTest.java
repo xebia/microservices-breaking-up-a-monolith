@@ -104,39 +104,6 @@ public class ScenarioTest {
         assertTrue(found);
     }
 
-    @Test
-    public void listPaymentsSince() throws Exception {
-        ObjectMapper objectMapper = new ObjectMapper();
-        objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-
-        registerOrderAndPay("description");
-
-        waitAWhile(1000);
-        String date = getTimeStamp();
-        waitAWhile(1000);
-
-        registerOrderAndPay("description2");
-
-        MvcResult resultActions = mockMvc.perform(get("/payment/list").header("If-Modified-Since",date)
-                .contentType(jsonContentType))
-                .andExpect(status().isOk())
-                .andReturn()
-        ;
-        String data = resultActions.getResponse().getContentAsString();
-        List<Payment> payments = objectMapper.readValue(data, new TypeReference<List<Payment>>() {
-        });
-        boolean found = false;
-        for (Payment p:payments) {
-            if (p.getDescription().equals("description2")) {found = true; break;}
-        }
-        assertTrue(found);
-        found = false;
-        for (Payment p:payments) {
-            if (p.getCardId().equals("description1")) {found = true; break;}
-        }
-        assertFalse(found);
-    }
-
     private String getTimeStamp() {
         SimpleDateFormat sdf = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss z");
         Date cutoffDate = new Date();
