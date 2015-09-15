@@ -79,46 +79,4 @@ public class ScenarioTest extends TestBase {
         assertTrue(found);
     }
 
-    @Test
-    public void listProductsSince() throws Exception {
-        ObjectMapper objectMapper = new ObjectMapper();
-        objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-
-        Product product = new Product(UUID.randomUUID(), "product4", "supplier1", 10.0);
-        mockMvc.perform(post("/product/")
-                .content(this.json(product))
-                .contentType(jsonContentType))
-                .andExpect(status().isCreated())
-        ;
-
-        waitAWhile(1000);
-        String date = getTimeStamp();
-        waitAWhile(1000);
-
-        product = new Product(UUID.randomUUID(), "product5", "supplier1", 10.0);
-        mockMvc.perform(post("/product/")
-                .content(this.json(product))
-                .contentType(jsonContentType))
-                .andExpect(status().isCreated())
-        ;
-
-        MvcResult resultActions = mockMvc.perform(get("/product/list").header("If-Modified-Since",date)
-                .contentType(jsonContentType))
-                .andExpect(status().isOk())
-                .andReturn()
-        ;
-        String data = resultActions.getResponse().getContentAsString();
-        List<Product> products = objectMapper.readValue(data, new TypeReference<List<Product>>() {
-        });
-        boolean found = false;
-        for (Product p:products) {
-            if (p.getName().equals("product5")) {found = true; break;}
-        }
-        assertTrue(found);
-        for (Product p:products) {
-            if (p.getName().equals("product4")) {found = true; break;}
-        }
-        found = false;
-        assertFalse(found);
-    }
 }

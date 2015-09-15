@@ -41,18 +41,6 @@ public class ProductController {
 
     private static final DateFormat dataFormat = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss z");
 
-    @RequestMapping(method = RequestMethod.GET, value = "/list", produces = "application/json", headers = {"If-Modified-Since"})
-    public ResponseEntity<ProductResource> getListOfProducts(
-            @RequestHeader("If-Modified-Since")
-            @DateTimeFormat(pattern = "EEE, dd MMM yyyy HH:mm:ss z") final Date ifModifiedSince
-            , HttpServletRequest request
-    ) {
-        LOG.info("URL: "+ request.getRequestURL()+ ", METHOD: "+ request.getMethod());
-        List<Product> products = productRepository.findByDateAddedGreaterThan(ifModifiedSince);
-        List<ProductResource> productResources = new ProductResourceAssembler().toResource(products);
-        return new ResponseEntity(productResources, HttpStatus.OK);
-    }
-
     @RequestMapping(method = RequestMethod.GET, value = "/all", produces = "application/json")
     public ResponseEntity<ProductResource> getAllProducts(HttpServletRequest request) {
         LOG.info("URL: "+ request.getRequestURL()+ ", METHOD: "+ request.getMethod());
@@ -84,31 +72,4 @@ public class ProductController {
         }
     }
 
-    @RequestMapping(method = RequestMethod.GET, value = "/rss", produces = "application/rss+xml")
-    public ResponseEntity<ProductResource> getRssFeed(
-            @RequestHeader("If-Modified-Since")
-            @DateTimeFormat(pattern = "EEE, dd MMM yyyy HH:mm:ss z") final Date ifModifiedSince
-            , HttpServletRequest request
-    ) {
-        LOG.info("URL: "+ request.getRequestURL()+ ", METHOD: "+ request.getMethod());
-        List<Product> products = productRepository.findByDateAddedGreaterThan(ifModifiedSince);
-        try {
-            return new ResponseEntity(asRssFeed(products), HttpStatus.OK);
-        } catch (Exception e) {
-            return new ResponseEntity<ProductResource>(HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-    }
-
-    public String asRssFeed(List<Product> products) throws Exception {
-        Configuration cfg = new Configuration();
-        cfg.setClassForTemplateLoading(this.getClass(), "");
-        Template template = cfg.getTemplate("productRSStemplate.ftl");
-        Map<String, Object> data = new HashMap<String, Object>();
-        data.put("host", "localhost"); // TODO: System.getenv("hostname")) -- @Value("${local.server.host}"?
-        data.put("port", "9003"); //TODO: @Value("${local.server.port}?
-        data.put("products", products);
-        StringWriter output = new StringWriter();
-        template.process(data, output);
-        return output.toString();
-    }
 }
