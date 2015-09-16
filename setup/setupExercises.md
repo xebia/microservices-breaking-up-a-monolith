@@ -24,7 +24,7 @@
 - install Vagrant : https://www.vagrantup.com/downloads.html
 - in the microservices-breaking-up-a-monolith folder do:
   - `vagrant up`  : will download and provision an Ubuntu VM
-  - `vagrant reload` : will reboot the VM in order for installed upodated to work correctly
+  - `vagrant reload` : will reboot the VM in order for installed updates to work correctly
   - `vagrant ssh` : will get you into VM itself (as user vagrant)
 
 ### Useful links
