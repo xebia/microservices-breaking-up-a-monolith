@@ -19,6 +19,17 @@
 - ./runAllServices.sh
 - but it is probably easier to run the Application for each services in the src/main/java folder from your IDE
 
+### Using provided Vagrantfile
+- install Vagrant : https://www.vagrantup.com/downloads.html
+- install Virtualbox : https://www.virtualbox.org/wiki/Downloads
+- in the microservices-breaking-up-a-monolith folder do:
+  - vagrant up
+  - vagrant reload
+  - vagrant ssh
+- up : will download and provision an Ubuntu VM
+- relead : will reboot the VM in order for installed upodated to work correctly
+- ssh : will get you into VM itself 
+
 ### Useful links
 - https://www.rabbitmq.com/management.html
 - https://www.vagrantup.com/
