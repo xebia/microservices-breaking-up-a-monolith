@@ -15,5 +15,8 @@ Vagrant.configure(2) do |config|
     rabbitmq-plugins enable rabbitmq_management 
     
     git clone https://github.com/xebia/microservices-breaking-up-a-monolith
+    sudo chown -R vagrant.vagrant microservices-breaking-up-a-monolith
+    # cd microservices-breaking-up-a-monolith/src/monolith
+    # mvn test
   SHELL
 end
