@@ -43,7 +43,7 @@ import com.xebia.shop.repositories.WebUserRepository;
 import javax.servlet.http.HttpServletRequest;
 
 @RestController
-@RequestMapping("/cart/orders/")
+@RequestMapping("/shop/orders/")
 public class OrderController {
 	
     private static Logger LOG = LoggerFactory.getLogger(OrderController.class);

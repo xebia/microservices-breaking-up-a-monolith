@@ -61,14 +61,14 @@ public class ScenarioTest extends TestBase {
     }
 
     private void approveOrder(Orderr orderr) throws Exception {
-        mockMvc.perform(put("/cart/orders/" + orderr.getUuid() + "/approve")
+        mockMvc.perform(put("/shop/orders/" + orderr.getUuid() + "/approve")
                 .contentType(jsonContentType))
                 .andExpect(status().isOk())
         ;
     }
 
     private void addAccountToOrder(Account account, Orderr orderr) throws Exception {
-        mockMvc.perform(put("/cart/orders/" + orderr.getUuid() + "/account")
+        mockMvc.perform(put("/shop/orders/" + orderr.getUuid() + "/account")
                 .content(this.json(account))
                 .contentType(jsonContentType))
                 .andExpect(status().isOk())
@@ -78,7 +78,7 @@ public class ScenarioTest extends TestBase {
 
     private Orderr createOrder(ObjectMapper objectMapper, WebUser webUser) throws Exception {
         MvcResult resultActions;
-        resultActions = mockMvc.perform(post("/cart/orders/add")
+        resultActions = mockMvc.perform(post("/shop/orders/add")
                 .content(this.json(webUser.getUuid()))
                 .contentType(jsonContentType))
                 .andExpect(status().isCreated())
@@ -92,7 +92,7 @@ public class ScenarioTest extends TestBase {
 
     private WebUser getWebUser(ObjectMapper objectMapper, WebUser webUser) throws Exception {
         MvcResult resultActions;
-        resultActions = mockMvc.perform(get("/cart/user/" + webUser.getUuid())
+        resultActions = mockMvc.perform(get("/shop/user/" + webUser.getUuid())
                 .contentType(jsonContentType))
                 .andReturn()
         ;
@@ -106,7 +106,7 @@ public class ScenarioTest extends TestBase {
         MvcResult resultActions;
         NewLineItemResource lineItemResource = new NewLineItemResource(product.getUuid(), 2);
 
-        resultActions = mockMvc.perform(post("/cart/cart/" + cart.getUuid() + "/add")
+        resultActions = mockMvc.perform(post("/shop/cart/" + cart.getUuid() + "/add")
                 .content(this.json(lineItemResource))
                 .contentType(jsonContentType))
                 .andExpect(status().isCreated())
@@ -121,7 +121,7 @@ public class ScenarioTest extends TestBase {
     private Product createProduct(ObjectMapper objectMapper) throws Exception {
         MvcResult resultActions;
         ProductResource productResource = new ProductResource(UUID.randomUUID(), "product1", 10.0);
-        resultActions = mockMvc.perform(post("/cart/products/")
+        resultActions = mockMvc.perform(post("/shop/products/")
                 .content(this.json(productResource))
                 .contentType(jsonContentType))
                 .andExpect(status().isCreated())
@@ -135,7 +135,7 @@ public class ScenarioTest extends TestBase {
 
     private ShoppingCart createShoppingCart(ObjectMapper objectMapper, WebUser webUser) throws Exception {
         MvcResult resultActions;
-        resultActions = mockMvc.perform(post("/cart/user/" + webUser.getUuid() + "/cart"))
+        resultActions = mockMvc.perform(post("/shop/cart/user/" + webUser.getUuid()))
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.lineItems", is(new ArrayList<LineItem>())))
                 .andReturn()
@@ -148,7 +148,7 @@ public class ScenarioTest extends TestBase {
     private Account createAcccount(ObjectMapper objectMapper, WebUser webUser) throws Exception {
         MvcResult resultActions;
         Account account = new Account("address1", "phoneNumber1", "email1");
-        resultActions = mockMvc.perform(post("/cart/account/user/" + webUser.getUuid())
+        resultActions = mockMvc.perform(post("/shop/accounts/user/" + webUser.getUuid())
                 .content(this.json(account))
                 .contentType(jsonContentType))
                 .andExpect(status().isCreated())
@@ -165,7 +165,7 @@ public class ScenarioTest extends TestBase {
         Random rnd = new Random(10);
         MvcResult resultActions;
         WebUserResource webUserResource = new WebUserResource("webuser" + rnd.toString(), "password");
-        resultActions = mockMvc.perform(post("/cart/user/register")
+        resultActions = mockMvc.perform(post("/shop/users/register")
                 .content(this.json(webUserResource))
                 .contentType(jsonContentType))
                 .andExpect(status().isCreated())

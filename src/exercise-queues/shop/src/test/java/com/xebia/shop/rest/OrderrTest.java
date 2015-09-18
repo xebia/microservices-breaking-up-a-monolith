@@ -26,7 +26,7 @@ public class OrderrTest extends TestBase {
     public void testAddingAccountToOrder() throws Exception {
         Orderr orderr = createAndSaveOrderFromShoppingCart();
         Account account = createAndSaveAccount();
-        mockMvc.perform(put("/cart/orders/" + orderr.getUuid() + "/account")
+        mockMvc.perform(put("/shop/orders/" + orderr.getUuid() + "/account")
                 .content(this.json(account))
                 .contentType(jsonContentType))
                 .andExpect(status().isOk())
@@ -38,7 +38,7 @@ public class OrderrTest extends TestBase {
     public void pay() throws Exception {
         Orderr orderr = createAndSaveOrderFromShoppingCart();
         orderRepository.save(orderr);
-        mockMvc.perform(put("/cart/orders/registerPayment/" + orderr.getUuid())
+        mockMvc.perform(put("/shop/orders/registerPayment/" + orderr.getUuid())
                 .contentType(jsonContentType))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.paymentReceived", is(true)))

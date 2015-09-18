@@ -38,7 +38,7 @@ import com.xebia.shop.domain.WebUser;
 @WebAppConfiguration
 public class ScenarioTest  {
     public static final String PAY_ENDPOINT = "http://localhost:9001/payment";
-    public static final String SHOP_ENDPOINT = "http://localhost:9002/cart";
+    public static final String SHOP_ENDPOINT = "http://localhost:9002/shop";
     public static final String FF_ENDPOINT = "http://localhost:9003/fulfillment";
     private static Logger LOG = LoggerFactory.getLogger(ScenarioTest.class);
 
@@ -143,7 +143,7 @@ public class ScenarioTest  {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
         HttpEntity<String> requestEntity = new HttpEntity<String>("{}", headers);
-        ResponseEntity<String> responseEntity = restTemplate.exchange(SHOP_ENDPOINT + "/user/" + webUser.getUuid(), HttpMethod.GET, requestEntity, String.class);
+        ResponseEntity<String> responseEntity = restTemplate.exchange(SHOP_ENDPOINT + "/users/" + webUser.getUuid(), HttpMethod.GET, requestEntity, String.class);
         String data = responseEntity.getBody().toString();
         return objectMapper.readValue(data, WebUser.class);
     }
@@ -183,7 +183,7 @@ public class ScenarioTest  {
         headers.setContentType(MediaType.APPLICATION_JSON);
         HttpEntity<String> requestEntity = new HttpEntity<String>("{}", headers);
         
-        ResponseEntity<String> responseEntity = restTemplate.exchange(SHOP_ENDPOINT + "/user/" + webUser.getUuid() + "/cart", HttpMethod.POST, requestEntity, String.class);
+        ResponseEntity<String> responseEntity = restTemplate.exchange(SHOP_ENDPOINT + "/cart/user/" + webUser.getUuid(), HttpMethod.POST, requestEntity, String.class);
         String data = responseEntity.getBody().toString();
         ShoppingCart cart = objectMapper.readValue(data, ShoppingCart.class);
         
@@ -201,7 +201,7 @@ public class ScenarioTest  {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
         HttpEntity<String> requestEntity = new HttpEntity<String>(objectMapper.writeValueAsString(account), headers);
-        ResponseEntity<String> responseEntity = restTemplate.exchange(SHOP_ENDPOINT + "/account/user/"+webUser.getUuid(), HttpMethod.POST, requestEntity, String.class);
+        ResponseEntity<String> responseEntity = restTemplate.exchange(SHOP_ENDPOINT + "/accounts/user/"+webUser.getUuid(), HttpMethod.POST, requestEntity, String.class);
 
         String data = responseEntity.getBody().toString();
         return objectMapper.readValue(data, Account.class);
@@ -216,7 +216,7 @@ public class ScenarioTest  {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
         HttpEntity<String> requestEntity = new HttpEntity<String>(objectMapper.writeValueAsString(webUserResource), headers);
-        ResponseEntity<String> responseEntity = restTemplate.exchange(SHOP_ENDPOINT + "/user/register", HttpMethod.POST, requestEntity, String.class);
+        ResponseEntity<String> responseEntity = restTemplate.exchange(SHOP_ENDPOINT + "/users/register", HttpMethod.POST, requestEntity, String.class);
         String data = responseEntity.getBody().toString();
         return objectMapper.readValue(data, WebUser.class);
     }

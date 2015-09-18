@@ -15,7 +15,7 @@ import java.util.Date;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/cart/")
+@RequestMapping("/shop/cart/")
 public class ShoppingCartController {
 
     private static Logger LOG = LoggerFactory.getLogger(ShoppingCartController.class);
@@ -38,7 +38,7 @@ public class ShoppingCartController {
     private ShoppingCartResourceAssembler assembler = new ShoppingCartResourceAssembler();
     private OrderResourceAssembler orderAssembler = new OrderResourceAssembler();
 
-    @RequestMapping(method = RequestMethod.POST, value="user/{userId}/cart", produces = "application/json")
+    @RequestMapping(method = RequestMethod.POST, value="user/{userId}", produces = "application/json")
     public ResponseEntity<ShoppingCartResource> createNewShoppingCart(@PathVariable UUID userId, HttpServletRequest request) {
         LOG.info("URL: "+ request.getRequestURL()+ ", METHOD: "+ request.getMethod()+ ", CONTENT: userId="+userId.toString());
         ShoppingCart cart = null;
@@ -57,7 +57,7 @@ public class ShoppingCartController {
         return new ResponseEntity<ShoppingCartResource>(resource, HttpStatus.CREATED);
     }
 
-    @RequestMapping(method = RequestMethod.GET, value ="user/{userId}/cart", produces = "application/json")
+    @RequestMapping(method = RequestMethod.GET, value ="user/{userId}", produces = "application/json")
     public ResponseEntity<ShoppingCartResource> showShoppingCartContents(@PathVariable UUID userId, HttpServletRequest request) {
         LOG.info("URL: "+ request.getRequestURL()+ ", METHOD: "+ request.getMethod());
         WebUser user = webUserRepository.findByUuid(userId);
@@ -68,7 +68,7 @@ public class ShoppingCartController {
         return new ResponseEntity<ShoppingCartResource>(resource, HttpStatus.OK);
     }
 
-    @RequestMapping(method = RequestMethod.POST, value = "/cart/{cartId}/add", consumes = "application/json", produces = "application/json")
+    @RequestMapping(method = RequestMethod.POST, value = "/{cartId}/add", consumes = "application/json", produces = "application/json")
     public ResponseEntity<ShoppingCartResource> addProductToShoppingCart(@PathVariable UUID cartId, @RequestBody NewLineItemResource newLineItemResource, HttpServletRequest request) {
         LOG.info("URL: "+ request.getRequestURL()+ ", METHOD: "+ request.getMethod()+ ", CONTENT: cartId="+cartId.toString());
     	ShoppingCart cart = shoppingCartRepository.findOne(cartId);
@@ -82,7 +82,7 @@ public class ShoppingCartController {
         return new ResponseEntity<ShoppingCartResource>(resource, HttpStatus.CREATED);
     }
 
-    @RequestMapping(method = RequestMethod.POST, value = "/cart/{cartId}/order", consumes = "application/json", produces = "application/json")
+    @RequestMapping(method = RequestMethod.POST, value = "/{cartId}/order", consumes = "application/json", produces = "application/json")
     public ResponseEntity<OrderResource> orderShoppingCart(@PathVariable UUID cartId, HttpServletRequest request) {
         LOG.info("URL: "+ request.getRequestURL()+ ", METHOD: "+ request.getMethod()+ ", CONTENT: cartId="+cartId.toString());
         ShoppingCart cart = shoppingCartRepository.findOne(cartId);

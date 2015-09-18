@@ -15,7 +15,7 @@ import java.util.List;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/cart/user")
+@RequestMapping("/shop/users")
 public class WebUserController {
 
     private static Logger LOG = LoggerFactory.getLogger(WebUserController.class);

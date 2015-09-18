@@ -19,7 +19,7 @@ public class WebUserTest extends TestBase {
     @Test
     public void registerANewWebUser() throws Exception {
         WebUserResource webUserResource = new WebUserResource("x", "x");
-        mockMvc.perform(post("/cart/user/register" )
+        mockMvc.perform(post("/shop/users/register" )
                 .content(this.json(webUserResource))
                 .contentType(jsonContentType))
                 .andExpect(status().isCreated())

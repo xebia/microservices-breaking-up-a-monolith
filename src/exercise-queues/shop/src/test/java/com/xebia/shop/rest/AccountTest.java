@@ -25,7 +25,7 @@ public class AccountTest extends TestBase {
     @Test
     public void createAccountForWebUser() throws Exception {
         WebUser user = createAndSaveWebUserNoDetails();
-        mockMvc.perform(get("/cart/user/" + user.getUuid().toString())
+        mockMvc.perform(get("/shop/users/" + user.getUuid().toString())
                 .content(this.json(new WebUser()))
                 .contentType(jsonContentType))
                 .andExpect(status().isOk())
@@ -34,12 +34,12 @@ public class AccountTest extends TestBase {
         ;
         Account account = createAccount();
         WebUser user2 = createAndSaveWebUserNoDetails();
-        mockMvc.perform(post("/cart/account/user/" + user2.getUuid())
+        mockMvc.perform(post("/shop/accounts/user/" + user2.getUuid())
                 .contentType(jsonContentType)
                 .content(json(account)))
                 .andExpect(status().isCreated())
         ;
-        mockMvc.perform(get("/cart/user/" + user2.getUuid())
+        mockMvc.perform(get("/shop/users/" + user2.getUuid())
                 .content(this.json(new WebUser()))
                 .contentType(jsonContentType))
                 .andExpect(status().isOk())

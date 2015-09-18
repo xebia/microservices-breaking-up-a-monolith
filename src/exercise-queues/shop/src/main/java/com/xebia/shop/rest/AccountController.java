@@ -16,7 +16,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/cart/account")
+@RequestMapping("/shop/accounts")
 public class AccountController {
 
     private static Logger LOG = LoggerFactory.getLogger(AccountController.class);

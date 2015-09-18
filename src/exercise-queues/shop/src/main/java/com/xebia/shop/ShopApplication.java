@@ -31,6 +31,7 @@ import com.xebia.shop.repositories.OrderRepository;
 import com.xebia.shop.repositories.ProductRepository;
 import com.xebia.shop.repositories.ShoppingCartRepository;
 import com.xebia.shop.repositories.WebUserRepository;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.filter.CommonsRequestLoggingFilter;
 
 @Configuration
@@ -75,7 +76,8 @@ public class ShopApplication {
                 ))
                 .useDefaultResponseMessages(false)
                         //Map the specific URL patterns into Swagger
-                .includePatterns("/.*");
+                .includePatterns("/.*")
+                .genericModelSubstitutes(ResponseEntity.class);
     }
 
     @Bean
