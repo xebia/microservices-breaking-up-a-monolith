@@ -27,7 +27,7 @@ This example uses the Hystrix Example HystrixCommandDemo to show how Hystrix res
     The behaviour is regulated by Hystrix property settings (see `TriggerCircuitOnFailuresTest`). for more information on the settings please refer to: [Configuration](https://github.com/Netflix/Hystrix/wiki/Configuration)
     Exercise: Change the errorThresholdPercentage and/or the failure percentage of `GetUserAccCommand`.   
     
-5. We will also improve the robustness of the Shop by adding a circuit breaker to one of the calls to a remote service.
-
+5. Extra: For this exercise go to: /Users/marco/microservices-breaking-up-a-monolith/src/exercise-circuitbreaker/readme.md. 
+     This exercise looks at the use of Hystrix to improve the robustness of the Shop. 
 
 
