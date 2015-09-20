@@ -21,7 +21,7 @@ import java.util.concurrent.TimeUnit;
 /**
  * Created by marco on 18/09/15.
  */
-public class TooManyRequestsTest {
+public class TriggerCircuitOnFailuresTest {
 
     private final ThreadPoolExecutor pool = new ThreadPoolExecutor(5, 5, 5, TimeUnit.MILLISECONDS, new SynchronousQueue<Runnable>(), new ThreadPoolExecutor.CallerRunsPolicy());
 
@@ -33,15 +33,17 @@ public class TooManyRequestsTest {
         ConfigurationManager.getConfigInstance().setProperty("hystrix.command.GetUserAccCommand.execution.isolation.thread.timeoutInMilliseconds", 50);
         ConfigurationManager.getConfigInstance().setProperty("hystrix.command.default.metrics.rollingPercentile.numBuckets", 10);
         ConfigurationManager.getConfigInstance().setProperty("hystrix.command.default.metrics.rollingStats.timeInMilliseconds", 10000);
+        ConfigurationManager.getConfigInstance().setProperty("hystrix.command.default.circuitBreaker.errorThresholdPercentage", 5);
 
     }
 
     @Test
     public void testLoadWithOneThread() {
             startMetricsMonitor();
-            while (true) {
+        long startTime = System.currentTimeMillis();
+            while (System.currentTimeMillis()-startTime<30000) {
                 runSimulatedRequestOnThread();
-                // wait seconds on each loop
+                // wait on each loop
                 try {
                     Thread.sleep(100);
                 } catch (Exception e) {
@@ -70,7 +72,7 @@ public class TooManyRequestsTest {
                            // System.out.println("Active count => " + metrics.getCurrentActiveCount());
 
                         }
-                        HystrixCommandMetrics userAccountMetrics = HystrixCommandMetrics.getInstance(HystrixCommandKey.Factory.asKey(GetUserAccCommand.class.getSimpleName()));
+                        //HystrixCommandMetrics userAccountMetrics = HystrixCommandMetrics.getInstance(HystrixCommandKey.Factory.asKey(GetUserAccCommand.class.getSimpleName()));
                         //System.out.println("Circuitbreaker status => " + userAccountMetrics.getProperties().circuitBreakerEnabled().get().toString());
 
                     } catch (Exception e) {
@@ -104,7 +106,6 @@ public class TooManyRequestsTest {
                             // ignore
                         }
 
-                        // we are using default names so can use class.getSimpleName() to derive the keys
                         HystrixCommandMetrics userAccountMetrics = HystrixCommandMetrics.getInstance(HystrixCommandKey.Factory.asKey(GetUserAccCommand.class.getSimpleName()));
 
                         // print out metrics

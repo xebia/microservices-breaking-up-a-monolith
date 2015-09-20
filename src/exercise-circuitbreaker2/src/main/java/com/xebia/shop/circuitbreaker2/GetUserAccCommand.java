@@ -9,12 +9,9 @@ package com.xebia.shop.circuitbreaker2;
 
     import com.netflix.hystrix.HystrixCommand;
     import com.netflix.hystrix.HystrixCommandGroupKey;
-    import com.netflix.hystrix.HystrixCommandProperties;
     import com.netflix.hystrix.examples.demo.UserAccount;
-    import org.slf4j.Logger;
-    import org.slf4j.LoggerFactory;
 
-/**
+    /**
      * Sample HystrixCommand simulating one that would fetch UserAccount objects from a remote service or database.
      * <p>
      * This uses request caching and fallback behavior.
@@ -23,9 +20,8 @@ package com.xebia.shop.circuitbreaker2;
 
         private final HttpCookie httpCookie;
         private final UserCookie userCookie;
-       // private static Logger LOG = LoggerFactory.getLogger(GetUserAccCommand.class);
 
-    /**
+        /**
          *
          * @param cookie
          * @throws IllegalArgumentException
@@ -33,17 +29,11 @@ package com.xebia.shop.circuitbreaker2;
          */
         public GetUserAccCommand(HttpCookie cookie) {
             super(Setter.withGroupKey(HystrixCommandGroupKey.Factory.asKey("User"))
-                            //        .andCommandPropertiesDefaults(HystrixCommandProperties.Setter().withExecutionTimeoutInMilliseconds(5000))
-                      //      .andCommandPropertiesDefaults(HystrixCommandProperties.Setter().withCircuitBreakerRequestVolumeThreshold(5))
-                    //.andCommandPropertiesDefaults(HystrixCommandProperties.Setter().withCircuitBreakerForceOpen(true))
-                    // .andCommandPropertiesDefaults(HystrixCommandProperties.Setter().withCircuitBreakerForceClosed(true))
-                    .andCommandPropertiesDefaults(HystrixCommandProperties.Setter().withCircuitBreakerErrorThresholdPercentage(5))
-                    //.andThreadPoolPropertiesDefaults(HystrixThreadPoolProperties.Setter().withMetricsRollingStatisticalWindowInMilliseconds(30000))
-                    //.andThreadPoolPropertiesDefaults(HystrixThreadPoolProperties.Setter().withCoreSize(1))
+                    //            .andCommandPropertiesDefaults(HystrixCommandProperties.Setter().withCircuitBreakerErrorThresholdPercentage(5))
 
             );
             this.httpCookie = cookie;
-        /* parse or throw an IllegalArgumentException */
+            /* parse or throw an IllegalArgumentException */
             this.userCookie = UserCookie.parseCookie(httpCookie);
         }
 
@@ -57,7 +47,7 @@ package com.xebia.shop.circuitbreaker2;
             }
 
         /* fail 5% of the time to show how fallback works */
-            if (Math.random() > 0.50) {
+            if (Math.random() > 0.95) {
                 throw new RuntimeException("random failure processing UserAccount network response");
             }
 
@@ -113,13 +103,13 @@ package com.xebia.shop.circuitbreaker2;
              */
             private static UserCookie parseCookie(HttpCookie cookie) {
             /* real code would parse the cookie here */
-             //   if (Math.random() < 0.998) {
+                if (Math.random() < 1) {    // 0.998
                 /* valid cookie */
                     return new UserCookie(12345, "Henry Peter", 1);
-             //   } else {
+                } else {
                 /* invalid cookie */
-             //       throw new IllegalArgumentException();
-             //   }
+                    throw new IllegalArgumentException();
+                }
             }
 
             public UserCookie(int userId, String name, int accountType) {
