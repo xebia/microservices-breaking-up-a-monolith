@@ -1,9 +1,9 @@
-# Exercise 1 - Circuit Breaker
+# Exercise 1b - Circuit Breaker
 In this excercise we will improve the robustness of the application by adding a circuit breaker to the application. 
-Please refer to the overview diagram (domain-meetup-ex1.png) to see which calls are done between services. 
+Please refer to the overview diagram (domain-meetup-ex1.png) to see which calls are done between services. Please note that this is a first iteration of the Shop, where we use REST calls between services. 
 ![domain-meetup-ex1.png](https://raw.githubusercontent.com/xebia/microservices-breaking-up-a-monolith/master/src/exercise-circuitbreaker/domain-meetup-ex1.png)
 
-The goal of the exercise is to have the ScenarioTest running, even when the payment service becomes slow or stops working
+The goal of the exercise is to keep the ScenarioTest running, even when the payment service becomes slow or stops working
 
 Please look at `*/scenarioTest/src/test/java/com/xebia/shop/rest/ScenarioTest.java*`. This test class implements the customer journey.
 
@@ -13,10 +13,10 @@ Please look at `*/scenarioTest/src/test/java/com/xebia/shop/rest/ScenarioTest.ja
    This means that the catalog service is not running. Actually none of the services are running. 
 
 3. Start the other services:
-    - Catalog service. Run: `*/catalog/src/main/java/com/xebia/catalog/Application.java*`
-    - Shop service. Run: `*/shop/src/main/java/com/xebia/shop/Application.java*`
-    - Payment service. Run: `*/payment/src/main/java/com/xebia/payment/Application.java*`
-    - Fulfillment service. Run: `*/fulfillment/src/main/java/com/xebia/fulfillment/Application.java*`  
+    - Catalog service. Run: `*/catalog/src/main/java/com/xebia/catalog/CatalogApplication.java*`
+    - Shop service. Run: `*/shop/src/main/java/com/xebia/shop/ShopApplication.java*`
+    - Payment service. Run: `*/payment/src/main/java/com/xebia/payment/PaymentApplication.java*`
+    - Fulfillment service. Run: `*/fulfillment/src/main/java/com/xebia/fulfillment/FulfillmentApplication.java*`  
    and rerun the ScenarioTest.
 
 4. The log file should now show no failures anymore. The **SHOP LOG** should show 'PAYMENT ID for Card from Payment Service:'. This means that the shop was able to succesfully call the payment service.
@@ -32,7 +32,6 @@ Please look at `*/scenarioTest/src/test/java/com/xebia/shop/rest/ScenarioTest.ja
    First stop the Fulfillment and Shop services. Next implement a new class that extends HystrixCommand. Move the REST call in OrderController.approveOrder to the new Command. 
 
 For more information on what can be done with the Hystrix library, see [Hystrix-HowToUse](https://github.com/Netflix/Hystrix/wiki/How-To-Use).   
-Also have a look at [Hystrix-Examples](https://github.com/Netflix/Hystrix/tree/master/hystrix-examples/src/main/java/com/netflix/hystrix/examples) 
 
 ---------
 Tip: when running from the command line, Spring Boot does not gracefully stop on a Ctrl-C. If this is the case then do:
