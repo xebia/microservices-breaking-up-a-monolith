@@ -10,7 +10,7 @@
 
 ### To install proceed as follows:
 - Install tools above using their default installers
- - `rabbitmqadmin` can be activated by executing `rabbitmq-plugins enable rabbitmq_management`
+- `rabbitmqadmin` can be activated by executing `rabbitmq-plugins enable rabbitmq_management`
 - Clone the repo at https://github.com/xebia/microservices-breaking-up-a-monolith
 - Open a shell, cd into the src directory for the exercise and run: `mvn test`
 
@@ -31,3 +31,10 @@
 - https://www.rabbitmq.com/management.html
 - https://www.vagrantup.com/
 - https://www.virtualbox.org/wiki/Downloads
+
+### Using a pre-configured virtual machine 
+- Download one of the images 
+  Virtual box: https://xebia.egnyte.com/dl/UmUQGXzRMl
+  VMWare: https://xebia.egnyte.com/dl/u1AqKu5IFr
+- Import and start
+
