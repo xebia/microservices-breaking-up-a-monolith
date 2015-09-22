@@ -31,3 +31,10 @@ This example uses a copy of the Hystrix Example HystrixCommandDemo to show how H
      This exercise uses Hystrix to improve the robustness of the Shop. Please note that this version of the Ship still uses REST for communication between services.   
 
 
+
+### Note: running commandline
+
+In order to run a single test class on the commandline using maven:
+
+`mvn -Dtest=TriggerCircuitOnFailuresTest test`
+
