@@ -1,4 +1,4 @@
 #!/bin/bash
 
-mvn exec:java -Dexec.mainClass="com.xebia.shop.Application"
+mvn exec:java -Dexec.mainClass="com.xebia.shop.ShopApplication"
 
