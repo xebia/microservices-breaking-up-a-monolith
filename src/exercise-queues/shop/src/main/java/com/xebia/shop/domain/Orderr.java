@@ -15,6 +15,7 @@ public class Orderr {
     private double total;
     private UUID paymentUuid;
     private boolean paymentReceived;
+    // TODO add a description here to be used in Payment
 
     @OneToOne(optional = false)
     private ShoppingCart shoppingCart;

@@ -28,8 +28,8 @@ public class EventListener {
     @Autowired
     private PaymentRepository paymentRepository;
 
-    // Exercise
-    // This is the ItemsOrdered Event, see diagram, domain-meetup-ex2.gv
+    // Exercise 3
+    // This is the ItemsOrdered Event, see diagram, domain-meetup-ex3.jpeg
     @RabbitListener(queues = "payment.order")
     public void processOrderMessage(Object message) {
         LOG.info("Message is of type: " + message.getClass().getName());

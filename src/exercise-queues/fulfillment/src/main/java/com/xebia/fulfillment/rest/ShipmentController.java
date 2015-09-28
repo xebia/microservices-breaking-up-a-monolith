@@ -19,6 +19,9 @@ import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.util.UUID;
 
+// Exercise 4
+// Use JsonIgnoreProperties to ignore properties that don't matter for us. This allows you to simplify the domain
+// classes in the domain package.
 @RestController
 @RequestMapping("/fulfillment")
 @JsonIgnoreProperties(ignoreUnknown=true)
@@ -103,7 +106,7 @@ public class ShipmentController {
         return new ResponseEntity<ShipmentResource>(shipmentResource, HttpStatus.CREATED);
     }
 
-    // This method shouldn't be necessary. However, JsonIgnoreProperties doesn't work so instead of automatical Spring stuff
+    // This method shouldn't be necessary. However, JsonIgnoreProperties doesn't work so instead of automagical Spring stuff
     // in @RequestBody we now use explicit parsing through objectMapper which does support skipping properties.
     @RequestMapping(method = RequestMethod.POST, value = "/orders/newOrder", consumes = "application/json", produces = "application/json")
     public ResponseEntity<ShipmentResource> orderFromString(@RequestBody String orderrAsString, HttpServletRequest request) {

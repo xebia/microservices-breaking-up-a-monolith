@@ -118,7 +118,7 @@ public class OrderController {
             orderr = orderRepository.save(orderr);
             LOG.info("Order " + orderId + " approved.");
 
-            // Exercise
+            // Exercise 1
             // This is where the REST version used to send information about the Order to
             // fulfillment.
             // A new Order is created, inform other services about this fact.
@@ -151,7 +151,7 @@ public class OrderController {
         return new ResponseEntity<OrderResource>(responseResource, HttpStatus.CREATED);
     }
 
-    // Exercise
+    // Exercise 8
     // Will Order register payment? This method won't be called anymore because Payment will send out an orderPaid event
     // That will be handled in events.EventListener
     @RequestMapping(method = RequestMethod.PUT, value = "registerPayment/{orderId}", consumes = "application/json", produces = "application/json")

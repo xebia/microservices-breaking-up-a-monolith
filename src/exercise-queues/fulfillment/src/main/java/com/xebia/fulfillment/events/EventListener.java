@@ -31,7 +31,8 @@ public class EventListener {
     @Autowired
     private ShipmentRepository shipmentRepository;
 
-	// This is the OrderPaid Event, see diagram
+	// Exercise 6
+	// This is the OrderPaid Event, see diagram.
     @RabbitListener(queues = "fulfillment.payment")
     public void processPaymentMessage(Object message) {
 		LOG.info("Message is of type: " + message.getClass().getName());
@@ -64,6 +65,7 @@ public class EventListener {
 		latch.countDown();
     }
 
+	// Exercise 2
 	// This is the  ItemsOrdered Event, see diagram
 	@RabbitListener(queues = "fulfillment.order")
     public void processOrderMessage(Object message) {
