@@ -30,15 +30,18 @@ You can use Swagger UI to explore the APIs of the services. Please open http://l
 
 Exploring the code is best done by following the trail of '// Exercise' lines starting with '// Exercise 1'. Below is a summary.
 
-// Exercise 1
+*// Exercise 1*
 This is where the REST version used to send information about the Order to Fulfillment. When a new Order is created, shop has to inform the world about this fact
 so other services may process the order. In this case a new Order is picked up by both Payment and Fulfillment.
-// Exercise 2
+
+*// Exercise 2*
 In Fulfillment you'll find a EventListener defining a method named processOrderMessage that will be called by Springs RabbitMQ integration when
  a message appears on the fulfillment.payment queue. There's a second method in this class you can ignore for now.
-// Exercise 3
+
+*// Exercise 3*
 The second recipient of completed orders is Payment. The method in its EventListener class isn't implemented yet. 
-// Exercise 4 and // Exercise 4a
+
+*// Exercise 4 and // Exercise 4a*
 Note that Payment needs hardly any data from the order event. 
   The current implementation parses all of the JSON message using classes copied from shop. This is not necessary because Jacksons JsonIgnoreProperties annotation allows you to  
   just ignore whatever is not needed. This simplifies the code in Payment and illustrates that domain models needn't be the same in all services. 
@@ -46,25 +49,29 @@ Note that Payment needs hardly any data from the order event.
     private ObjectMapper mapper = new ObjectMapper();
     mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
   In controllers however you can just use the annotation (see ShipmentController for an example).
-// Exercise 5
+
+*// Exercise 5*
 When PaymentController receives a payment (probably entered by the user in a third party payment service) it notifies the world
   of this fact. This used to be a synchronous REST call to shop but now it sends an event, OrderPaid. This event is
   picked up by both shop and fulfillment. Shop can use the fact to inform customers of the status of an order, whereas
   fulfillment can use the event to trigger actual shipping. 
   This code looks like the code you need to solve Exercise 3 so it would be a good idea to do some refactoring here. 
-// Exercise 6
+
+*// Exercise 6*
   Fulfillment receives a OrderPaid Event in its EventListener. It uses this fact to update the status of the Order it received 
   earlier from shop. If all is well it creates a Shipment that will cause shipping in the real world.
-// Exercise 7
+
+*// Exercise 7*
   Shop also receives a OrderPaid Event, updating the status of the order so it can inform the customer. This isn't strictly
   necessary since we could build a user interface that includes data from shop, fulfillment and payment that would have
    all information necessary to inform the customer. However, we don't really know how this is going to work out, so
     for now there's the event and we'll see what happens later.
-// Exercise 8
+
+*// Exercise 8*
 Will Order register payment? This method won't be called anymore because Payment will send out an orderPaid event
 that will be handled in events.EventListener. See discussion under Exercise 7.
 
-Extra:
+*Extra:*
 - Fulfillment may create a OrderShipped event that might be interesting to shop, though you could argue that shop doesn't need
 this fact like we did under 'Exercise 7'.
 - The diagram shows Catalog sending ProductAdded events. This function isn't implemented yet. Sending an event is probably not very
