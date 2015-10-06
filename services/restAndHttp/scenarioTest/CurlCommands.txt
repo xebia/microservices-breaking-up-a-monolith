@@ -1,0 +1,5 @@
+#Add product 2 to cart
+curl -v -H "Accept: application/json" -H "Content-type: application/json" -X POST -d '{"productId":"65c4cffb-1bb3-4742-bd21-c68ca01a818c","quantity":20,"links":[]}'  http://user1:password@localhost:9002/cart/cart/ac45c6c5-ccab-4eca-b6e2-5fcd18dd1056/add
+
+#Create order from cart:
+curl -v -H "Accept: application/json" -H "Content-type: application/json" -X POST -d '"b20d9560-6003-4da0-a072-4d35c96cc0d1"'  http://user1:password@localhost:9002/cart/cart/ac45c6c5-ccab-4eca-b6e2-5fcd18dd1056/order
