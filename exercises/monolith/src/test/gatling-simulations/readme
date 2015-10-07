@@ -1,5 +1,0 @@
-
-Download and unzip Gatling: http://gatling.io/#/download
-
-Use the following command to run the performance test:
-{GATLING_HOME}/bin/gatling.sh -sf src/test/gatling-simulations -m
