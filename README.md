@@ -8,5 +8,5 @@ The presentation of this meetup: [meetup-dde-refactoring-mono2micro-20150808-v2.
 How to use this repository:
 
 * To set up the tools needed for the exercises, see [setupExercises.md](https://github.com/xebia/microservices-breaking-up-a-monolith/blob/master/setup/setupExercises.md) in setup folder
-* The source code for the exercises can be found in the src folder.
+* The source code for the exercises can be found in the exercises folder.
   * Instructions for each exercise can be found in the readme.md file.
