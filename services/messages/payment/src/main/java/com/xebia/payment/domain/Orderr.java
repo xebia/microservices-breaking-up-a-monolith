@@ -12,52 +12,20 @@ public class Orderr {
     @Id
     private UUID uuid;
     private String shippingAddress;
-    private boolean paymentReceived = false;
-    @JsonManagedReference
-    @OneToMany(mappedBy = "orderr", targetEntity = LineItem.class, cascade = CascadeType.ALL)
-    private List<LineItem> lineItems = new ArrayList<LineItem>();
-    @OneToOne(optional = false, cascade = CascadeType.ALL)
-    private Account account;
 
     public Orderr() {}
-    public Orderr(UUID uuid, String shippingAddress, Account account) {
+
+    public String getShippingAddress() {
+        return shippingAddress;
+    }
+
+    public void setShippingAddress(String shippingAddress) {
+        this.shippingAddress = shippingAddress;
+    }
+
+    public Orderr(UUID uuid, String shippingAddress) {
         this.uuid = uuid;
         this.shippingAddress = shippingAddress;
-        this.account = account;
-    }
-
-    public boolean isPaymentReceived() {
-        return paymentReceived;
-    }
-
-    public void setPaymentReceived(boolean paymentReceived) {
-        this.paymentReceived = paymentReceived;
-    }
-
-
-    public List<LineItem> getLineItems() {
-        return lineItems;
-    }
-    //@JsonManagedReference
-    public void addLineItem(LineItem lineItem) {
-        lineItem.setOrderr(this);
-        lineItems.add(lineItem);
-    }
-    //@JsonManagedReference
-    public void addLineItems(List<LineItem> lineItems) {
-        for (LineItem item: lineItems){
-            item.setOrderr(this);
-            lineItems.add(item);
-        }
-
-    }
-
-    public Account getAccount() {
-        return account;
-    }
-
-    public void setAccount(Account account) {
-        this.account = account;
     }
 
     public UUID getUuid() {
@@ -68,22 +36,11 @@ public class Orderr {
         this.uuid = uuid;
     }
 
-    public String getShippingAddress() {
-        return shippingAddress;
-    }
-
-    public void setShippingAddress(String shippingAddress) {
-        this.shippingAddress = shippingAddress;
-    }
-
     @Override
     public String toString() {
         return "Orderr{" +
                 "uuid=" + uuid +
-                ", shippingAddress='" + shippingAddress + '\'' +
-                ", paymentReceived=" + paymentReceived +
-                ", lineItems=" + lineItems +
-                ", account=" + account +
+                ", shippingAddress='" + shippingAddress +
                 '}';
     }
 
