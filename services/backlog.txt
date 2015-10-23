@@ -1,0 +1,9 @@
+Backlog
+
+- wrap services in a Docker container (see /Users/jan/dev/microservices/micro-a/containers)
+- replace Rabbit with Kafka
+	- find out what status of integration/Vagrantfile in micro-a project is 
+- investigate performance hit of introducing queues
+	- notify/query pattern
+- design a user interface
+- 
