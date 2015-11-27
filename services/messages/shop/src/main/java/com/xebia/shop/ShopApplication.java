@@ -9,7 +9,10 @@ import com.mangofactory.swagger.plugin.EnableSwagger;
 import com.mangofactory.swagger.plugin.SwaggerSpringMvcPlugin;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.amqp.rabbit.connection.CachingConnectionFactory;
+import org.springframework.amqp.rabbit.connection.ConnectionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.context.embedded.FilterRegistrationBean;
@@ -41,6 +44,24 @@ import org.springframework.web.filter.CommonsRequestLoggingFilter;
 public class ShopApplication {
 
     private static Logger LOG = LoggerFactory.getLogger(ShopApplication.class);
+    @Value("${rabbitmq.hostname}")
+    private String hostname="localhost";
+
+    @Value("${rabbitmq.port}")
+    private String port="5672";
+
+    @Value("${rabbitmq.username}")
+    private String username="guest";
+
+    @Value("${rabbitmq.password}")
+    private String password="guest";
+
+    @Bean
+    public ConnectionFactory connectionFactory() {
+        CachingConnectionFactory connectionFactory =
+                new CachingConnectionFactory(hostname, Integer.parseInt(port));
+        return connectionFactory;
+    }
 
     @Autowired
     private WebUserRepository webUserRepository;

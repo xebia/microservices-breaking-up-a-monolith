@@ -7,7 +7,10 @@ import com.mangofactory.swagger.plugin.SwaggerSpringMvcPlugin;
 import com.xebia.payment.repositories.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.amqp.rabbit.connection.CachingConnectionFactory;
+import org.springframework.amqp.rabbit.connection.ConnectionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.context.ApplicationContext;
@@ -20,8 +23,26 @@ import org.springframework.context.annotation.Configuration;
 @ComponentScan
 @EnableSwagger
 public class PaymentApplication {
-
     private static Logger LOG = LoggerFactory.getLogger(PaymentApplication.class);
+
+    @Value("${rabbitmq.hostname}")
+    private String hostname="localhost";
+
+    @Value("${rabbitmq.port}")
+    private String port="5672";
+
+    @Value("${rabbitmq.username}")
+    private String username="guest";
+
+    @Value("${rabbitmq.password}")
+    private String password="guest";
+
+    @Bean
+    public ConnectionFactory connectionFactory() {
+        CachingConnectionFactory connectionFactory =
+                new CachingConnectionFactory(hostname, Integer.parseInt(port));
+        return connectionFactory;
+    }
 
     @Autowired
     private PaymentRepository paymentRepository;
