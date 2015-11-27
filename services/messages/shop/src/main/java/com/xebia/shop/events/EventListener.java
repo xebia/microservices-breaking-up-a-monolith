@@ -28,8 +28,6 @@ public class EventListener {
     @Autowired
     private OrderRepository orderRepository;
 
-	// Exercise 7
-	// This is the OrderPaid event, see diagram
     @RabbitListener(queues = "shop.payment")
     public void processPaymentMessage(Object message) {
 		LOG.info("Message is of type: " + message.getClass().getName());

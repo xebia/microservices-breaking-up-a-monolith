@@ -19,9 +19,6 @@ import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.util.UUID;
 
-// Exercise 4
-// Use JsonIgnoreProperties to ignore properties that don't matter for us. This allows you to simplify the domain
-// classes in the domain package.
 @RestController
 @RequestMapping("/fulfillment")
 @JsonIgnoreProperties(ignoreUnknown=true)

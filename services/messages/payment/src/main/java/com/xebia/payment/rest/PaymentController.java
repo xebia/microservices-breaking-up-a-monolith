@@ -65,9 +65,6 @@ public class PaymentController {
         payment.setDatePaid(new Date());
         paymentRepository.save(payment);
 
-        // Exercise 5
-        // This used to be a synchronous REST call informing the shop that a payment was received
-        // We've changed this into an event so both Order and Fulfillment can do their job
         // TODO: rewrite so this uses the domain object instead of a HashMap
         // TODO: move to separate method so it can be re-used by EventListener
         HashMap<String,Object> paymentPayload = new HashMap<String,Object>();

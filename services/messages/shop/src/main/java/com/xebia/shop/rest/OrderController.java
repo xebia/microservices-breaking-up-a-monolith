@@ -112,10 +112,6 @@ public class OrderController {
             orderr = orderRepository.save(orderr);
             LOG.info("Order " + orderId + " approved.");
 
-            // Exercise 1
-            // This is where the REST version used to send information about the Order to
-            // fulfillment.
-            // A new Order is created, inform other services about this fact.
             try {
                 rabbitTemplate.convertAndSend(shopExchange, orderRoutingKey, mapper.writeValueAsString(orderr));
             } catch (Exception e) {
@@ -145,9 +141,6 @@ public class OrderController {
         return new ResponseEntity<OrderResource>(responseResource, HttpStatus.CREATED);
     }
 
-    // Exercise 8
-    // Will Order register payment? This method won't be called anymore because Payment will send out an orderPaid event
-    // That will be handled in events.EventListener
     @RequestMapping(method = RequestMethod.PUT, value = "registerPayment/{orderId}", consumes = "application/json", produces = "application/json")
     public ResponseEntity<OrderResource> registerPayment(@PathVariable UUID orderId, HttpServletRequest request) {
         LOG.info("URL: "+ request.getRequestURL()+ ", METHOD: "+ request.getMethod()+ ", CONTENT: orderId="+orderId.toString());

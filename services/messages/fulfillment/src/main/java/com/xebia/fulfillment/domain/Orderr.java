@@ -7,9 +7,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-// Exercise 4a
-// An Orderr as far as Payment is concerned is no more than a total amount, a UUID and a description
-// This Orderr was copied from Shop and therefore contains a lot of unnecessary detail.
 @Entity
 public class Orderr {
     @Id
