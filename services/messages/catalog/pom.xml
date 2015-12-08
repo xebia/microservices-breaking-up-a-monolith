@@ -5,14 +5,19 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.xebia.catalog</groupId>
-    <artifactId>catalogMsg</artifactId>
-    <version>1.0-SNAPSHOT</version>
+    <artifactId>catalog_msg</artifactId>
+    <version>1.0-${maven.build.timestamp}</version>
 
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
         <version>1.2.5.RELEASE</version>
     </parent>
+
+    <properties>
+        <maven.build.timestamp.format>yyyyMMdd'T'HHmm</maven.build.timestamp.format>
+        <start-class>com.xebia.catalog.CatalogApplication</start-class><docker.image.prefix>jv</docker.image.prefix>
+    </properties>
 
     <dependencies>
         <dependency>
@@ -32,7 +37,7 @@
             <artifactId>spring-boot-starter-test</artifactId>
             <scope>test</scope>
         </dependency>
-        <!--  
+        <!--
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-security</artifactId>
@@ -73,11 +78,6 @@
     <repositories>
     </repositories>
 
-
-    <properties>
-        <start-class>com.xebia.catalog.CatalogApplication</start-class>
-    </properties>
-
     <build>
         <plugins>
             <plugin>
@@ -91,6 +91,25 @@
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <artifactId>exec-maven-plugin</artifactId>
+                <groupId>org.codehaus.mojo</groupId>
+                <executions>
+                    <execution>
+                        <id>Create Docker image</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>exec</goal>
+                        </goals>
+                        <configuration>
+                            <executable>${basedir}/buildDockerImage.sh</executable>
+                            <arguments>
+                                <argument>${build.finalName}.jar</argument>
+                            </arguments>
+                        </configuration>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
     </build>
