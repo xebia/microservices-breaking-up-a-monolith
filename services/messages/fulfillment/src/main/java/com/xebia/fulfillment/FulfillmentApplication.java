@@ -28,16 +28,16 @@ public class FulfillmentApplication {
     private static Logger LOG = LoggerFactory.getLogger(FulfillmentApplication.class);
 
     @Value("${rabbitmq.hostname}")
-    private String hostname="localhost";
+    private String hostname="";
 
     @Value("${rabbitmq.port}")
-    private String port="5672";
+    private String port="";
 
     @Value("${rabbitmq.username}")
-    private String username="guest";
+    private String username="";
 
     @Value("${rabbitmq.password}")
-    private String password="guest";
+    private String password="";
 
     @Bean
     public ConnectionFactory connectionFactory() {
