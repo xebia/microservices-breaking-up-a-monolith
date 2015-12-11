@@ -16,7 +16,7 @@
 
     <properties>
         <maven.build.timestamp.format>yyyyMMdd'T'HHmm</maven.build.timestamp.format>
-        <start-class>com.xebia.catalog.CatalogApplication</start-class><docker.image.prefix>jv</docker.image.prefix>
+        <start-class>com.xebia.catalog.CatalogApplication</start-class>
     </properties>
 
     <dependencies>
