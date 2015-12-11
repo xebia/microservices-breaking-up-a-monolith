@@ -45,16 +45,16 @@ public class ShopApplication {
 
     private static Logger LOG = LoggerFactory.getLogger(ShopApplication.class);
     @Value("${rabbitmq.hostname}")
-    private String hostname="localhost";
+    private String hostname="";
 
     @Value("${rabbitmq.port}")
-    private String port="5672";
+    private String port="";
 
     @Value("${rabbitmq.username}")
-    private String username="guest";
+    private String username="";
 
     @Value("${rabbitmq.password}")
-    private String password="guest";
+    private String password="";
 
     @Bean
     public ConnectionFactory connectionFactory() {
@@ -148,15 +148,7 @@ public class ShopApplication {
         account = application.accountRepository.save(account);
         user1.setAccount(account);
         application.webUserRepository.save(user1);
-        
-        /*
-        Orderr orderr = new Orderr();
-        orderr.setUuid(UUID.fromString("b20d9560-6003-4da0-a072-4d35c96cc0d1"));
-        orderr.setShoppingCart(cart);
-        orderr.setAccount(account);
-        application.orderRepository.save(orderr);
-        */
-        
+
         LOG.info("Read webuser back from database");
         WebUser webUser = application.webUserRepository.findByUuid(user1.getUuid());
         LOG.info(webUser.toString());
