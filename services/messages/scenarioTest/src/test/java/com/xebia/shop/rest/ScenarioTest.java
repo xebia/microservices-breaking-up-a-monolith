@@ -23,9 +23,10 @@ import java.util.UUID;
 @SpringApplicationConfiguration(classes = Application.class)
 @WebAppConfiguration
 public class ScenarioTest {
-    public static final String PAY_ENDPOINT = "http://localhost:9001/payment";
-    public static final String SHOP_ENDPOINT = "http://localhost:9002/shop";
-    public static final String FF_ENDPOINT = "http://localhost:9003/fulfillment";
+    public static final String PROTOCOL_AND_HOST = "http://192.168.99.100";
+    public static final String PAY_ENDPOINT = PROTOCOL_AND_HOST + ":9001/payment";
+    public static final String SHOP_ENDPOINT = PROTOCOL_AND_HOST + ":9002/shop";
+    public static final String FF_ENDPOINT = PROTOCOL_AND_HOST + ":9003/fulfillment";
     private static Logger LOG = LoggerFactory.getLogger(ScenarioTest.class);
 
     Random rnd = new Random();
