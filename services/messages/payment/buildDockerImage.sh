@@ -8,4 +8,3 @@ fi
 cat src/main/docker/Dockerfile | sed "s/JARFILENAME/$1/" > target/Dockerfile
 
 (cd target &&docker build -t xebia/payment_msg .)
-
