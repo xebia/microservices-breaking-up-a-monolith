@@ -1,6 +1,6 @@
-# Messages on Queues
+# Process coordinator
 
-This version of the shop uses an extra service that coordinates the process. The architecture is based on 
+This version of the shop will use an extra service that coordinates the process. The architecture is based on 
 Greg Young's course at Skills Matter, see [CQRS/DDD course](https://skillsmatter.com/courses/345-greg-youngs-cqrs-domain-events-event-sourcing-and-how-to-apply-ddd?gclid=Cj0KEQiAwNmzBRCaw9uR3dGt950BEiQAnbK9628J7Qg2wcBqZxWc5HEpEZr19BDmR9EJqxD4EdT0cuMaAtW58P8HAQ#).
 
 The solution has two important properties:
