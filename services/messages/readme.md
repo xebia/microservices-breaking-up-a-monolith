@@ -8,5 +8,19 @@ The solution has two important properties:
 - The process is a concept that deserves a service of its own. In the previous solution the process was implicit in the messages
 published on topics. The CQRS and DDD course argues that the process is a first class citizen and should be treated as such.
 
-![](https://raw.githubusercontent.com/xebia/microservices-breaking-up-a-monolith/master/src/exercise-queues/domain-meetup-ex3.jpeg)
+What will happen is that the ShopManager implements the process. In earlier solutions the process was hidden in the sense
+that whenever a service thought it couldn't proceed, it would send out a message. E.g. the shop would say it had a
+completed Order. This Order would then be picked up by Payment and Fulfillment. Payment would allow a customer to pay and
+Fulfillment would have to wait because it needed paid Orders. So when Payment was done it would send out a PaymentReceived
+message that would allow Fulfillment to continue. 
+This works but Greg argues that this allows only a single process and that the solution would be more flexible if we would
+allow for a process manager that delegates steps in the process to different services, waiting for them to complete.
+That touches upon an aspect that wasn't implemented in our earlier solution: what happens if payment takes to long? In 
+our first solution this would mean we would have a database with completed but unpaid orders. That problem could be solved
+by running a cleaning process that would send a message to customer support prompting them to call the customer, or just
+to get rid of the order. This is where our earlier solution starts to feel a bit constrained; what if we needed
+several services to find out what to do? Implementing process logic in a separate service seems to make sense, so 
+this branch tries and do just that to find out what the consequences will be. 
+
+![](https://raw.githubusercontent.com/xebia/microservices-breaking-up-a-monolith/blob/RefactorToOrchestrator/services/messages/processDiagram.jpeg)
 
