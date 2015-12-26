@@ -1,0 +1,76 @@
+digraph G {
+# Legend
+	subgraph cluster_legend {
+		node [ style=filled ];
+		Aggregate [ color=green,shape=box ];
+		Event [ color=orange ];
+		Query [ color=lightblue ];
+		Command [ color=yellow ];
+		Service [ color=grey, shape=box ];
+		Version [ label="version 20151226.01", shape=box ];
+		edge[style=invis];
+		Aggregate -> Event -> Query -> Command -> Service -> Version;
+		label="legend";
+		color=blue;
+	}
+
+	subgraph cluster_model {
+	# Aggregates
+		node [color=green, style=filled, shape=oval];
+		AShip [ label=Shipment ];
+		APayment [ label=Payment ];
+		AOrder [ label=Order ]
+
+	# Services
+		node [color=grey, style=filled, shape=box];
+		SCat [ label=Catalog ];
+		SCart [ label="Shop" ];
+		SShip [ label=Fulfillment ];
+		SPayment [ label=Payment ];
+		SProcess [ label=Process ];
+
+	# Events
+		node [color=orange, style=filled, shape=oval];
+		E3 [ label="1. Order completed" ];
+		E12 [ label="2. Order Paid" ];
+		E13 [ label="3. Order Shipped"];
+
+	# Queries
+		node [color=lightblue, style=filled, shape=oval];
+
+	# Commands
+		node [color=yellow, style=filled, shape=oval];
+		C1 [ label="1. Start shopping" ];
+		C2 [ label="2. Handle Payment" ];
+		C4 [ label="3. Ship Order" ];
+
+	# Commands and Queries to Aggregates
+		{ C1 } -> SCart;
+		{ C2 } -> SPayment;
+		{ C4 } -> SShip;
+ 
+	# Events to Aggregates
+		SProcess -> C1;
+		E3 -> { SProcess };
+		SProcess -> C2;
+		E12 -> { SProcess };
+		SProcess -> C4;
+		E13 -> { SProcess };
+
+	# Aggregates generate events
+		# SCat -> { E4 };
+		SCart -> { E3 };
+		SShip -> { E13 };
+		SPayment -> { E12 };
+
+	# Services to Aggregates
+	edge [ dir=none, style=dotted ];
+		SCart -> AOrder;
+		SShip -> AShip;
+		SPayment -> APayment;
+
+		label="model";
+		color=blue;
+	}
+}
+
