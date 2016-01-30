@@ -13,7 +13,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/shop/cart/")
+@RequestMapping("/shop/v2/cart/")
 public class ShoppingCartController {
 
     private static Logger LOG = LoggerFactory.getLogger(ShoppingCartController.class);

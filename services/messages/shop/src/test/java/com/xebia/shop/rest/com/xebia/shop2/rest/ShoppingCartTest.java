@@ -45,7 +45,7 @@ public class ShoppingCartTest extends TestBase {
         ShoppingCart cart = eventListener.createCart(new Clerk(new WebUser(UUID.randomUUID(), "username", "password"), UUID.randomUUID()));
         Product product = createAndSaveProduct();
         NewLineItemResource lineItem = new NewLineItemResource(product.getUuid(), 10);
-        mockMvc.perform(post("/shop/cart/" + cart.getUuid() + "/add")
+        mockMvc.perform(post("/shop/v2/cart/" + cart.getUuid() + "/add")
                 .content(this.json(lineItem))
                 .contentType(jsonContentType))
                 .andExpect(status().isCreated())
@@ -59,7 +59,7 @@ public class ShoppingCartTest extends TestBase {
         Clerk clerk = new Clerk(new WebUser(UUID.randomUUID(), "username", "password"), UUID.randomUUID());
         ShoppingCart cart = eventListener.createCart(clerk);
         MvcResult resultActions;
-        resultActions = mockMvc.perform(post("/shop/cart/" + cart.getUuid() + "/order")
+        resultActions = mockMvc.perform(post("/shop/v2/cart/" + cart.getUuid() + "/order")
                 .contentType(jsonContentType))
                 .andExpect(status().isCreated())
                 .andReturn()
@@ -78,7 +78,7 @@ public class ShoppingCartTest extends TestBase {
     public void getCart() throws Exception {
         Clerk clerk = new Clerk(new WebUser(UUID.randomUUID(), "username", "password"), UUID.randomUUID());
         ShoppingCart cart = eventListener.createCart(clerk);
-        mockMvc.perform(get("/shop/cart/" + cart.getUuid())
+        mockMvc.perform(get("/shop/v2/cart/" + cart.getUuid())
                 .contentType(jsonContentType))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.uuid", is(cart.getUuid().toString())))

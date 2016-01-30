@@ -20,7 +20,7 @@ import java.util.List;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/shop/orders/")
+@RequestMapping("/shop/v2/orders/")
 public class OrderController {
 	
     private static Logger LOG = LoggerFactory.getLogger(OrderController.class);

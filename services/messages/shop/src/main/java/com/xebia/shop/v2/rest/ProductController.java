@@ -19,7 +19,7 @@ import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
 
 @RestController
-@RequestMapping("/shop/products")
+@RequestMapping("/shop/v2/products")
 public class ProductController {
 
     private static Logger LOG = LoggerFactory.getLogger(ProductController.class);

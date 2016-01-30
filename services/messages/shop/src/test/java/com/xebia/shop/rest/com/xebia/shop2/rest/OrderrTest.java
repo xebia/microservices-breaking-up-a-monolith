@@ -65,7 +65,7 @@ public class OrderrTest extends TestBase {
         Orderr orderr = createOrderr();
         orderr.setShippingAddress("shippingAddress");
         OrderResource orderResource = new OrderResource(orderr);
-        mockMvc.perform(put("/shop/orders/")
+        mockMvc.perform(put("/shop/v2/orders/")
                 .content(this.json(orderResource))
                 .contentType(jsonContentType))
                 .andExpect(status().is2xxSuccessful())
@@ -73,7 +73,7 @@ public class OrderrTest extends TestBase {
         ;
 
         Mockito.doNothing().when(rabbitTemplate).convertAndSend(anyString(), anyString(), anyString());
-        MvcResult resultActions = mockMvc.perform(put("/shop/orders/" + orderr.getUuid() + "/approve"))
+        MvcResult resultActions = mockMvc.perform(put("/shop/v2/orders/" + orderr.getUuid() + "/approve"))
                 .andExpect(status().is2xxSuccessful())
                 .andReturn()
         ;
