@@ -6,6 +6,7 @@ import com.xebia.shop.v2.Application;
 import com.xebia.shop.v2.domain.*;
 import com.xebia.shop.v2.rest.NewLineItemResource;
 import com.xebia.shop.v2.rest.WebUserResource;
+import junit.framework.TestCase;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
@@ -19,6 +20,7 @@ import org.springframework.web.client.RestTemplate;
 import java.util.Random;
 import java.util.UUID;
 
+import static junit.framework.Assert.assertEquals;
 import static junit.framework.TestCase.assertNotNull;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -59,10 +61,24 @@ public class ScenarioTest {
 
         waitASecond();
 
+        Clerk clerk2 = findClerk(objectMapper, clerk);
+        assertEquals(clerk.getUuid(), clerk2.getUuid());
+        assertEquals(clerk.getOrderr(), clerk2.getOrderr());
+
 //        sendPayment(objectMapper, orderr);
 
 //        shipOrder(orderr.getUuid());
 
+    }
+
+    private Clerk findClerk(ObjectMapper objectMapper, Clerk clerk) throws Exception {
+        RestTemplate restTemplate = new RestTemplate();
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        HttpEntity<String> requestEntity = new HttpEntity<String>("{}", headers);
+        ResponseEntity<String> responseEntity = restTemplate.exchange(SHOPMANAGER_ENDPOINT + "/session/" + clerk.getUuid(), HttpMethod.GET, requestEntity, String.class);
+        String data = responseEntity.getBody().toString();
+        return objectMapper.readValue(data, Clerk.class);
     }
 
     private void shipOrder(UUID orderID) throws Exception {
@@ -91,6 +107,7 @@ public class ScenarioTest {
     }
     */
 
+
     private void approveOrder(Orderr orderr) throws Exception {
         RestTemplate restTemplate = new RestTemplate();
         HttpHeaders headers = new HttpHeaders();
@@ -98,7 +115,6 @@ public class ScenarioTest {
         HttpEntity<String> requestEntity = new HttpEntity<String>("{}", headers);
         ResponseEntity<String> responseEntity = restTemplate.exchange(SHOP_ENDPOINT + "/orders/" + orderr.getUuid() + "/approve", HttpMethod.PUT, requestEntity, String.class);
         LOG.info("Orderr: " + orderr.getUuid() + " was approved");
-// test result?
     }
 
     private Orderr setShippingAddress(ObjectMapper objectMapper, Orderr orderr) throws Exception {
