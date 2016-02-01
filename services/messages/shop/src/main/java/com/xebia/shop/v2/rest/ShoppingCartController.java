@@ -69,4 +69,14 @@ public class ShoppingCartController {
         ShoppingCartResource resource = shoppingCartAssembler.toResource(cart);
         return new ResponseEntity<ShoppingCartResource>(resource, HttpStatus.OK);
     }
+
+    @RequestMapping(method = RequestMethod.GET, value = "/forClerk/{clerkId}", produces = "application/json")
+    public ResponseEntity<ShoppingCartResource> findCartByClerk(@PathVariable UUID clerkId, HttpServletRequest request) {
+        LOG.info("URL: "+ request.getRequestURL()+ ", METHOD: "+ request.getMethod()+ ", CONTENT: clerkId="+clerkId.toString());
+        Clerk clerk = clerkRepository.findOne(clerkId);
+        ShoppingCart cart = shoppingCartRepository.findOne(clerk.getShoppingCart().getUuid());
+        ShoppingCartResource resource = shoppingCartAssembler.toResource(cart);
+        return new ResponseEntity<ShoppingCartResource>(resource, HttpStatus.OK);
+    }
+
 }

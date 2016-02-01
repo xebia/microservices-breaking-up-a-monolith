@@ -10,7 +10,7 @@ do
     docker rm $i
 done
 
-docker run -d --name catalog -p 9005:9005 xebia/shopmanager
+docker run -d --name shopmanager -p 9005:9005 xebia/shopmanager
 
 # To start as a normal Java program
 #mvn exec:java -Dexec.mainClass="com.xebia.shopmanager.ShopManagerApplication"

@@ -1,4 +1,4 @@
-package com.xebia.shop.rest;
+package com.xebia.shop.v2.rest;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;

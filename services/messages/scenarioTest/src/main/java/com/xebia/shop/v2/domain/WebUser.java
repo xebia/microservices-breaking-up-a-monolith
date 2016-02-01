@@ -1,9 +1,7 @@
-package com.xebia.shop.domain;
+package com.xebia.shop.v2.domain;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
-import javax.persistence.OneToOne;
-import java.util.Collection;
 import java.util.UUID;
 
 @Entity
@@ -12,12 +10,6 @@ public class WebUser {
     private UUID uuid;
     private String username;
     private String password;
-
-    @OneToOne(optional = true)
-    private Account account;
-
-    @OneToOne(optional = true)
-    private ShoppingCart shoppingCart;
 
     public WebUser() {
     }
@@ -32,14 +24,6 @@ public class WebUser {
         new WebUser(UUID.randomUUID(), username, password);
     }
 
-    public ShoppingCart getShoppingCart() {
-        return shoppingCart;
-    }
-
-    public void setShoppingCart(ShoppingCart shoppingCart) {
-        this.shoppingCart = shoppingCart;
-    }
-
     public String getUsername() {
         return username;
     }
@@ -48,33 +32,8 @@ public class WebUser {
         this.username = username;
     }
 
-    public Account getAccount() {
-        return account;
-    }
-
-    public void setAccount(Account account) {
-        this.account = account;
-    }
-
-
     public String getPassword() {
         return password;
-    }
-
-    public boolean isAccountNonExpired() {
-        return true;
-    }
-
-    public boolean isAccountNonLocked() {
-        return true;
-    }
-
-    public boolean isCredentialsNonExpired() {
-        return true;
-    }
-
-    public boolean isEnabled() {
-        return true;
     }
 
     public void setPassword(String password) {
@@ -92,11 +51,9 @@ public class WebUser {
     @Override
     public String toString() {
         return "WebUser{" +
-                "password='" + password + '\'' +
                 ", uuid='" + uuid + '\'' +
+                "password='" + password + '\'' +
                 ", username='" + username + '\'' +
-                ", customer=" + account +
-                ", shoppingCart=" + shoppingCart +
                 '}';
     }
 

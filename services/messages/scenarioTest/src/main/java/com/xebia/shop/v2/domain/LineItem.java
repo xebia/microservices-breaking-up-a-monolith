@@ -1,6 +1,7 @@
-package com.xebia.shop.domain;
+package com.xebia.shop.v2.domain;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import org.hibernate.annotations.Cascade;
 
 import javax.persistence.*;
 import java.util.UUID;
@@ -10,12 +11,14 @@ public class LineItem {
     @Id
     private UUID uuid;
     private int quantity;
+    private double price;
+
     @ManyToOne(fetch= FetchType.LAZY)
     @JsonBackReference
     private ShoppingCart shoppingCart;
     @OneToOne(optional = false)
+    @Cascade(value={org.hibernate.annotations.CascadeType.ALL})
     private Product product;
-    private double price;
 
     public LineItem() {}
 
@@ -78,7 +81,6 @@ public class LineItem {
         return "LineItem{" +
                 "quantity=" + quantity +
                ", shoppingCartId=" + shoppingCart.getUuid() +
-            //    ", order=" + order +
                 ", product=" + product +
                 ", price=" + price +
                 '}';

@@ -1,11 +1,10 @@
-package com.xebia.shop.rest;
+package com.xebia.shop.v2.rest;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.xebia.shop.domain.Account;
-import com.xebia.shop.domain.ShoppingCart;
-
+import com.xebia.shop.v2.domain.Orderr;
+import com.xebia.shop.v2.domain.ShoppingCart;
 import org.springframework.hateoas.ResourceSupport;
 
 import javax.validation.constraints.NotNull;
@@ -14,14 +13,13 @@ import java.util.UUID;
 
 public class OrderResource extends ResourceSupport {
 
+    // TODO: shipped and paymentReceived aren't used anymore -> remove
     private UUID uuid;
     private Date ordered;
     private Date shipped;
     private String shippingAddress;
     private String status;
     private double total;
-    private ShoppingCart shoppingCart;
-    private Account account;
     private boolean paymentReceived;
 
     @JsonCreator
@@ -31,17 +29,13 @@ public class OrderResource extends ResourceSupport {
                          @JsonProperty(value = "shipped") Date shipped,
                          @JsonProperty(value = "shippingAddress") @NotNull String shippingAddress,
                          @JsonProperty(value = "status") @NotNull String status,
-                         @JsonProperty(value = "total") double total,
-                         @JsonProperty(value = "shoppingCart") @NotNull ShoppingCart shoppingCart,
-                         @JsonProperty(value = "account") @NotNull Account account) {
+                         @JsonProperty(value = "total") double total) {
         this.uuid = uuid;
         this.ordered = ordered;
         this.shipped = shipped;
         this.shippingAddress = shippingAddress;
         this.status = status;
         this.total = total;
-        this.shoppingCart = shoppingCart;
-        this.account = account;
     }
 
     @JsonCreator
@@ -50,18 +44,17 @@ public class OrderResource extends ResourceSupport {
         this.ordered = cart.getCreated();
         this.status = "created";
         this.shippingAddress = "address";
-        this.shoppingCart = cart;
     }
 
     public OrderResource() {
     }
 
-    public boolean isPaymentReceived() {
-        return paymentReceived;
-    }
-
-    public void setPaymentReceived(boolean paymentReceived) {
-        this.paymentReceived = paymentReceived;
+    public OrderResource(Orderr orderr) {
+        setUuid(orderr.getUuid());
+        setOrdered(orderr.getOrdered());
+        setShippingAddress(orderr.getShippingAddress());
+        setStatus(orderr.getStatus());
+        setTotal(orderr.getTotal());
     }
 
     public UUID getUuid() {
@@ -78,14 +71,6 @@ public class OrderResource extends ResourceSupport {
 
     public void setOrdered(Date ordered) {
         this.ordered = ordered;
-    }
-
-    public Date getShipped() {
-        return shipped;
-    }
-
-    public void setShipped(Date shipped) {
-        this.shipped = shipped;
     }
 
     public String getShippingAddress() {
@@ -112,20 +97,5 @@ public class OrderResource extends ResourceSupport {
         this.total = total;
     }
 
-    public ShoppingCart getShoppingCart() {
-        return shoppingCart;
-    }
-
-    public void setShoppingCart(ShoppingCart shoppingCart) {
-        this.shoppingCart = shoppingCart;
-    }
-
-    public Account getAccount() {
-        return account;
-    }
-
-    public void setAccount(Account account) {
-        this.account = account;
-    }
 }
 

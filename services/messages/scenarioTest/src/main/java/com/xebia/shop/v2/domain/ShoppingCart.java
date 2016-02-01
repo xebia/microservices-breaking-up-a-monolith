@@ -1,10 +1,10 @@
-package com.xebia.shop.domain;
+package com.xebia.shop.v2.domain;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import org.hibernate.annotations.Cascade;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.OneToMany;
+import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -12,12 +12,17 @@ import java.util.UUID;
 
 @Entity
 public class ShoppingCart {
-    private Date created;
-    @OneToMany(mappedBy = "shoppingCart", targetEntity = LineItem.class)
-    @JsonManagedReference
-    private List<LineItem> lineItems = new ArrayList<LineItem>();
     @Id
     private UUID uuid;
+    private Date created;
+
+    @OneToMany(mappedBy = "shoppingCart", targetEntity = LineItem.class)
+    @Cascade(value={org.hibernate.annotations.CascadeType.ALL})
+    @JsonManagedReference
+    private List<LineItem> lineItems = new ArrayList<LineItem>();
+    @OneToOne(fetch= FetchType.LAZY)
+    @JsonBackReference
+    private Clerk clerk;
 
     public ShoppingCart() {
     }
@@ -57,6 +62,14 @@ public class ShoppingCart {
         this.created = created;
     }
 
+    public Clerk getClerk() {
+        return clerk;
+    }
+
+    public void setClerk(Clerk clerk) {
+        this.clerk = clerk;
+    }
+
     public double calcTotal() {
         double total = 0;
         for (LineItem lineItem: lineItems) {
@@ -93,9 +106,8 @@ public class ShoppingCart {
     @Override
     public String toString() {
         return "ShoppingCart{" +
-                "created=" + created +
-//                ", lineItems=" + lineItems.size() +
                 ", uuid=" + uuid +
+                "created=" + created +
                 '}';
     }
 }

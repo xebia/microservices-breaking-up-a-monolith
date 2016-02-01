@@ -73,6 +73,21 @@ public class ShoppingCartTest extends TestBase {
         assertEquals(clerk.getUuid(), clerk2.getUuid());
     }
 
+    @Test
+    public void testFindCartByClerk() throws Exception {
+        ObjectMapper objectMapper = new ObjectMapper();
+        objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+        Clerk clerk = new Clerk(new WebUser(UUID.randomUUID(), "username", "password"), UUID.randomUUID());
+        ShoppingCart cart = eventListener.createCart(clerk);
+        MvcResult result = mockMvc.perform(get("/shop/v2/cart/forClerk/" + clerk.getUuid())
+                .contentType(jsonContentType))
+                .andExpect(status().isOk())
+                .andReturn()
+        ;
+        String data = result.getResponse().getContentAsString();
+        ShoppingCart cart2 = objectMapper.readValue(data, ShoppingCart.class);
+        assertEquals(cart.getUuid(), cart2.getUuid());
+    }
 
     @Test
     public void getCart() throws Exception {

@@ -1,6 +1,7 @@
-package com.xebia.shop.domain;
+package com.xebia.shop.v2.domain;
 
-import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.Id;
 import java.util.Date;
 import java.util.UUID;
 
@@ -9,30 +10,21 @@ public class Orderr {
     @Id
     private UUID uuid;
     private Date ordered;
-    private Date shipped;
     private String shippingAddress;
     private String status;
     private double total;
-    private boolean paymentReceived;
-
-    @OneToOne(optional = false)
-    private ShoppingCart shoppingCart;
-
-    @OneToOne(optional = true)
-    private Account account;
 
     public Orderr() {}
-    public Orderr(UUID uuid, Date ordered, String shippingAddress, String status) {
+
+    public Orderr(UUID uuid, Date ordered, String status) {
         this.uuid = uuid;
         this.ordered = ordered;
-        this.shippingAddress = shippingAddress;
         this.status = status;
     }
 
-    public Orderr(Date ordered, String shippingAddress, String status) {
+    public Orderr(Date ordered, String status) {
         this.uuid = UUID.randomUUID();
         this.ordered = ordered;
-        this.shippingAddress = shippingAddress;
         this.status = status;
     }
 
@@ -40,24 +32,10 @@ public class Orderr {
         this.uuid = UUID.randomUUID();
         this.ordered = cart.getCreated();
         this.status = "created";
-        this.shippingAddress = "address";
-        this.shoppingCart = cart;
     }
 
-    public ShoppingCart getShoppingCart() {
-        return shoppingCart;
-    }
-
-    public void setShoppingCart(ShoppingCart shoppingCart) {
-        this.shoppingCart = shoppingCart;
-    }
-
-    public Account getAccount() {
-        return account;
-    }
-
-    public void setAccount(Account account) {
-        this.account = account;
+    public boolean canBeApproved() {
+        return (shippingAddress != null);
     }
 
     public UUID getUuid() {
@@ -74,14 +52,6 @@ public class Orderr {
 
     public void setOrdered(Date ordered) {
         this.ordered = ordered;
-    }
-
-    public Date getShipped() {
-        return shipped;
-    }
-
-    public void setShipped(Date shipped) {
-        this.shipped = shipped;
     }
 
     public String getShippingAddress() {
@@ -101,25 +71,11 @@ public class Orderr {
     }
 
     public double getTotal() {
-        return shoppingCart.getTotal();
+        return total;
     }
 
     public void setTotal(double total) {
-        if (shoppingCart != null) {
-            shoppingCart.setTotal(total);
-        }
-    }
-
-    public boolean getPaymentReceived() {
-        return paymentReceived;
-    }
-
-    public void setPaymentReceived(boolean paymentReceived) {
-        this.paymentReceived = paymentReceived;
-    }
-
-    public boolean canBeApproved() {
-        return (getPaymentReceived()!=false) && (getAccount()!=null);
+        this.total = total;
     }
 
     @Override
@@ -127,7 +83,6 @@ public class Orderr {
         return "Orderr{" +
                 "uuid=" + uuid +
                 ", ordered=" + ordered +
-                ", shipped=" + shipped +
                 ", shippingAddress='" + shippingAddress + '\'' +
                 ", status='" + status + '\'' +
                 ", total=" + total +

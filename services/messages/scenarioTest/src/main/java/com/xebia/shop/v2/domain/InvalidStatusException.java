@@ -1,4 +1,4 @@
-package com.xebia.shop.domain;
+package com.xebia.shop.v2.domain;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

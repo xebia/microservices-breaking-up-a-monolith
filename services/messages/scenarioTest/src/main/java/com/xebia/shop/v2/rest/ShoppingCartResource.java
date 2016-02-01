@@ -1,9 +1,8 @@
-package com.xebia.shop.rest;
+package com.xebia.shop.v2.rest;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.xebia.shop.domain.LineItem;
-
+import com.xebia.shop.v2.domain.LineItem;
 import org.springframework.hateoas.ResourceSupport;
 
 import javax.validation.constraints.NotNull;

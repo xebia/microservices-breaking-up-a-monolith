@@ -1,6 +1,7 @@
-package com.xebia.shop.domain;
+package com.xebia.shop.v2.domain;
 
-import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.Id;
 import java.util.UUID;
 
 @Entity
@@ -9,19 +10,22 @@ public class Product {
     @Id
     private UUID uuid;
     private String name;
+    private String supplier;
     private double price;
 
     public Product() {}
 
-    public Product(UUID uuid, String name, Double price) {
+    public Product(UUID uuid, String name, String supplier, Double price) {
         this.uuid = uuid;
         this.name = name;
+        this.supplier = supplier;
         this.price = price.doubleValue();
     }
 
-    public Product(String name, Double price) {
+    public Product(String name, String supplier, Double price) {
         this.uuid = UUID.randomUUID();
         this.name = name;
+        this.supplier = supplier;
         this.price = price.doubleValue();
     }
 
@@ -31,6 +35,10 @@ public class Product {
 
     public String getName() {
         return name;
+    }
+
+    public String getSupplier() {
+        return supplier;
     }
 
     public void setName(String name) {
@@ -52,13 +60,13 @@ public class Product {
 
         Product product = (Product) o;
 
-        return uuid.equals(product.uuid);
+        return supplier.equals(product.supplier);
 
     }
 
     @Override
     public int hashCode() {
-        return uuid.hashCode();
+        return supplier.hashCode();
     }
 
     @Override
@@ -66,6 +74,7 @@ public class Product {
         return "Product{" +
                 "uuid=" + uuid +
                 ", name='" + name + '\'' +
+                ", supplier='" + supplier + '\'' +
                 ", price='" + price + '\'' +
                 '}';
     }
