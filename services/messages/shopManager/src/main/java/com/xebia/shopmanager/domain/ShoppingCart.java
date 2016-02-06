@@ -2,8 +2,11 @@ package com.xebia.shopmanager.domain;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import org.hibernate.annotations.Cascade;
+import org.hibernate.annotations.CascadeType;
+import org.springframework.data.repository.cdi.Eager;
 
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import java.util.ArrayList;
@@ -17,8 +20,8 @@ public class ShoppingCart {
     private UUID uuid;
     private Date created;
 
-    @OneToMany(mappedBy = "shoppingCart", targetEntity = LineItem.class)
-    @Cascade(value={org.hibernate.annotations.CascadeType.ALL})
+    @OneToMany(mappedBy = "shoppingCart", targetEntity = LineItem.class, fetch = FetchType.EAGER)
+    @Cascade(value={CascadeType.MERGE})
     @JsonManagedReference
     private List<LineItem> lineItems = new ArrayList<LineItem>();
 
@@ -96,7 +99,7 @@ public class ShoppingCart {
     @Override
     public String toString() {
         return "ShoppingCart{" +
-                ", uuid=" + uuid +
+                "uuid=" + uuid +
                 "created=" + created +
                 '}';
     }

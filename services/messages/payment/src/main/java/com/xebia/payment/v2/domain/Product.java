@@ -1,4 +1,4 @@
-package com.xebia.payment.domain;
+package com.xebia.payment.v2.domain;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;

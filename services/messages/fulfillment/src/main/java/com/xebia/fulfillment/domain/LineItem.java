@@ -13,7 +13,7 @@ public class LineItem {
     @JsonBackReference
     @ManyToOne(fetch = FetchType.LAZY)
     private Orderr orderr;
-    @OneToOne(optional = false, cascade = CascadeType.ALL)
+    @OneToOne(optional = false, cascade = CascadeType.MERGE)
     private Product product;
     private double price;
 

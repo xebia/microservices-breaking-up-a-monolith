@@ -1,6 +1,6 @@
-package com.xebia.payment.rest;
+package com.xebia.payment.v2.rest;
 
-import com.xebia.payment.domain.Payment;
+import com.xebia.payment.v2.domain.Payment;
 import org.springframework.beans.BeanUtils;
 import org.springframework.hateoas.mvc.ResourceAssemblerSupport;
 

@@ -1,10 +1,9 @@
-package com.xebia.payment;
+package com.xebia.payment.v2;
 
 import com.mangofactory.swagger.configuration.SpringSwaggerConfig;
 import com.mangofactory.swagger.models.dto.ApiInfo;
 import com.mangofactory.swagger.plugin.EnableSwagger;
 import com.mangofactory.swagger.plugin.SwaggerSpringMvcPlugin;
-import com.xebia.payment.repositories.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.amqp.rabbit.connection.CachingConnectionFactory;
@@ -26,16 +25,16 @@ public class PaymentApplication {
     private static Logger LOG = LoggerFactory.getLogger(PaymentApplication.class);
 
     @Value("${rabbitmq.hostname}")
-    private String hostname="";
+    private String hostname = "";
 
     @Value("${rabbitmq.port}")
-    private String port="";
+    private String port = "";
 
     @Value("${rabbitmq.username}")
-    private String username="";
+    private String username = "";
 
     @Value("${rabbitmq.password}")
-    private String password="";
+    private String password = "";
 
     @Bean
     public ConnectionFactory connectionFactory() {
@@ -43,9 +42,6 @@ public class PaymentApplication {
                 new CachingConnectionFactory(hostname, Integer.parseInt(port));
         return connectionFactory;
     }
-
-    @Autowired
-    private PaymentRepository paymentRepository;
 
     private SpringSwaggerConfig springSwaggerConfig;
 
@@ -57,19 +53,20 @@ public class PaymentApplication {
     @Bean
     public SwaggerSpringMvcPlugin customImplementation() {
         return new SwaggerSpringMvcPlugin(this.springSwaggerConfig)
-            //Root level documentation
-            .apiInfo(new ApiInfo(
-                "Payment API",
-                "This page provides details of the REST API for the Payment service",
-                "Go and explore ...",
-                null,
-                null,
-                null
-            ))
-            .useDefaultResponseMessages(false)
-                //Map the specific URL patterns into Swagger
-            .includePatterns("/.*");
+                //Root level documentation
+                .apiInfo(new ApiInfo(
+                        "Payment API",
+                        "This page provides details of the REST API for the Payment service",
+                        "Go and explore ...",
+                        null,
+                        null,
+                        null
+                ))
+                .useDefaultResponseMessages(false)
+                        //Map the specific URL patterns into Swagger
+                .includePatterns("/.*");
     }
+
     public static void main(String[] args) {
         ApplicationContext applicationContext = SpringApplication.run(PaymentApplication.class, args);
         applicationContext.getBean(PaymentApplication.class);

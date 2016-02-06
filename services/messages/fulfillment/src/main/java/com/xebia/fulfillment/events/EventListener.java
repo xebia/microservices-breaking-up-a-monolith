@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.UUID;
 import java.util.concurrent.CountDownLatch;
 
+import com.xebia.shop.v2.rest.Config;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.amqp.core.Message;
@@ -31,7 +32,7 @@ public class EventListener {
     @Autowired
     private ShipmentRepository shipmentRepository;
 
-    @RabbitListener(queues = "fulfillment.payment")
+    @RabbitListener(queues = Config.handleFulfillment)
     public void processPaymentMessage(Object message) {
 		LOG.info("Message is of type: " + message.getClass().getName());
 		if(!(message instanceof byte[])) message = ((Message) message).getBody();
@@ -63,7 +64,7 @@ public class EventListener {
 		latch.countDown();
     }
 
-	@RabbitListener(queues = "fulfillment.order")
+//	@RabbitListener(queues = "fulfillment.order")
     public void processOrderMessage(Object message) {
 		LOG.info("Message is of type: " + message.getClass().getName());
 		if(!(message instanceof byte[])) message = ((Message) message).getBody();

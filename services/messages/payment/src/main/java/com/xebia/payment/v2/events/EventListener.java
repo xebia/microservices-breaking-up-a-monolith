@@ -1,11 +1,12 @@
-package com.xebia.payment.events;
+package com.xebia.payment.v2.events;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.xebia.payment.domain.Orderr;
-import com.xebia.payment.domain.Payment;
-import com.xebia.payment.repositories.PaymentRepository;
-import com.xebia.payment.rest.OrderrResource;
+import com.xebia.payment.v2.Config;
+import com.xebia.payment.v2.domain.Clerk;
+import com.xebia.payment.v2.domain.Payment;
+import com.xebia.payment.v2.repositories.ClerkRepository;
+import com.xebia.payment.v2.repositories.PaymentRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.amqp.core.Message;
@@ -14,7 +15,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.nio.charset.StandardCharsets;
-import java.util.HashMap;
 import java.util.UUID;
 import java.util.concurrent.CountDownLatch;
 
@@ -28,21 +28,34 @@ public class EventListener {
     @Autowired
     private PaymentRepository paymentRepository;
 
-    @RabbitListener(queues = "payment.order")
-    public void processOrderMessage(Object message) {
-        LOG.info("Message is of type: " + message.getClass().getName());
+    @Autowired
+    private ClerkRepository clerkRepository;
+
+    @RabbitListener(queues = Config.handlePayment)
+    public void processPaymentMessage(Object message) {
         if(!(message instanceof byte[])) message = ((Message) message).getBody();
         String content = new String((byte[])message, StandardCharsets.UTF_8);
         LOG.info("Received new order to be paid: " + content);
         try {
-            mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-            Orderr orderr = mapper.readValue(content, Orderr.class);
-            // Translate Orderr from shopping domain, we should calculate the amount, using address as description for now
-            OrderrResource orderrResource = new OrderrResource(orderr.getUuid(), UUID.randomUUID(), 123, "send to " + orderr.getShippingAddress());
-            paymentRepository.save(new Payment(orderrResource));
+            createPayment(content);
         } catch (Exception e) {
             LOG.error("Error: " + e.getMessage());
         }
         latch.countDown();
+    }
+
+    public Payment createPayment(Clerk clerk) throws java.io.IOException {
+        Payment payment = new Payment(UUID.randomUUID());
+        paymentRepository.save(payment);
+        clerk.setPayment(payment);
+        clerkRepository.save(clerk);
+        LOG.info("Created payment for clerk: " + mapper.writeValueAsString(clerk));
+        return payment;
+    }
+
+    public Payment createPayment(String content) throws java.io.IOException {
+        mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+        Clerk clerk = mapper.readValue(content, Clerk.class);
+        return createPayment(clerk);
     }
 }

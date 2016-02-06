@@ -47,7 +47,6 @@ public class EventListener {
 
     @RabbitListener(queues = Config.startShopping)
     public void processStartShoppingMessage(Object message) {
-        LOG.info("Message is of type: " + message.getClass().getName());
         if (!(message instanceof byte[])) message = ((Message) message).getBody();
         String content = new String((byte[]) message, StandardCharsets.UTF_8);
         LOG.info("Received on startShopping: " + content);

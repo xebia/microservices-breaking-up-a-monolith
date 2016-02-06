@@ -1,12 +1,9 @@
-package com.xebia.shop.rest.com.xebia.shop.v2.rest;
+package com.xebia.shop.v2.rest;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.xebia.shop.v2.Application;
 import com.xebia.shop.v2.domain.*;
-import com.xebia.shop.v2.rest.NewLineItemResource;
-import com.xebia.shop.v2.rest.WebUserResource;
-import junit.framework.TestCase;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
@@ -16,19 +13,21 @@ import org.springframework.http.*;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.web.client.RestTemplate;
-
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Random;
 import java.util.UUID;
 
-import static junit.framework.Assert.assertEquals;
+import static junit.framework.TestCase.assertEquals;
 import static junit.framework.TestCase.assertNotNull;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringApplicationConfiguration(classes = Application.class)
 @WebAppConfiguration
 public class ScenarioTest {
-    public static final String PROTOCOL_AND_HOST = "http://192.168.99.100";
-    public static final String PAY_ENDPOINT = PROTOCOL_AND_HOST + ":9001/payment";
+    public static final String PROTOCOL_AND_HOST = "http://192.168.99.101";
+    public static final String PAY_ENDPOINT = PROTOCOL_AND_HOST + ":9001/payment/v2";
     public static final String SHOP_ENDPOINT = PROTOCOL_AND_HOST + ":9002/shop/v2";
     public static final String FF_ENDPOINT = PROTOCOL_AND_HOST + ":9003/fulfillment";
     public static final String SHOPMANAGER_ENDPOINT = PROTOCOL_AND_HOST + ":9005/shop";
@@ -63,10 +62,17 @@ public class ScenarioTest {
 
         Clerk clerk2 = findClerk(objectMapper, clerk);
         assertEquals(clerk.getUuid(), clerk2.getUuid());
-        assertEquals(clerk.getOrderr(), clerk2.getOrderr());
+        assertNotNull(clerk2.getOrderr());
 
-//        sendPayment(objectMapper, orderr);
+        Payment payment = findPayment(objectMapper, clerk2);
+        sendPayment(objectMapper, payment);
+        waitASecond();
 
+        Clerk clerk3 = findClerk(objectMapper, clerk);
+        assertEquals(clerk.getUuid(), clerk3.getUuid());
+        assertEquals("c123", clerk3.getPayment().getCardId());
+
+// TODO: get Clerk status
 //        shipOrder(orderr.getUuid());
 
     }
@@ -90,23 +96,34 @@ public class ScenarioTest {
         LOG.info("Orderr: " + orderID + " was shipped");
     }
 
-    /* TODO: Fix after refactoring payment service
-    private PaymentResource sendPayment(ObjectMapper objectMapper, Orderr orderr) throws Exception {
-        LOG.info("Attempting to complete Payment for orderr: " + orderr.getUuid());
+    private Payment findPayment (ObjectMapper objectMapper, Clerk clerk) throws Exception {
         RestTemplate restTemplate = new RestTemplate();
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
-        HttpEntity<String> requestEntity = new HttpEntity<String>("", headers);
-        Map<String, String> params = new HashMap<String, String>();
-        params.put("orderId", orderr.getUuid().toString());
-        ResponseEntity<String> responseEntity = restTemplate.exchange(PAY_ENDPOINT + "/pay/{orderId}/creditcard/1234", HttpMethod.PUT, requestEntity, String.class, params);
+        HttpEntity<String> requestEntity = new HttpEntity<String>("{}", headers);
+        ResponseEntity<String> responseEntity = restTemplate.exchange(PAY_ENDPOINT + "/forClerk/" + clerk.getUuid(), HttpMethod.GET, requestEntity, String.class);
+        String data = responseEntity.getBody().toString();
+        Payment payment = objectMapper.readValue(data, Payment.class);
+        return payment;
+    }
+
+    private Payment sendPayment(ObjectMapper objectMapper, Payment payment) throws Exception {
+        RestTemplate restTemplate = new RestTemplate();
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        payment.setCardId("c123");
+        payment.setDatePaid(new Date());
+        payment.setDescription("desc");
+        HttpEntity<String> requestEntity = new HttpEntity<String>(objectMapper.writeValueAsString(payment), headers);
+        ResponseEntity<String> responseEntity = restTemplate.exchange(PAY_ENDPOINT + "/pay/" + payment.getUuid() +"/creditcard/" + payment.getCardId(), HttpMethod.PUT, requestEntity, String.class);
         String data = responseEntity.getBody().toString();
         PaymentResource paymentResource = objectMapper.readValue(data, PaymentResource.class);
         LOG.info("Payment: " + paymentResource.getUuid() + " has been paid.");
-        return paymentResource;
+        Payment payment2 = objectMapper.readValue(data, Payment.class);
+        assertEquals(payment2.getCardId(), "c123");
+        assertEquals(payment2.getUuid(), payment.getUuid());
+        return payment2;
     }
-    */
-
 
     private void approveOrder(Orderr orderr) throws Exception {
         RestTemplate restTemplate = new RestTemplate();

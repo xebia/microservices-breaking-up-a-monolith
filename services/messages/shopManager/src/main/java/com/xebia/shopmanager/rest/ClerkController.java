@@ -71,6 +71,13 @@ public class ClerkController {
         Clerk clerk = clerkRepository.findOne(uuid);
         if (clerk != null) {
             ClerkResource resource = clerkResourceAssembler.toResource(clerk);
+            try {
+                String data = mapper.writeValueAsString(clerk);
+                LOG.info("Clerk in get by uuid: " + data);
+                LOG.info("resource: " + resource);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
             return new ResponseEntity<ClerkResource>(resource, HttpStatus.OK);
         } else {
             return new ResponseEntity<ClerkResource>(HttpStatus.NOT_FOUND);

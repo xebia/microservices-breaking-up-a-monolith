@@ -17,7 +17,7 @@ public class LineItem {
     @JsonBackReference
     private ShoppingCart shoppingCart;
     @OneToOne(optional = false)
-    @Cascade(value={org.hibernate.annotations.CascadeType.ALL})
+    @Cascade(value={org.hibernate.annotations.CascadeType.MERGE})
     private Product product;
 
     public LineItem() {}

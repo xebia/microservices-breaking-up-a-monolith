@@ -1,13 +1,22 @@
-package com.xebia.payment.rest;
+package com.xebia.payment.v2.rest;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.xebia.payment.PaymentApplication;
-import com.xebia.payment.domain.Payment;
+import com.xebia.payment.v2.PaymentApplication;
+import com.xebia.payment.v2.domain.Clerk;
+import com.xebia.payment.v2.domain.Payment;
+import com.xebia.payment.v2.domain.ShoppingCart;
+import com.xebia.payment.v2.domain.WebUser;
+import com.xebia.payment.v2.events.EventListener;
+import org.hibernate.service.spi.InjectService;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.http.MediaType;
@@ -45,9 +54,15 @@ public class ScenarioTest {
     @Autowired
     protected WebApplicationContext webApplicationContext;
 
-    protected MediaType jsonContentType = new MediaType(MediaType.APPLICATION_JSON.getType(),
-            MediaType.APPLICATION_JSON.getSubtype(),
-            Charset.forName("utf8"));
+    @Autowired
+    protected EventListener eventListener;
+
+    @Mock
+    RabbitTemplate rabbitTemplate;
+
+    @InjectMocks
+    @Autowired
+    PaymentController paymentController;
 
     protected MediaType textType = new MediaType(MediaType.TEXT_PLAIN.getType());
 
@@ -59,79 +74,31 @@ public class ScenarioTest {
 
     @Before
     public void setup() throws Exception {
+        MockitoAnnotations.initMocks(this);
         this.mockMvc = webAppContextSetup(webApplicationContext).build();
         objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
     }
 
     @Test
     public void payForOrder() throws Exception {
-        UUID id = UUID.randomUUID();
-        OrderrResource orderr = new OrderrResource(id, UUID.randomUUID(), 12.0, "description100");
-        MvcResult resultActions = mockMvc.perform(post("/payment")
-                .content(json(orderr))
-                .contentType(jsonContentType))
-                .andExpect(status().isCreated())
-                .andReturn()
-        ;
-        String data = resultActions.getResponse().getContentAsString().trim();
-        resultActions = mockMvc.perform(put("/payment/pay/" + id + "/creditcard/c123")
+        Clerk clerk = new Clerk(new WebUser(UUID.randomUUID(), "username", "password"), UUID.randomUUID());
+        clerk.setShoppingCart(new ShoppingCart(new Date(), UUID.randomUUID()));
+        Payment payment = eventListener.createPayment(clerk);
+        MvcResult resultActions;
+        resultActions = mockMvc.perform(put("/payment/v2/pay/" + payment.getUuid() + "/creditcard/c123")
                 .contentType(jsonContentType))
                 .andExpect(status().isOk())
                 .andReturn()
         ;
+        String data = resultActions.getResponse().getContentAsString();
+        Payment newPayment = objectMapper.readValue(data, Payment.class);
+        assertEquals("c123", newPayment.getCardId());
+
+        resultActions = mockMvc.perform(get("/payment/v2/forClerk/" + clerk.getUuid())).andReturn();
         data = resultActions.getResponse().getContentAsString();
-        Payment payment = objectMapper.readValue(data, Payment.class);
-        assertEquals("c123", payment.getCardId());
-    }
+        Payment payment3 = objectMapper.readValue(data, Payment.class);
+        assertEquals(payment3, newPayment);
 
-    @Test
-    public void listAllPayments() throws  Exception {
-        registerOrderAndPay("description");
-        registerOrderAndPay("description2");
-
-        MvcResult resultActions = mockMvc.perform(get("/payment/all")
-                .contentType(jsonContentType))
-                .andExpect(status().isOk())
-                .andReturn()
-        ;
-        String data = resultActions.getResponse().getContentAsString();
-        List<Payment> payments = objectMapper.readValue(data, new TypeReference<List<Payment>>() {
-        });
-        boolean found = false;
-        for (Payment p:payments) {
-            if (p.getDescription().equals("description2")) {found = true; break;}
-        }
-        assertTrue(found);
-    }
-
-    private String getTimeStamp() {
-        SimpleDateFormat sdf = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss z");
-        Date cutoffDate = new Date();
-        return sdf.format(cutoffDate);
-    }
-
-    private void registerOrderAndPay(String description) throws Exception {
-        UUID orderUuid = UUID.randomUUID();
-        OrderrResource orderr = new OrderrResource(orderUuid, UUID.randomUUID(), 10.0, description);
-        MvcResult resultActions = mockMvc.perform(post("/payment/")
-                .content(this.json(orderr))
-                .contentType(jsonContentType))
-                .andExpect(status().isCreated())
-                .andReturn()
-                ;
-        String data = resultActions.getResponse().getContentAsString();
-        mockMvc.perform(put("/payment/pay/" + orderUuid + "/creditcard/c123")
-                .contentType(jsonContentType))
-                .andExpect(status().isOk())
-        ;
-    }
-
-    private void waitAWhile(long intervalInMs) {
-        try {
-            Thread.sleep(intervalInMs);
-        } catch (Exception e) {
-            fail("Exception in testModifiedSinceReturnsOnlyNewPayments");
-        }
     }
 
     protected String json(Object o) throws IOException {
@@ -150,5 +117,9 @@ public class ScenarioTest {
         org.junit.Assert.assertNotNull("the JSON message converter must not be null",
                 this.mappingJackson2HttpMessageConverter);
     }
+
+    protected MediaType jsonContentType = new MediaType(MediaType.APPLICATION_JSON.getType(),
+            MediaType.APPLICATION_JSON.getSubtype(),
+            Charset.forName("utf8"));
 
 }

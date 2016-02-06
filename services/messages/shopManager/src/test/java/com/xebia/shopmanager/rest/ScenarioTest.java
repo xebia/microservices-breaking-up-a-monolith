@@ -3,7 +3,10 @@ package com.xebia.shopmanager.rest;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.xebia.shopmanager.ShopManagerApplication;
+import com.xebia.shopmanager.domain.Clerk;
+import com.xebia.shopmanager.domain.Orderr;
 import com.xebia.shopmanager.domain.WebUser;
+import com.xebia.shopmanager.repositories.ClerkRepository;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -18,9 +21,12 @@ import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MvcResult;
 
 import java.util.Random;
+import java.util.UUID;
 
 import static org.hamcrest.Matchers.is;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -51,14 +57,30 @@ public class ScenarioTest extends TestBase {
         objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
     }
 
+    @Autowired
+    ClerkRepository clerkRepository;
+
     @Test
     public void testScenario () {
         try {
             WebUser webUser = createWebUser(objectMapper);
-            mockMvc.perform(post("/shop/session/" + webUser.getUuid()))
+            MvcResult result = mockMvc.perform(post("/shop/session/" + webUser.getUuid()))
                     .andExpect(status().isCreated())
+                    .andReturn()
             ;
-            // TODO: clerk???
+            String data = result.getResponse().getContentAsString();
+            Clerk clerk = objectMapper.readValue(data, Clerk.class);
+            Orderr orderr = new Orderr(UUID.randomUUID(), new java.util.Date(), "address", "status");
+            clerk.setOrderr(orderr);
+            clerkRepository.save(clerk);
+
+            result = mockMvc.perform(get("/shop/session/" + clerk.getUuid()))
+                    .andReturn()
+                    ;
+            data = result.getResponse().getContentAsString();
+            Clerk clerk2 = objectMapper.readValue(data, Clerk.class);
+            assertEquals(clerk.getOrderr().getUuid(), clerk2.getOrderr().getUuid());
+
         } catch (Exception e) {
             fail ("Exception occurred " + e.getMessage());
         }

@@ -1,4 +1,4 @@
-package com.xebia.payment.rest;
+package com.xebia.payment.v2.rest;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;

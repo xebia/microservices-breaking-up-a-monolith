@@ -5,5 +5,6 @@ echo "Stop, cleanup and start RabbitMQ, catalog, fulfillment, payment and shop s
 (cd fulfillment && ./run.sh)
 (cd payment && ./run.sh)
 (cd shop && ./run.sh)
+(cd shopManager && ./run.sh)
 
 echo "This may take a while... check Docker logs to find out if all four services have started"

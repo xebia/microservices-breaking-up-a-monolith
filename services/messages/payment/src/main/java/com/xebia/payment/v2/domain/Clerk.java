@@ -1,9 +1,8 @@
-package com.xebia.shopmanager.domain;
+package com.xebia.payment.v2.domain;
 
 import org.hibernate.annotations.Cascade;
 
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.OneToOne;
 import java.util.UUID;
@@ -21,7 +20,7 @@ public class Clerk {
     @OneToOne(optional = false)
     @Cascade(value={org.hibernate.annotations.CascadeType.MERGE})
     private WebUser webUser;
-    @OneToOne(optional = true, fetch = FetchType.EAGER)
+    @OneToOne(optional = true)
     @Cascade(value={org.hibernate.annotations.CascadeType.MERGE})
     private Orderr orderr;
     @OneToOne(optional = true)

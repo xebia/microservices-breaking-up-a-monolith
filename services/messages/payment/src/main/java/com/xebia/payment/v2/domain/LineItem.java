@@ -1,4 +1,4 @@
-package com.xebia.shop.v2.domain;
+package com.xebia.payment.v2.domain;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import org.hibernate.annotations.Cascade;

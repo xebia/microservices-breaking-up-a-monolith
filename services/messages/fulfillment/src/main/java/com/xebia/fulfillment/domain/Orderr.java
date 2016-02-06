@@ -14,9 +14,9 @@ public class Orderr {
     private String shippingAddress;
     private boolean paymentReceived = false;
     @JsonManagedReference
-    @OneToMany(mappedBy = "orderr", targetEntity = LineItem.class, cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "orderr", targetEntity = LineItem.class, cascade = CascadeType.MERGE)
     private List<LineItem> lineItems = new ArrayList<LineItem>();
-    @OneToOne(optional = false, cascade = CascadeType.ALL)
+    @OneToOne(optional = false, cascade = CascadeType.MERGE)
     private Account account;
 
     public Orderr() {}

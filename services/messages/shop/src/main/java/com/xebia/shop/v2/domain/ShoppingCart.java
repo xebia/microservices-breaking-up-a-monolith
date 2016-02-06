@@ -2,9 +2,10 @@ package com.xebia.shop.v2.domain;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
-import org.hibernate.annotations.Cascade;
+import org.hibernate.annotations.*;
 
 import javax.persistence.*;
+import javax.persistence.Entity;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -16,8 +17,8 @@ public class ShoppingCart {
     private UUID uuid;
     private Date created;
 
-    @OneToMany(mappedBy = "shoppingCart", targetEntity = LineItem.class)
-    @Cascade(value={org.hibernate.annotations.CascadeType.ALL})
+    @OneToMany(mappedBy = "shoppingCart", targetEntity = LineItem.class, fetch = FetchType.EAGER)
+    @Cascade(value={org.hibernate.annotations.CascadeType.MERGE})
     @JsonManagedReference
     private List<LineItem> lineItems = new ArrayList<LineItem>();
     @OneToOne(fetch= FetchType.LAZY)

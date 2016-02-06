@@ -1,9 +1,8 @@
-package com.xebia.payment.domain;
+package com.xebia.payment.v2.domain;
 
 
-import com.xebia.payment.rest.OrderrResource;
-
-import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.Id;
 import java.util.Date;
 import java.util.UUID;
 
@@ -15,23 +14,17 @@ public class Payment {
     private double total;
     private String cardId;
     private String description;
-    private UUID orderUuid;
 
-    public Payment(UUID uuid, Date datePaid, double total, String description, String cardId, UUID orderUuid) {
+    public Payment(UUID uuid) {
+        this.uuid = uuid;
+    }
+
+    public Payment(UUID uuid, Date datePaid, double total, String description, String cardId) {
         this.uuid = uuid;
         this.datePaid = datePaid;
         this.total = total;
         this.cardId = cardId;
         this.description = description;
-        this.orderUuid = orderUuid;
-    }
-
-    public Payment(OrderrResource orderrResource) {
-        if(orderrResource.getPaymentUuid() != null) this.uuid = orderrResource.getPaymentUuid();
-        else this.uuid = UUID.randomUUID();
-        this.total = orderrResource.getTotal();
-        this.orderUuid = orderrResource.getUuid();
-        this.description = orderrResource.getDescription();
     }
 
     public Payment() {}
@@ -42,14 +35,6 @@ public class Payment {
 
     public void setCardId(String cardId) {
         this.cardId = cardId;
-    }
-
-    public UUID getOrderUuid() {
-        return orderUuid;
-    }
-
-    public void setOrderUuid(UUID orderUuid) {
-        this.orderUuid = orderUuid;
     }
 
     public UUID getUuid() {
@@ -108,7 +93,6 @@ public class Payment {
                 ", total=" + total +
                 ", cardId='" + cardId + '\'' +
                 ", description='" + description + '\'' +
-                ", order=" + orderUuid +
                 '}';
     }
 }

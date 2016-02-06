@@ -70,6 +70,7 @@ public class OrderController {
 
             try {
                 Clerk clerk = clerkRepository.findByOrderr(orderr);
+                LOG.info("Sending orderCompleted " + mapper.writeValueAsString(clerk));
                 rabbitTemplate.convertAndSend(Config.shopExchange, Config.orderCompleted, mapper.writeValueAsString(clerk));
             } catch (Exception e) {
                 LOG.error("Error: " + e.getMessage());

@@ -3,6 +3,9 @@ package com.xebia.shopmanager.events;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.xebia.shopmanager.Config;
 import com.xebia.shopmanager.domain.Clerk;
+import com.xebia.shopmanager.domain.LineItem;
+import com.xebia.shopmanager.domain.Orderr;
+import com.xebia.shopmanager.domain.ShoppingCart;
 import com.xebia.shopmanager.repositories.ClerkRepository;
 import com.xebia.shopmanager.repositories.OrderRepository;
 import org.slf4j.Logger;
@@ -14,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.nio.charset.StandardCharsets;
+import java.util.List;
 import java.util.concurrent.CountDownLatch;
 
 // TODO: this is business logic hidden in an interface class, move handling of events (the code following message
@@ -36,14 +40,13 @@ public class EventListener {
 
     @RabbitListener(queues = Config.orderCompleted)
     public void processOrderCompletedMessage(Object message) {
-        LOG.info("Message is of type: " + message.getClass().getName());
         if (!(message instanceof byte[])) message = ((Message) message).getBody();
         String content = new String((byte[]) message, StandardCharsets.UTF_8);
         LOG.info("Received orderCompleted: " + content);
         try {
-            Clerk clerk = mapper.readValue(content, Clerk.class);
-            clerkRepository.save(clerk);
+            getClerkFromMessage(content);
             rabbitTemplate.convertAndSend(Config.shopExchange, Config.paymentRoutingKey, content);
+            LOG.info("Sent " + content + " to payment");
         } catch (Exception e) {
             LOG.error("Error: " + e.getMessage());
         }
@@ -52,10 +55,8 @@ public class EventListener {
         latch.countDown();
     }
 
-
     @RabbitListener(queues = Config.orderPaid)
     public void processOrderPaidMessage(Object message) {
-        LOG.info("Message is of type: " + message.getClass().getName());
         if (!(message instanceof byte[])) message = ((Message) message).getBody();
         String content = new String((byte[]) message, StandardCharsets.UTF_8);
         LOG.info("Received orderPaid: " + content);
@@ -63,6 +64,9 @@ public class EventListener {
             Clerk clerk = mapper.readValue(content, Clerk.class);
             clerkRepository.save(clerk);
             rabbitTemplate.convertAndSend(Config.shopExchange, Config.fulfillmentRoutingKey, content);
+            LOG.info("sent " + content + " to fulfillment");
+            Clerk clerk2 = clerkRepository.findOne(clerk.getUuid());
+            LOG.info("Clerk from db: " + clerk2);
         } catch (Exception e) {
             LOG.error("Error: " + e.getMessage());
         }
@@ -72,7 +76,6 @@ public class EventListener {
 
     @RabbitListener(queues = Config.orderShipped)
     public void processOrderShippedMessage(Object message) {
-        LOG.info("Message is of type: " + message.getClass().getName());
         if (!(message instanceof byte[])) message = ((Message) message).getBody();
         String content = new String((byte[]) message, StandardCharsets.UTF_8);
         LOG.info("Received orderShipped: " + content);
@@ -86,4 +89,14 @@ public class EventListener {
         latch.countDown();
     }
 
+    public void getClerkFromMessage(String content) throws Exception {
+        Clerk clerk = mapper.readValue(content, Clerk.class);
+        LOG.info("clerk: " + clerk);
+        clerk = clerkRepository.save(clerk);
+        String clerkAsJson = mapper.writeValueAsString(clerk);
+        LOG.info("clerk na save: " + clerkAsJson);
+        Clerk clerk1 = clerkRepository.findOne(clerk.getUuid());
+        Orderr order = clerk1.getOrderr();
+        LOG.info("order: " + order);
+    }
 }
