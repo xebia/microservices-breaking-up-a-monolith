@@ -1,6 +1,10 @@
 package com.xebia.shopmanager.rest;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.xebia.shopmanager.domain.WebUser;
+import com.xebia.shopmanager.repositories.WebUserRepository;
+import org.junit.Before;
+import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.HttpMessageConverter;
@@ -14,8 +18,10 @@ import java.nio.charset.Charset;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.UUID;
 
 import static org.junit.Assert.fail;
+import static org.springframework.test.web.servlet.setup.MockMvcBuilders.webAppContextSetup;
 
 public class TestBase {
     @Autowired
@@ -27,6 +33,9 @@ public class TestBase {
     protected MockMvc mockMvc;
     protected HttpMessageConverter mappingJackson2HttpMessageConverter;
     ObjectMapper objectMapper = new ObjectMapper();
+
+    @Autowired
+    protected WebUserRepository webUserRepository;
 
     protected String getTimeStamp() {
         SimpleDateFormat sdf = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss z");
@@ -57,5 +66,18 @@ public class TestBase {
 
         org.junit.Assert.assertNotNull("the JSON message converter must not be null",
                 this.mappingJackson2HttpMessageConverter);
+    }
+
+    @Before
+    public void setup() throws Exception {
+        MockitoAnnotations.initMocks(this);
+        this.mockMvc = webAppContextSetup(webApplicationContext).build();
+    }
+
+    protected WebUser createAndSaveWebUserNoDetails() {
+        UUID webUserUuid = UUID.randomUUID();
+        String id = webUserUuid.toString().substring(1, 5);
+        WebUser user = new WebUser(webUserUuid, "user"+id, "password");
+        return webUserRepository.save(user);
     }
 }

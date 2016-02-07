@@ -16,7 +16,7 @@
 
     <properties>
         <maven.build.timestamp.format>yyyyMMdd'T'HHmm</maven.build.timestamp.format>
-        <start-class>com.xebia.fulfillment.FulfillmentApplication</start-class>
+        <start-class>com.xebia.fulfillment.v2.FulfillmentApplication</start-class>
     </properties>
 
     <dependencies>

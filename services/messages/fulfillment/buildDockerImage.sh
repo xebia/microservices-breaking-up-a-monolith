@@ -7,5 +7,5 @@ fi
 
 cat src/main/docker/Dockerfile | sed "s/JARFILENAME/$1/" > target/Dockerfile
 
-(cd target &&docker build -t xebia/fulfillment_msg .)
+(cd target &&docker build -t xebia/fulfillment_msg_v2 .)
 

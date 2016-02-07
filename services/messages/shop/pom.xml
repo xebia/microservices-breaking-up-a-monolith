@@ -16,7 +16,7 @@
 
     <properties>
         <maven.build.timestamp.format>yyyyMMdd'T'HHmm</maven.build.timestamp.format>
-            <start-class>com.xebia.shop.ShopApplication</start-class>
+            <start-class>com.xebia.shop.v2.ShopApplication</start-class>
     </properties>
 
     <dependencies>
