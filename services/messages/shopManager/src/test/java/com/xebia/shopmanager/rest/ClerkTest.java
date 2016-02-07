@@ -15,8 +15,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
-import org.springframework.amqp.core.Message;
-import org.springframework.amqp.core.MessageProperties;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.SpringApplicationConfiguration;
@@ -75,7 +73,7 @@ public class ClerkTest extends TestBase {
         String data = resultActions.getResponse().getContentAsString();
         Clerk clerk = objectMapper.readValue(data, Clerk.class);
         assertEquals(user.getUsername(), clerk.getWebUser().getUsername());
-        verify(rabbitTemplate, times(1)).convertAndSend(eq(Config.shopExchange), eq(Config.startShoppingRoutingKey), anyString());
+        verify(rabbitTemplate, times(1)).convertAndSend(eq(Config.shopExchange), eq(Config.startShopping), anyString());
         Orderr orderr = new Orderr(UUID.randomUUID(), new Date(), "address", "ordered");
         orderr.setTotal(1.0);
         ShoppingCart shoppingCart = new ShoppingCart(new Date(), UUID.randomUUID());
@@ -89,10 +87,10 @@ public class ClerkTest extends TestBase {
                                   /*
         Message dummyMessage = new Message(json(clerk).getBytes(), new MessageProperties());
         eventListener.processOrderCompletedMessage(dummyMessage);
-        verify(rabbitTemplate, times(1)).convertAndSend(eq(Config.shopExchange), eq(Config.paymentRoutingKey), anyString());
+        verify(rabbitTemplate, times(1)).convertAndSend(eq(Config.shopExchange), eq(Config.handlePayment), anyString());
 
         eventListener.processOrderPaidMessage(dummyMessage);
-        verify(rabbitTemplate, times(1)).convertAndSend(eq(Config.shopExchange), eq(Config.fulfillmentRoutingKey), anyString());
+        verify(rabbitTemplate, times(1)).convertAndSend(eq(Config.shopExchange), eq(Config.handleFulfillment), anyString());
                                     */
         // TODO: fix test above
         // if orderShipped is received, expect order archived ??

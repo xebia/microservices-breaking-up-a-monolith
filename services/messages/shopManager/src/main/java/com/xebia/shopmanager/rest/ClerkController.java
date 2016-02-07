@@ -57,7 +57,7 @@ public class ClerkController {
         try {
             String clerkAsJson = mapper.writeValueAsString(clerk);
             LOG.info("Sending startShopping event for clerk: \n" + clerkAsJson + "\n");
-            rabbitTemplate.convertAndSend(Config.shopExchange, Config.startShoppingRoutingKey, clerkAsJson);
+            rabbitTemplate.convertAndSend(Config.shopExchange, Config.startShopping, clerkAsJson);
             return new ResponseEntity<ClerkResource>(resource, HttpStatus.CREATED);
         } catch (Exception e) {
             LOG.error("Error: " + e.getMessage());

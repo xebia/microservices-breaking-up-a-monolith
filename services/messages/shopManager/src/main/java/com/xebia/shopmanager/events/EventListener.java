@@ -3,9 +3,7 @@ package com.xebia.shopmanager.events;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.xebia.shopmanager.Config;
 import com.xebia.shopmanager.domain.Clerk;
-import com.xebia.shopmanager.domain.LineItem;
 import com.xebia.shopmanager.domain.Orderr;
-import com.xebia.shopmanager.domain.ShoppingCart;
 import com.xebia.shopmanager.repositories.ClerkRepository;
 import com.xebia.shopmanager.repositories.OrderRepository;
 import org.slf4j.Logger;
@@ -17,7 +15,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.nio.charset.StandardCharsets;
-import java.util.List;
 import java.util.concurrent.CountDownLatch;
 
 // TODO: this is business logic hidden in an interface class, move handling of events (the code following message
@@ -45,7 +42,7 @@ public class EventListener {
         LOG.info("Received orderCompleted: " + content);
         try {
             getClerkFromMessage(content);
-            rabbitTemplate.convertAndSend(Config.shopExchange, Config.paymentRoutingKey, content);
+            rabbitTemplate.convertAndSend(Config.shopExchange, Config.handlePayment, content);
             LOG.info("Sent " + content + " to payment");
         } catch (Exception e) {
             LOG.error("Error: " + e.getMessage());
@@ -63,7 +60,7 @@ public class EventListener {
         try {
             Clerk clerk = mapper.readValue(content, Clerk.class);
             clerkRepository.save(clerk);
-            rabbitTemplate.convertAndSend(Config.shopExchange, Config.fulfillmentRoutingKey, content);
+            rabbitTemplate.convertAndSend(Config.shopExchange, Config.handleFulfillment, content);
             LOG.info("sent " + content + " to fulfillment");
         } catch (Exception e) {
             LOG.error("Error: " + e.getMessage());
