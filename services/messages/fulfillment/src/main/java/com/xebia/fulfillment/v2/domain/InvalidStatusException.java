@@ -1,4 +1,4 @@
-package com.xebia.fulfillment.domain;
+package com.xebia.fulfillment.v2.domain;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

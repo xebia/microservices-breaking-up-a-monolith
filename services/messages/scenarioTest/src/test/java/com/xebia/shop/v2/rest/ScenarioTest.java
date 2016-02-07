@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.xebia.shop.v2.Application;
 import com.xebia.shop.v2.domain.*;
+import junit.framework.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
@@ -29,7 +30,7 @@ public class ScenarioTest {
     public static final String PROTOCOL_AND_HOST = "http://192.168.99.101";
     public static final String PAY_ENDPOINT = PROTOCOL_AND_HOST + ":9001/payment/v2";
     public static final String SHOP_ENDPOINT = PROTOCOL_AND_HOST + ":9002/shop/v2";
-    public static final String FF_ENDPOINT = PROTOCOL_AND_HOST + ":9003/fulfillment";
+    public static final String FF_ENDPOINT = PROTOCOL_AND_HOST + ":9003/fulfillment/v2";
     public static final String SHOPMANAGER_ENDPOINT = PROTOCOL_AND_HOST + ":9005/shop";
     private static Logger LOG = LoggerFactory.getLogger(ScenarioTest.class);
 
@@ -41,40 +42,66 @@ public class ScenarioTest {
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
 
+        LOG.info("Starting test ...");
+        LOG.info("Creating some products");
         Product[] products = new Product[10];
         for (int i = 0; i < 10; i++) {
             products[i] = createProduct(objectMapper);
         }
 
+        LOG.info("Creating WebUser");
         WebUser webUser = createWebUser(objectMapper);
         WebUser remoteUser = getWebUser(objectMapper, webUser);
-        LOG.info("Read back user: " + remoteUser.toString());
+
+        LOG.info("Creating Clerk");
         Clerk clerk = createClerk(objectMapper, webUser);
+        LOG.info("clerk: " + objectMapper.writeValueAsString(clerk));
         waitASecond();
 
+        LOG.info("Creating ShoppingCart");
         ShoppingCart cart = getShoppingCart(objectMapper, clerk);
         addProductToCart(objectMapper, cart, products[1]);
+        LOG.info("Creating Orderr from ShoppingCart");
         Orderr orderr = createOrderForWebUser(objectMapper, cart);
         orderr = setShippingAddress(objectMapper, orderr);
         approveOrder(orderr);
-
         waitASecond();
 
         Clerk clerk2 = findClerk(objectMapper, clerk);
         assertEquals(clerk.getUuid(), clerk2.getUuid());
         assertNotNull(clerk2.getOrderr());
+        LOG.info("clerk: " + objectMapper.writeValueAsString(clerk2));
 
+        LOG.info("Creating Payment");
         Payment payment = findPayment(objectMapper, clerk2);
         sendPayment(objectMapper, payment);
         waitASecond();
 
-        Clerk clerk3 = findClerk(objectMapper, clerk);
+        Clerk clerk3 = findClerk(objectMapper, clerk2);
         assertEquals(clerk.getUuid(), clerk3.getUuid());
         assertEquals("c123", clerk3.getPayment().getCardId());
+        LOG.info("clerk: " + objectMapper.writeValueAsString(clerk3));
 
-// TODO: get Clerk status
-//        shipOrder(orderr.getUuid());
+        LOG.info("Creating Shipment");
+        Shipment shipment = findShipment(objectMapper, clerk3);
+        shipOrder(objectMapper, shipment);
+        waitASecond();
 
+        Clerk clerk4 = findClerk(objectMapper, clerk3);
+        assertEquals(clerk.getUuid(), clerk4.getUuid());
+        assertEquals(Shipment.SHIPPED, clerk4.getShipment().getStatus());
+        LOG.info("Process completed, clerk: " + objectMapper.writeValueAsString(clerk4));
+    }
+
+    private Shipment findShipment (ObjectMapper objectMapper, Clerk clerk) throws Exception {
+        RestTemplate restTemplate = new RestTemplate();
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        HttpEntity<String> requestEntity = new HttpEntity<String>("{}", headers);
+        ResponseEntity<String> responseEntity = restTemplate.exchange(FF_ENDPOINT + "/forClerk/" + clerk.getUuid(), HttpMethod.GET, requestEntity, String.class);
+        String data = responseEntity.getBody().toString();
+        Shipment shipment = objectMapper.readValue(data, Shipment.class);
+        return shipment;
     }
 
     private Clerk findClerk(ObjectMapper objectMapper, Clerk clerk) throws Exception {
@@ -87,13 +114,15 @@ public class ScenarioTest {
         return objectMapper.readValue(data, Clerk.class);
     }
 
-    private void shipOrder(UUID orderID) throws Exception {
+    private void shipOrder(ObjectMapper objectMapper, Shipment shipment) throws Exception {
         RestTemplate restTemplate = new RestTemplate();
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
         HttpEntity<String> requestEntity = new HttpEntity<String>("{}", headers);
-        ResponseEntity<String> responseEntity = restTemplate.exchange(FF_ENDPOINT + "/shipIt/" + orderID, HttpMethod.PUT, requestEntity, String.class);
-        LOG.info("Orderr: " + orderID + " was shipped");
+        ResponseEntity<String> responseEntity = restTemplate.exchange(FF_ENDPOINT + "/shipIt/" + shipment.getUuid(), HttpMethod.PUT, requestEntity, String.class);
+        String data = responseEntity.getBody().toString();
+        ShipmentResource shipmentResource = objectMapper.readValue(data, ShipmentResource.class);
+        LOG.info("Shipment: " + shipmentResource.getUuid() + " has been sent.");
     }
 
     private Payment findPayment (ObjectMapper objectMapper, Clerk clerk) throws Exception {
@@ -142,8 +171,7 @@ public class ScenarioTest {
         HttpEntity<String> requestEntity = new HttpEntity<String>(objectMapper.writeValueAsString(orderr), headers);
         headers.setContentType(MediaType.APPLICATION_JSON);
         ResponseEntity<String> responseEntity = restTemplate.exchange(SHOP_ENDPOINT + "/orders/", HttpMethod.PUT, requestEntity, String.class);
-        LOG.info("Orderr: " + orderr.getUuid() + " ");
-// test result?
+        LOG.info("Orderr: " + orderr.getUuid() + " - shippingAddress added");
         return orderr;
     }
 
@@ -155,7 +183,7 @@ public class ScenarioTest {
         ResponseEntity<String> responseEntity = restTemplate.exchange(SHOP_ENDPOINT + "/cart/" + cart.getUuid() + "/order", HttpMethod.POST, requestEntity, String.class);
         String data = responseEntity.getBody().toString();
         Orderr orderr = objectMapper.readValue(data, Orderr.class);
-        LOG.info("Created Orderr: " + orderr.getUuid());
+        LOG.info("Created Orderr: " + data);
         return orderr;
     }
 
@@ -170,7 +198,6 @@ public class ScenarioTest {
     }
 
     private ShoppingCart addProductToCart(ObjectMapper objectMapper, ShoppingCart cart, Product product) throws Exception {
-        LOG.info("Adding product: " + product.getUuid() + " to cart: " + cart.getUuid());
         NewLineItemResource lineItem = new NewLineItemResource(product.getUuid(), rnd.nextInt(10) + 1);
         RestTemplate restTemplate = new RestTemplate();
         HttpHeaders headers = new HttpHeaders();
@@ -179,18 +206,19 @@ public class ScenarioTest {
         ResponseEntity<String> responseEntity = restTemplate.exchange(SHOP_ENDPOINT + "/cart/" + cart.getUuid() + "/add", HttpMethod.POST, requestEntity, String.class);
         String data = responseEntity.getBody().toString();
         cart = objectMapper.readValue(data, ShoppingCart.class);
+        LOG.info("Product: " + product.getUuid() + " added to cart: " + cart.getUuid());
         return cart;
     }
 
     private Product createProduct(ObjectMapper objectMapper) throws Exception {
         Product product = new Product(UUID.randomUUID(), "product" + rnd.nextInt(1000), "supplier", rnd.nextDouble() * 100);
-        LOG.info("Created product:" + product.toString());
         RestTemplate restTemplate = new RestTemplate();
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
         HttpEntity<String> requestEntity = new HttpEntity<String>(objectMapper.writeValueAsString(product), headers);
         ResponseEntity<String> responseEntity = restTemplate.exchange(SHOP_ENDPOINT + "/products/", HttpMethod.POST, requestEntity, String.class);
         String data = responseEntity.getBody().toString();
+        LOG.info("Created product:" + data);
         return objectMapper.readValue(data, Product.class);
     }
 
@@ -203,6 +231,7 @@ public class ScenarioTest {
         String data = responseEntity.getBody().toString();
         ShoppingCart cart = objectMapper.readValue(data, ShoppingCart.class);
         assertNotNull(cart.getUuid());
+        LOG.info("Found shopping cart: " + data);
         return cart;
     }
 
@@ -217,17 +246,18 @@ public class ScenarioTest {
 
     private WebUser createWebUser(ObjectMapper objectMapper) throws Exception {
         WebUserResource webUserResource = new WebUserResource("webuser" + UUID.randomUUID(), "password");
-        LOG.info("Created user:" + webUserResource.getUsername());
         RestTemplate restTemplate = new RestTemplate();
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
         HttpEntity<String> requestEntity = new HttpEntity<String>(objectMapper.writeValueAsString(webUserResource), headers);
         ResponseEntity<String> responseEntity = restTemplate.exchange(SHOPMANAGER_ENDPOINT + "/users/register", HttpMethod.POST, requestEntity, String.class);
         String data = responseEntity.getBody().toString();
+        LOG.info("Created WebUser: " + data);
         return objectMapper.readValue(data, WebUser.class);
     }
 
     private void waitASecond() throws InterruptedException {
+        LOG.info("Waiting a second for processing to complete");
         Thread.sleep(1000);
     }
 }

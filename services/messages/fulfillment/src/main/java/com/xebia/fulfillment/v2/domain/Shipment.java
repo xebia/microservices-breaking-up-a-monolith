@@ -1,8 +1,7 @@
-package com.xebia.fulfillment.domain;
+package com.xebia.fulfillment.v2.domain;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
-import javax.persistence.OneToOne;
 import java.util.UUID;
 
 @Entity
@@ -11,36 +10,27 @@ public class Shipment {
     private UUID uuid;
     private String status;
     private String address;
-    @OneToOne(optional = false)
-    private Orderr orderr;
 
-    public static final String SHIPPABLE="SHIPPABLE";
-    public static final String SHIPPED="SHIPPED";
+    public static final String SHIPPABLE = "SHIPPABLE";
+    public static final String SHIPPED = "SHIPPED";
+    // TODO: remove after refactoring to Clerk is complete
     public static final String TO_BE_PAID = "TO_BE_PAID";
 
-    public Shipment() {}
+    public Shipment() {
+    }
 
-    public Shipment(UUID uuid, String status, String address, Orderr orderr) {
+    public Shipment(UUID uuid, String status, String address) {
         this.uuid = uuid;
         this.status = status;
         this.address = address;
-        this.orderr = orderr;
     }
 
-    public void ship() throws InvalidStatusException {
-        if (status.equals(SHIPPABLE)) {
-            status = SHIPPED;
-        } else {
-            throw new InvalidStatusException(toString());
-        }
+    public Shipment(UUID uuid) {
+        this.uuid = uuid;
     }
 
-    public Orderr getOrderr() {
-        return orderr;
-    }
-
-    public void setOrderr(Orderr orderr) {
-        this.orderr = orderr;
+    public void ship() {
+        status = SHIPPED;
     }
 
     public UUID getUuid() {
@@ -73,7 +63,6 @@ public class Shipment {
                 "uuid=" + uuid +
                 ", status='" + status + "'" +
                 ", address='" + address + "'" +
-                ", orderr={" + orderr.toString() + "}" +
                 '}';
     }
 

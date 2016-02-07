@@ -1,4 +1,4 @@
-package com.xebia.shop.v2.rest;
+package com.xebia.fulfillment.v2;
 
 public class Config {
     // General name for the exchange to use

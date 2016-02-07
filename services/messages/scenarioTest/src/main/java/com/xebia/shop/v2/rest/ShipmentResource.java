@@ -1,8 +1,7 @@
-package com.xebia.fulfillment.rest;
+package com.xebia.shop.v2.rest;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.xebia.fulfillment.domain.Orderr;
 import org.springframework.hateoas.ResourceSupport;
 
 import javax.validation.constraints.NotNull;
@@ -13,30 +12,19 @@ public class ShipmentResource extends ResourceSupport {
     private UUID uuid;
     private String status;
     private String address;
-    private Orderr orderr;
 
     @JsonCreator
     public ShipmentResource(
             @JsonProperty(value = "uuid") @NotNull UUID uuid,
             @JsonProperty(value = "status") @NotNull String status,
-            @JsonProperty(value = "address") @NotNull String address,
-            @JsonProperty(value = "orderr") @NotNull Orderr orderr
-            ) {
+            @JsonProperty(value = "address") @NotNull String address
+    ) {
         this.uuid = uuid;
         this.status = status;
         this.address = address;
-        this.orderr = orderr;
     }
 
     public ShipmentResource() {}
-
-    public Orderr getOrderr() {
-        return orderr;
-    }
-
-    public void setOrderr(Orderr orderr) {
-        this.orderr = orderr;
-    }
 
     public UUID getUuid() {
         return uuid;

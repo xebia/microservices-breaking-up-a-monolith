@@ -65,8 +65,6 @@ public class EventListener {
             clerkRepository.save(clerk);
             rabbitTemplate.convertAndSend(Config.shopExchange, Config.fulfillmentRoutingKey, content);
             LOG.info("sent " + content + " to fulfillment");
-            Clerk clerk2 = clerkRepository.findOne(clerk.getUuid());
-            LOG.info("Clerk from db: " + clerk2);
         } catch (Exception e) {
             LOG.error("Error: " + e.getMessage());
         }
@@ -80,8 +78,8 @@ public class EventListener {
         String content = new String((byte[]) message, StandardCharsets.UTF_8);
         LOG.info("Received orderShipped: " + content);
         try {
-            // TODO: complete order
-            // TODO: save new Clerk status
+            Clerk clerk = mapper.readValue(content, Clerk.class);
+            clerkRepository.save(clerk);
         } catch (Exception e) {
             LOG.error("Error: " + e.getMessage());
         }

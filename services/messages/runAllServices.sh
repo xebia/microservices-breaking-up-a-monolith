@@ -1,6 +1,6 @@
 #!/bin/bash
 echo "Stop, cleanup and start RabbitMQ, catalog, fulfillment, payment and shop services"
-(cd rabbit && ./runRabbit.sh && sleep 2 && ./RabbitMQSetup.sh)
+(cd rabbit && ./runRabbit.sh && sleep 5 && ./RabbitMQSetup.sh)
 (cd catalog && ./run.sh)
 (cd fulfillment && ./run.sh)
 (cd payment && ./run.sh)

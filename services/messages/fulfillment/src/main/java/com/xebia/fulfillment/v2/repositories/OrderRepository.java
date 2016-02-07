@@ -1,6 +1,6 @@
-package com.xebia.fulfillment.repositories;
+package com.xebia.fulfillment.v2.repositories;
 
-import com.xebia.fulfillment.domain.Orderr;
+import com.xebia.fulfillment.v2.domain.Orderr;
 import org.springframework.data.repository.CrudRepository;
 
 import java.util.UUID;

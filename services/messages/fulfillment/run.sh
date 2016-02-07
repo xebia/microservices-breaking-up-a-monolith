@@ -10,7 +10,7 @@ do
     docker rm $i
 done
 
-docker run -d --name fulfillment -p 9003:9003 xebia/fulfillment_msg
+docker run -d --name fulfillment -p 9003:9003 xebia/fulfillment_msg_v2
 
 # To start as a normal Java program
 # mvn exec:java -Dexec.mainClass="com.xebia.fulfillment.FulfillmentApplication"

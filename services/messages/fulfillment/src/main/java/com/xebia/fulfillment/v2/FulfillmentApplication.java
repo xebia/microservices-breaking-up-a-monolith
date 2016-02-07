@@ -1,4 +1,4 @@
-package com.xebia.fulfillment;
+package com.xebia.fulfillment.v2;
 
 import com.mangofactory.swagger.configuration.SpringSwaggerConfig;
 import com.mangofactory.swagger.models.dto.ApiInfo;
@@ -56,17 +56,15 @@ public class FulfillmentApplication {
     @Bean
     public SwaggerSpringMvcPlugin customImplementation() {
         return new SwaggerSpringMvcPlugin(this.springSwaggerConfig)
-            //Root level documentation
             .apiInfo(new ApiInfo(
-                "Fulfillment API",
-                "This page provides details of the REST API for the Fulfillment service",
-                "Go and explore ...",
-                null,
-                null,
-                null
+                    "Fulfillment API",
+                    "This page provides details of the REST API for the Fulfillment service",
+                    "Go and explore ...",
+                    null,
+                    null,
+                    null
             ))
             .useDefaultResponseMessages(false)
-                //Map the specific URL patterns into Swagger
             .includePatterns("/.*");
     }
 

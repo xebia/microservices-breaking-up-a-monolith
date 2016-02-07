@@ -1,8 +1,8 @@
-package com.xebia.fulfillment.rest;
+package com.xebia.fulfillment.v2.rest;
 
 
-import com.xebia.fulfillment.FulfillmentApplication;
-import com.xebia.fulfillment.repositories.*;
+import com.xebia.fulfillment.v2.FulfillmentApplication;
+import com.xebia.fulfillment.v2.repositories.*;
 import org.junit.Assert;
 import org.junit.Before;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,13 +43,6 @@ public class TestBase {
     protected WebApplicationContext webApplicationContext;
 
     @Autowired
-    protected AccountRepository accountRepository;
-    @Autowired
-    protected OrderRepository orderRepository;
-    @Autowired
-    protected LineItemRepository lineItemRepository;
-
-    @Autowired
     void setConverters(HttpMessageConverter<?>[] converters) {
 
         this.mappingJackson2HttpMessageConverter = Arrays.asList(converters).stream().filter(
@@ -58,26 +51,7 @@ public class TestBase {
         Assert.assertNotNull("the JSON message converter must not be null",
                 this.mappingJackson2HttpMessageConverter);
     }
-      /*
-    protected Account createAndSaveAccount() {
-        UUID accountUuid = UUID.randomUUID();
-        String id = accountUuid.toString().substring(1, 5);
-        Account account = new Account("address " + id, "+31355381921", "info@xebia.com");
-        return accountRepository.save(account);
-    }
 
-    protected Account createAccount() {
-        UUID accountUuid = UUID.randomUUID();
-        String id = accountUuid.toString().substring(1, 5);
-        return new Account("address " + id, "+31355381921", "info@xebia.com");
-    }
-
-    protected LineItem createAndSaveLineItem() {
-        UUID lineItem1Uuid = UUID.randomUUID();
-        LineItem item1 = new LineItem(lineItem1Uuid, 1, 10, new Product(UUID.randomUUID(), "product1", "supplier1", 10.0));
-        return lineItemRepository.save(item1);
-    }
-       */
     @Before
     public void setup() throws Exception {
         this.mockMvc = webAppContextSetup(webApplicationContext).build();

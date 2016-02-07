@@ -1,6 +1,7 @@
-package com.xebia.fulfillment.domain;
+package com.xebia.fulfillment.v2.domain;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import org.hibernate.annotations.Cascade;
 
 import javax.persistence.*;
 import java.util.UUID;
@@ -10,15 +11,16 @@ public class LineItem {
     @Id
     private UUID uuid;
     private int quantity;
-    @JsonBackReference
-    @ManyToOne(fetch = FetchType.LAZY)
-    private Orderr orderr;
-    @OneToOne(optional = false, cascade = CascadeType.MERGE)
-    private Product product;
     private double price;
 
-    public LineItem() {
-    }
+    @ManyToOne(fetch= FetchType.LAZY)
+    @JsonBackReference
+    private ShoppingCart shoppingCart;
+    @OneToOne(optional = false)
+    @Cascade(value={org.hibernate.annotations.CascadeType.MERGE})
+    private Product product;
+
+    public LineItem() {}
 
     public LineItem(UUID uuid, int quantity, double price, Product product) {
         this.uuid = uuid;
@@ -50,13 +52,12 @@ public class LineItem {
         this.product = product;
     }
 
-    @JsonBackReference
-    public Orderr getOrderr() {
-        return orderr;
+    public ShoppingCart getShoppingCart() {
+        return shoppingCart;
     }
 
-    public void setOrderr(Orderr orderr) {
-        this.orderr = orderr;
+    public void setShoppingCart(ShoppingCart shoppingCart) {
+        this.shoppingCart = shoppingCart;
     }
 
     public int getQuantity() {
@@ -78,9 +79,8 @@ public class LineItem {
     @Override
     public String toString() {
         return "LineItem{" +
-                "uuid=" + uuid +
-                ", quantity=" + quantity +
-                ", orderrId=" + orderr.getUuid() +
+                "quantity=" + quantity +
+               ", shoppingCartId=" + shoppingCart.getUuid() +
                 ", product=" + product +
                 ", price=" + price +
                 '}';
