@@ -3,6 +3,7 @@ package com.xebia.shopmanager.rest;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.xebia.shopmanager.Config;
 import com.xebia.shopmanager.domain.Clerk;
+import com.xebia.shopmanager.domain.ShopManager;
 import com.xebia.shopmanager.domain.WebUser;
 import com.xebia.shopmanager.repositories.ClerkRepository;
 import com.xebia.shopmanager.repositories.WebUserRepository;
@@ -41,6 +42,9 @@ public class ClerkController {
     @Autowired
     RabbitTemplate rabbitTemplate;
 
+    @Autowired
+    ShopManager shopManager;
+
     private ClerkResourceAssembler clerkResourceAssembler = new ClerkResourceAssembler();
 
     @RequestMapping(method = RequestMethod.POST, value = "/{userId}", produces = "application/json")
@@ -48,20 +52,20 @@ public class ClerkController {
         LOG.info("URL: " + request.getRequestURL() + ", METHOD: " + request.getMethod() + ", CONTENT: " + userId);
         WebUser user = webUserRepository.findOne(userId);
         if (user == null) {
-            return new ResponseEntity<ClerkResource>(HttpStatus.NOT_FOUND);
+            return new ResponseEntity(HttpStatus.NOT_FOUND);
         }
         Clerk clerk = new Clerk(user);
         clerkRepository.save(clerk);
         ClerkResource resource = clerkResourceAssembler.toResource(clerk);
-
+        shopManager.registerClerk(clerk);
         try {
             String clerkAsJson = mapper.writeValueAsString(clerk);
             LOG.info("Sending startShopping event for clerk: \n" + clerkAsJson + "\n");
             rabbitTemplate.convertAndSend(Config.shopExchange, Config.startShopping, clerkAsJson);
-            return new ResponseEntity<ClerkResource>(resource, HttpStatus.CREATED);
+            return new ResponseEntity(resource, HttpStatus.CREATED);
         } catch (Exception e) {
             LOG.error("Error: " + e.getMessage());
-            return new ResponseEntity<ClerkResource>(resource, HttpStatus.BAD_REQUEST);
+            return new ResponseEntity(resource, HttpStatus.BAD_REQUEST);
         }
     }
 
@@ -78,9 +82,9 @@ public class ClerkController {
             } catch (Exception e) {
                 e.printStackTrace();
             }
-            return new ResponseEntity<ClerkResource>(resource, HttpStatus.OK);
+            return new ResponseEntity(resource, HttpStatus.OK);
         } else {
-            return new ResponseEntity<ClerkResource>(HttpStatus.NOT_FOUND);
+            return new ResponseEntity(HttpStatus.NOT_FOUND);
         }
     }
 

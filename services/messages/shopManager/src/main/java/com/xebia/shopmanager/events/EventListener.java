@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.xebia.shopmanager.Config;
 import com.xebia.shopmanager.domain.Clerk;
 import com.xebia.shopmanager.domain.Orderr;
+import com.xebia.shopmanager.domain.Session;
 import com.xebia.shopmanager.repositories.ClerkRepository;
 import com.xebia.shopmanager.repositories.OrderRepository;
 import org.slf4j.Logger;
@@ -82,6 +83,26 @@ public class EventListener {
         }
         // TODO: clean up Clerk instance
         latch.countDown();
+    }
+
+    @RabbitListener(queues = Config.sessionExpired)
+    public void sessionExpiredMessage(Object message) {
+        if (!(message instanceof byte[])) message = ((Message) message).getBody();
+        String content = new String((byte[]) message, StandardCharsets.UTF_8);
+        LOG.info("Received sessionExpired: " + content);
+        try {
+            Session session = mapper.readValue(content, Session.class);
+            processSessionExpiredMessage(session);
+        } catch (Exception e) {
+            LOG.error("Error: " + e.getMessage());
+        }
+        latch.countDown();
+    }
+
+    public void processSessionExpiredMessage(Session session) {
+        Clerk clerk = session.getClerk();
+        LOG.info("Session expired, Clerk " + clerk + " was removed.");
+        clerkRepository.delete(clerk);
     }
 
     public void getClerkFromMessage(String content) throws Exception {

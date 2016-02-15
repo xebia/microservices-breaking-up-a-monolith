@@ -18,4 +18,5 @@ public class Config {
     public static final String orderPaid = "orderPaid";
     public static final String orderShipped = "orderShipped";
 
+    public static final String sessionExpired = "sessionExpired";
 }

@@ -22,5 +22,10 @@ to get rid of the order. This is where our earlier solution starts to feel a bit
 several services to find out what to do? Implementing process logic in a separate service seems to make sense, so 
 this branch tries and do just that to find out what the consequences will be. 
 
-![](https://raw.githubusercontent.com/xebia/microservices-breaking-up-a-monolith/blob/RefactorToOrchestrator/services/messages/processDiagram.jpeg)
+Now that we've introduced a shopManager service with a Clerk to handle the shopping process, we can add process control
+by implementing the ShopManager class. The idea is that a ShopManager will dispatch a Clerk when a customer enters the
+shop. The Clerk will be sent on its way to add products to the shopping cart, accept payment and ship orders. 
+Meanwhile the ShopManager will monitor the Clerks process. If it takes to long. e.g. because a customer decides not to
+finalize an order, the process will be stopped by the ShopManager.
 
+![](https://raw.githubusercontent.com/xebia/microservices-breaking-up-a-monolith/blob/RefactorToOrchestrator/services/messages/processDiagram.jpeg)
