@@ -5,6 +5,7 @@ import com.xebia.shopmanager.Config;
 import com.xebia.shopmanager.domain.Clerk;
 import com.xebia.shopmanager.domain.Orderr;
 import com.xebia.shopmanager.domain.Session;
+import com.xebia.shopmanager.domain.ShopManager;
 import com.xebia.shopmanager.repositories.ClerkRepository;
 import com.xebia.shopmanager.repositories.OrderRepository;
 import org.slf4j.Logger;
@@ -32,6 +33,9 @@ public class EventListener {
     @Autowired
     OrderRepository orderRepository;
 
+    @Autowired
+    ShopManager shopManager;
+
     private static Logger LOG = LoggerFactory.getLogger(EventListener.class);
     private ObjectMapper mapper = new ObjectMapper();
     private CountDownLatch latch = new CountDownLatch(1);
@@ -48,8 +52,6 @@ public class EventListener {
         } catch (Exception e) {
             LOG.error("Error: " + e.getMessage());
         }
-        // TODO: find Clerk instance and restart timer?
-
         latch.countDown();
     }
 
@@ -66,7 +68,6 @@ public class EventListener {
         } catch (Exception e) {
             LOG.error("Error: " + e.getMessage());
         }
-        // TODO: find Clerk instance and restart timer?
         latch.countDown();
     }
 
@@ -78,10 +79,11 @@ public class EventListener {
         try {
             Clerk clerk = mapper.readValue(content, Clerk.class);
             clerkRepository.save(clerk);
+            LOG.info("Session completed");
+            shopManager.completeSessionForClerk(clerk);
         } catch (Exception e) {
             LOG.error("Error: " + e.getMessage());
         }
-        // TODO: clean up Clerk instance
         latch.countDown();
     }
 

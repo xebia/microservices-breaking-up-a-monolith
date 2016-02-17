@@ -1,4 +1,4 @@
-package com.xebia.shopmanager.rest;
+package com.xebia.shopmanager.domain;
 
 import org.springframework.stereotype.Component;
 

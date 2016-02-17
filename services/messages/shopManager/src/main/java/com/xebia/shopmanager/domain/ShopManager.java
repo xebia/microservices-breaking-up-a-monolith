@@ -3,7 +3,6 @@ package com.xebia.shopmanager.domain;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.xebia.shopmanager.Config;
-import com.xebia.shopmanager.rest.TimeoutPolicy;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
@@ -102,5 +101,10 @@ public class ShopManager {
             throw new InvalidStatusException("No session for clerk " + clerk);
         }
         return result.get(0);
+    }
+
+    public void completeSessionForClerk(Clerk clerk) throws InvalidStatusException {
+        Session session = findSessionByClerk(clerk);
+        sessions.remove(session);
     }
 }

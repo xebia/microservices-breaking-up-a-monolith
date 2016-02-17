@@ -4,14 +4,10 @@ package com.xebia.shopmanager.rest;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.xebia.shopmanager.Config;
 import com.xebia.shopmanager.ShopManagerApplication;
-import com.xebia.shopmanager.domain.Clerk;
-import com.xebia.shopmanager.domain.Session;
-import com.xebia.shopmanager.domain.ShopManager;
-import com.xebia.shopmanager.domain.WebUser;
+import com.xebia.shopmanager.domain.*;
 import com.xebia.shopmanager.events.EventListener;
 import com.xebia.shopmanager.repositories.ClerkRepository;
 import com.xebia.shopmanager.repositories.WebUserRepository;
-import junit.framework.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -19,23 +15,20 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
+import org.mockito.internal.exceptions.ExceptionIncludingMockitoWarnings;
+import org.springframework.amqp.core.Message;
+import org.springframework.amqp.core.MessageProperties;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.SpringApplicationConfiguration;
-import org.springframework.context.annotation.Bean;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import java.util.UUID;
-import java.util.concurrent.ExecutionException;
 
-import static junit.framework.TestCase.assertEquals;
-import static junit.framework.TestCase.assertNotNull;
-import static junit.framework.TestCase.assertNull;
+import static junit.framework.TestCase.*;
 import static org.junit.Assert.fail;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
@@ -77,42 +70,52 @@ public class ShopManagerTest extends TestBase {
     public void setup() {
         MockitoAnnotations.initMocks(this);
         Mockito.doReturn(100l).when(timeoutPolicy).getTimeout();
+        objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+        mockMvc = MockMvcBuilders.standaloneSetup(clerkController).build();
+        Mockito.doNothing().when(rabbitTemplate).convertAndSend(anyString(), anyString(), anyString());
     }
 
     @Test
-    public void testShoppingProcess() throws Exception {
-        mockMvc = MockMvcBuilders.standaloneSetup(clerkController).build();
-        Mockito.doNothing().when(rabbitTemplate).convertAndSend(anyString(), anyString(), anyString());
-        objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-
+    public void testSessionIsCreatedForAClerk() throws Exception {
         WebUser user = createUserThatWillTimeout();
         MvcResult resultActions = mockMvc.perform(post("/shop/session/" + user.getUuid()))
                 .andExpect(status().isCreated()).andReturn();
         String data = resultActions.getResponse().getContentAsString();
         Clerk clerk = objectMapper.readValue(data, Clerk.class);
         Session session = shopManager.findSessionByClerk(clerk);
-        assertNotNull(clerkRepository.findOne(clerk.getUuid()));
+        assertNotNull(clerkRepository.findOne(session.getClerk().getUuid()));
+    }
+
+    @Test
+    public void testSessionExpiredEventIsSent() throws Exception {
+        WebUser user = createUserThatWillTimeout();
+        MvcResult resultActions = mockMvc.perform(post("/shop/session/" + user.getUuid()))
+                .andExpect(status().isCreated()).andReturn();
+        String data = resultActions.getResponse().getContentAsString();
+        Clerk clerk = objectMapper.readValue(data, Clerk.class);
 
         wait2secondsSoSessionWillBeRemovedAgain();
 
         verify(rabbitTemplate, times(1)).convertAndSend(eq(Config.shopExchange), eq(Config.startShopping), anyString());
         verify(rabbitTemplate, times(1)).convertAndSend(eq(Config.shopExchange), eq(Config.sessionExpired), anyString());
-
-        eventListener.processSessionExpiredMessage(session);
-        assertNull(clerkRepository.findOne(clerk.getUuid()));
-
-        Mockito.doReturn(10000l).when(timeoutPolicy).getTimeout();
-
-        user = createUserThatWillNotTimeout();
-        resultActions = mockMvc.perform(post("/shop/session/" + user.getUuid()))
-                .andExpect(status().isCreated()).andReturn();
-        data = resultActions.getResponse().getContentAsString();
-        clerk = objectMapper.readValue(data, Clerk.class);
-        assertNotNull(clerkRepository.findOne(clerk.getUuid()));
-        wait2secondsSoSessionWillBeRemovedAgain();
-        assertNotNull(clerkRepository.findOne(clerk.getUuid()));
     }
 
+    @Test
+    public void testSessionIsCompletedWhenOrderShippedIsReceived() throws Exception {
+        Mockito.doReturn(10000l).when(timeoutPolicy).getTimeout();
+        WebUser user = createUserThatWillNotTimeout();
+        MvcResult resultActions = mockMvc.perform(post("/shop/session/" + user.getUuid()))
+                .andExpect(status().isCreated()).andReturn();
+        String data = resultActions.getResponse().getContentAsString();
+        Clerk clerk = objectMapper.readValue(data, Clerk.class);
+        Session    session = shopManager.findSessionByClerk(clerk);
+        Message message = new Message(objectMapper.writeValueAsBytes(clerk), new MessageProperties());
+        eventListener.processOrderShippedMessage(message);
+        assertFalse(shopManager.getSessions().contains(session));
+        assertFalse(shopManager.getExpiredSessions().contains(session));
+    }
+
+    @Test
     public void testBasicSessionTimeoutBehaviour() throws Exception {
         WebUser user = new WebUser(UUID.randomUUID(), "u", "p");
         Clerk clerk = new Clerk(user);
@@ -120,9 +123,7 @@ public class ShopManagerTest extends TestBase {
         Session session = shopManager.findSessionByClerk(clerk);
         assertNotNull(session.getClerk());
         wait2secondsSoSessionWillBeRemovedAgain();
-        session = shopManager.findSessionByClerk(clerk);
-        assertNull(session);
-        assertEquals(1, shopManager.getExpiredSessions().size());
+        assertTrue(shopManager.getExpiredSessions().contains(session));
     }
 
     private void wait2secondsSoSessionWillBeRemovedAgain() {
