@@ -15,9 +15,12 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
+import org.springframework.amqp.core.Message;
+import org.springframework.amqp.core.MessageProperties;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.SpringApplicationConfiguration;
+import org.springframework.context.annotation.Bean;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MvcResult;
@@ -84,15 +87,14 @@ public class ClerkTest extends TestBase {
         clerk.setPayment(payment);
         clerk.setOrderr(orderr);
         clerk.setShipment(shipment);
-                                  /*
+
         Message dummyMessage = new Message(json(clerk).getBytes(), new MessageProperties());
         eventListener.processOrderCompletedMessage(dummyMessage);
         verify(rabbitTemplate, times(1)).convertAndSend(eq(Config.shopExchange), eq(Config.handlePayment), anyString());
 
         eventListener.processOrderPaidMessage(dummyMessage);
         verify(rabbitTemplate, times(1)).convertAndSend(eq(Config.shopExchange), eq(Config.handleFulfillment), anyString());
-                                    */
-        // TODO: fix test above
+
         // if orderShipped is received, expect order archived ??
     }
 

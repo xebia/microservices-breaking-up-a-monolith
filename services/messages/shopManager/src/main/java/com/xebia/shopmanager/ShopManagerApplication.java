@@ -33,14 +33,17 @@ public class ShopManagerApplication {
 
     @Bean
     public ConnectionFactory connectionFactory() {
+        LOG.info("creating connectionFactory");
         CachingConnectionFactory connectionFactory =
                 new CachingConnectionFactory(hostname, Integer.parseInt(port));
         connectionFactory.setConnectionTimeout(10);
+        LOG.info("connectionFactory returned");
         return connectionFactory;
     }
 
     public static void main(String[] args) {
-        ApplicationContext applicationContext = SpringApplication.run(ShopManagerApplication.class, args);
-        ShopManagerApplication application = applicationContext.getBean(ShopManagerApplication.class);
+        LOG.info("before run");
+        SpringApplication.run(ShopManagerApplication.class, args);
+        LOG.info("after run");
     }
 }

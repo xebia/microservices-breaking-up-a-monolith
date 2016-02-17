@@ -25,3 +25,7 @@ $DIR/rabbitmqadmin -H $RABBIT_MQ_HOST declare binding source="shop" destination=
 
 $DIR/rabbitmqadmin -H $RABBIT_MQ_HOST declare queue name="handleFulfillment"
 $DIR/rabbitmqadmin -H $RABBIT_MQ_HOST declare binding source="shop" destination="handleFulfillment" routing_key="handleFulfillment"
+
+$DIR/rabbitmqadmin -H $RABBIT_MQ_HOST declare queue name="sessionExpired"
+$DIR/rabbitmqadmin -H $RABBIT_MQ_HOST declare binding source="shop" destination="sessionExpired" routing_key="sessionExpired"
+
