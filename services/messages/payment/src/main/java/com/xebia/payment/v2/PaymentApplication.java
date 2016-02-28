@@ -40,6 +40,7 @@ public class PaymentApplication {
     public ConnectionFactory connectionFactory() {
         CachingConnectionFactory connectionFactory =
                 new CachingConnectionFactory(hostname, Integer.parseInt(port));
+        connectionFactory.setConnectionTimeout(10);
         return connectionFactory;
     }
 
@@ -53,7 +54,6 @@ public class PaymentApplication {
     @Bean
     public SwaggerSpringMvcPlugin customImplementation() {
         return new SwaggerSpringMvcPlugin(this.springSwaggerConfig)
-                //Root level documentation
                 .apiInfo(new ApiInfo(
                         "Payment API",
                         "This page provides details of the REST API for the Payment service",
@@ -63,7 +63,6 @@ public class PaymentApplication {
                         null
                 ))
                 .useDefaultResponseMessages(false)
-                        //Map the specific URL patterns into Swagger
                 .includePatterns("/.*");
     }
 

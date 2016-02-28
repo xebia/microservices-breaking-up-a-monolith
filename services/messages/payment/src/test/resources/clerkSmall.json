@@ -1,0 +1,17 @@
+{
+  "uuid": "a89a65ae-6d1a-42e5-a8f1-11b6d190286e",
+  "status": 0,
+  "webUser": {
+    "uuid": "f7871043-9224-4ac7-8f5b-67976ff54137",
+    "username": "webuser051dcde5-43d7-434d-b363-3dee6dc137ce",
+    "password": "password"
+  },
+  "payment": {
+    "uuid": "8a7aaa89-8e09-439f-b0eb-9175777c00d4",
+    "datePaid": 1456001061280,
+    "total": 0.0,
+    "cardId": "c123",
+    "description": null,
+    "orderUuid": null
+  }
+}

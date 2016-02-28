@@ -43,6 +43,7 @@ public class FulfillmentApplication {
     public ConnectionFactory connectionFactory() {
         CachingConnectionFactory connectionFactory =
                 new CachingConnectionFactory(hostname, Integer.parseInt(port));
+        connectionFactory.setConnectionTimeout(10);
         return connectionFactory;
     }
 

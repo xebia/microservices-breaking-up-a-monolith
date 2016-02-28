@@ -1,11 +1,12 @@
 package com.xebia.payment.v2.events;
 
-import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.xebia.payment.v2.Config;
 import com.xebia.payment.v2.domain.Clerk;
+import com.xebia.payment.v2.domain.Document;
 import com.xebia.payment.v2.domain.Payment;
 import com.xebia.payment.v2.repositories.ClerkRepository;
+import com.xebia.payment.v2.repositories.DocumentRepository;
 import com.xebia.payment.v2.repositories.PaymentRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,6 +15,7 @@ import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.UUID;
 import java.util.concurrent.CountDownLatch;
@@ -29,12 +31,15 @@ public class EventListener {
     private PaymentRepository paymentRepository;
 
     @Autowired
+    private DocumentRepository documentRepository;
+
+    @Autowired
     private ClerkRepository clerkRepository;
 
     @RabbitListener(queues = Config.handlePayment)
     public void processPaymentMessage(Object message) {
-        if(!(message instanceof byte[])) message = ((Message) message).getBody();
-        String content = new String((byte[])message, StandardCharsets.UTF_8);
+        if (!(message instanceof byte[])) message = ((Message) message).getBody();
+        String content = new String((byte[]) message, StandardCharsets.UTF_8);
         LOG.info("Received new order to be paid: " + content);
         try {
             createPayment(content);
@@ -53,9 +58,17 @@ public class EventListener {
         return payment;
     }
 
-    public Payment createPayment(String content) throws java.io.IOException {
-        mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-        Clerk clerk = mapper.readValue(content, Clerk.class);
+    public Payment createPayment(Document document) throws IOException {
+        if (document.getUuid() == null) {
+            document.setUuid(UUID.randomUUID());
+        }
+        documentRepository.save(document);
+        Clerk clerk = document.getClerk();
         return createPayment(clerk);
+    }
+
+    public Payment createPayment(String content) throws java.io.IOException {
+        Document document = new Document(content);
+        return createPayment(document);
     }
 }

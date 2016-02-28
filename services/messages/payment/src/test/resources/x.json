@@ -1,0 +1,36 @@
+{
+  "uuid": "72d5d5df-8ac0-42f3-a7f5-24f4e06725b2",
+  "status": 0,
+  "webUser": {
+    "uuid": "d38ffcac-3cd1-408d-96f1-58585fa9150e",
+    "username": "webuser4e62ed07-ed07-4c19-a1fc-3fb6776c6cb6",
+    "password": "password"
+  },
+  "orderr": {
+    "uuid": "518d694c-fbdd-4ccb-99d9-dece526150e3",
+    "ordered": 1456609979118,
+    "shippingAddress": "shippingAddress",
+    "status": "approved",
+    "total": 0.0
+  },
+  "payment": null,
+  "shipment": null,
+  "shoppingCart": {
+    "uuid": "d8497460-a200-4e3f-b299-4c8870a54ba5",
+    "created": 1456609979118,
+    "lineItems": [
+      {
+        "uuid": "352a8d34-3de9-4491-810e-8531bf8c5f9d",
+        "quantity": 8,
+        "price": 91.16839512254299,
+        "product": {
+          "uuid": "dd5ee4af-cad6-427a-ae5b-e1eaaec61055",
+          "name": "product918",
+          "supplier": "supplier",
+          "price": 91.16839512254299
+        }
+      }
+    ],
+    "total": 0.0
+  }
+}
