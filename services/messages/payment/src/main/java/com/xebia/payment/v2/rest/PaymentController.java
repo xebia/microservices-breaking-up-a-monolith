@@ -46,21 +46,16 @@ public class PaymentController {
     @RequestMapping(method = RequestMethod.PUT, value = "/pay/{paymentId}/creditcard/{cardNo}", produces = "application/json")
     public ResponseEntity<PaymentResource> pay(@PathVariable UUID paymentId, @PathVariable String cardNo, HttpServletRequest request) {
         LOG.info("URL: " + request.getRequestURL() + ", METHOD: " + request.getMethod() + ", CONTENT: paymentId=" + paymentId + ", cardNo=" + cardNo);
-        try {
-            Payment payment = updateDocument(paymentId, cardNo);
-            if (payment == null) {
-                LOG.info("payment: " + paymentId + " not found");
-                return new ResponseEntity(paymentId, HttpStatus.NOT_FOUND);
-            } else {
-                return new ResponseEntity(resourceAssembler.toResource(payment), HttpStatus.OK);
-            }
-        } catch (JsonProcessingException e) {
-            LOG.error("Error: " + e.getMessage());
-            return new ResponseEntity(HttpStatus.BAD_REQUEST);
+        Payment payment = updateDocument(paymentId, cardNo);
+        if (payment == null) {
+            LOG.info("payment: " + paymentId + " not found");
+            return new ResponseEntity(paymentId, HttpStatus.NOT_FOUND);
+        } else {
+            return new ResponseEntity(resourceAssembler.toResource(payment), HttpStatus.OK);
         }
     }
 
-    protected Payment updateDocument(UUID paymentId, String cardNo) throws JsonProcessingException {
+    protected Payment updateDocument(UUID paymentId, String cardNo) {
         Payment payment = paymentRepository.findOne(paymentId);
         if (payment == null) {
             LOG.info("payment: " + paymentId + " not found");

@@ -131,6 +131,7 @@ public class ScenarioTest {
         clerkRepository.save(clerk);
         paymentController.updateDocument(payment.getUuid(), "c123");
         verify(rabbitTemplate, times(1)).convertAndSend(eq(Config.shopExchange), anyString(), argument.capture());
+        // TODO: why is the status SHIPPED?
         assertTrue(argument.getValue().indexOf("\"status\":\"SHIPPED\"")>0);
     }
 

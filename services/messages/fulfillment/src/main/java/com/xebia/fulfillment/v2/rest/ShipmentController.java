@@ -1,13 +1,15 @@
 package com.xebia.fulfillment.v2.rest;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.xebia.fulfillment.v2.Config;
 import com.xebia.fulfillment.v2.domain.Clerk;
+import com.xebia.fulfillment.v2.domain.Document;
 import com.xebia.fulfillment.v2.domain.Shipment;
 import com.xebia.fulfillment.v2.repositories.ClerkRepository;
-import com.xebia.fulfillment.v2.repositories.OrderRepository;
+import com.xebia.fulfillment.v2.repositories.DocumentRepository;
 import com.xebia.fulfillment.v2.repositories.ShipmentRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -34,10 +36,10 @@ public class ShipmentController {
     RabbitTemplate rabbitTemplate;
 
     @Autowired
-    private OrderRepository orderRepository;
+    private ShipmentRepository shipmentRepository;
 
     @Autowired
-    private ShipmentRepository shipmentRepository;
+    DocumentRepository documentRepository;
 
     @Autowired
     ClerkRepository clerkRepository;
@@ -52,36 +54,41 @@ public class ShipmentController {
     }
 
     @RequestMapping(method = RequestMethod.GET, value = "/{id}")
-    public ResponseEntity<ShipmentResource> viewShipment(@PathVariable UUID id, HttpServletRequest request) {
+    public ResponseEntity<ShipmentResource> viewShipment(@PathVariable UUID uuid, HttpServletRequest request) {
         LOG.info("URL: " + request.getRequestURL() + ", METHOD: " + request.getMethod());
-        Shipment shipment = shipmentRepository.findOne(id);
+        Shipment shipment = shipmentRepository.findOne(uuid);
         if (shipment == null) {
             return new ResponseEntity<ShipmentResource>(HttpStatus.NOT_FOUND);
         }
-        ShipmentResource resource = shipmentResourceAssembler.toResource(shipment);
-        return new ResponseEntity<ShipmentResource>(resource, HttpStatus.OK);
+        return new ResponseEntity<ShipmentResource>(shipmentResourceAssembler.toResource(shipment), HttpStatus.OK);
     }
 
     @RequestMapping(method = RequestMethod.PUT, value = "/shipIt/{shipmentId}")
     public ResponseEntity<ShipmentResource> shipIt(@PathVariable UUID shipmentId, HttpServletRequest request) {
         LOG.info("URL: " + request.getRequestURL() + ", METHOD: " + request.getMethod() + ", CONTENT: shipmentId=" + shipmentId.toString());
-        Shipment shipment = shipmentRepository.findOne(shipmentId);
+        Shipment shipment = updateDocument(shipmentId);
         if (shipment == null) {
             return new ResponseEntity<ShipmentResource>(HttpStatus.NOT_FOUND);
+        } else {
+            return new ResponseEntity(shipmentResourceAssembler.toResource(shipment), HttpStatus.OK);
+        }
+    }
+
+    protected Shipment updateDocument(UUID shipmentId) {
+        Shipment shipment = shipmentRepository.findOne(shipmentId);
+        if (shipment == null) {
+            LOG.info("shipment: " + shipmentId + " not found");
+            return null;
         }
         shipment.ship();
         shipment = shipmentRepository.save(shipment);
         Clerk clerk = clerkRepository.findByShipment(shipment);
-        try {
-            String clerkAsJson = mapper.writeValueAsString(clerk);
-            LOG.info("Sending orderShipped event for clerk: \n" + clerkAsJson + "\n");
-            rabbitTemplate.convertAndSend(Config.shopExchange, Config.orderShipped, clerkAsJson);
-        } catch (Exception e) {
-            LOG.error("Error: " + e.getMessage());
-            return new ResponseEntity(HttpStatus.BAD_REQUEST);
-        }
-        ShipmentResource resource = shipmentResourceAssembler.toResource(shipment);
-        return new ResponseEntity<ShipmentResource>(resource, HttpStatus.OK);
+        Document document = documentRepository.findByClerkUuid(clerk.getUuid());
+        document.setClerk(clerk);
+        String documentAsJson = document.toString();
+        LOG.info("Sending orderShipped event, new document: \n" + documentAsJson + "\n");
+        rabbitTemplate.convertAndSend(Config.shopExchange, Config.orderShipped, documentAsJson);
+        return shipment;
     }
 
     @RequestMapping(method = RequestMethod.GET, value = "/forClerk/{clerkId}", produces = "application/json")

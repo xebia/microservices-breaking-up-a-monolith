@@ -10,6 +10,7 @@ import java.util.UUID;
 
 @Entity
 public class Clerk {
+    // TODO: set status and test.
     public final static int SHOPPING = 0;
     public final static int PAYING = 0;
     public final static int FULFILLING = 0;

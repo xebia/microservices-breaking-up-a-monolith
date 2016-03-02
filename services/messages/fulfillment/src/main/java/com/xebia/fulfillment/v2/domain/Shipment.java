@@ -1,5 +1,11 @@
 package com.xebia.fulfillment.v2.domain;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.fasterxml.jackson.databind.node.TextNode;
+
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import java.util.UUID;
@@ -11,10 +17,7 @@ public class Shipment {
     private String status;
     private String address;
 
-    public static final String SHIPPABLE = "SHIPPABLE";
     public static final String SHIPPED = "SHIPPED";
-    // TODO: remove after refactoring to Clerk is complete
-    public static final String TO_BE_PAID = "TO_BE_PAID";
 
     public Shipment() {
     }
@@ -23,6 +26,12 @@ public class Shipment {
         this.uuid = uuid;
         this.status = status;
         this.address = address;
+    }
+
+    public Shipment(JsonNode node) {
+        setUuid(UUID.fromString(node.get("uuid").asText()));
+        setAddress(node.get("address").asText());
+        setStatus(node.get("status").asText());
     }
 
     public Shipment(UUID uuid) {
@@ -66,15 +75,25 @@ public class Shipment {
                 '}';
     }
 
+    public ObjectNode asJson() throws JsonProcessingException {
+        ObjectMapper mapper = new ObjectMapper();
+        ObjectNode node = mapper.createObjectNode();
+        node.set("uuid", new TextNode(uuid.toString()));
+        if (status != null) {
+            node.set("status", new TextNode(status));
+        }
+        if (address != null) {
+            node.set("address", new TextNode(address));
+        }
+        return node;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-
         Shipment shipment = (Shipment) o;
-
         return uuid.equals(shipment.uuid);
-
     }
 
     @Override

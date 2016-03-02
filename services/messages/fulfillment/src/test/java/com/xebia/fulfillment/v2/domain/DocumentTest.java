@@ -1,4 +1,4 @@
-package com.xebia.payment.v2.domain;
+package com.xebia.fulfillment.v2.domain;
 
 import org.junit.Test;
 
@@ -13,10 +13,10 @@ public class DocumentTest {
 
     @Test
     public void testDocumentCanBeParsedFromJSON() throws IOException {
-        String doc = "{\"uuid\":\"cb62a983-ffb5-471e-9547-71d6d46a6440\",\"status\":0,\"payment\":{\"uuid\":\"3866bb81-5ef3-431a-9c2b-bfabc9ccfad9\",\"datePaid\":1456252444,\"total\":0.0,\"cardId\":\"c123\",\"description\":null}}";
+        String doc = "{\"uuid\":\"cb62a983-ffb5-471e-9547-71d6d46a6440\",\"status\":0,\"shipment\":{\"uuid\":\"3866bb81-5ef3-431a-9c2b-bfabc9ccfad9\",\"address\":\"myAddress\",\"status\":\"SHIPPED\"}}";
         Document document = new Document(doc);
         assertEquals("cb62a983-ffb5-471e-9547-71d6d46a6440", document.getClerk().getUuid().toString());
-        assertEquals(new Date(1456252444), document.getClerk().getPayment().getDatePaid());
+        assertEquals("myAddress", document.getClerk().getShipment().getAddress());
     }
 
     @Test
@@ -26,7 +26,7 @@ public class DocumentTest {
         assertEquals("a89a65ae-6d1a-42e5-a8f1-11b6d190286e", document.getClerk().getUuid().toString());
         String newData = document.toString();
         assertTrue(newData.indexOf("\"uuid\":\"" + document.getClerk().getUuid() + "\",") > 0);
-        assertTrue(newData.indexOf("\"cardId\":\"" + document.getClerk().getPayment().getCardId() + "\",") > 0);
+        assertTrue(newData.indexOf("\"address\":\"" + document.getClerk().getShipment().getAddress() + "\"") > 0);
         assertTrue(newData.indexOf("\"price\":51.420808805416065") > 0);
     }
 }

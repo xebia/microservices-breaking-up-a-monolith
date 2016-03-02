@@ -1,5 +1,6 @@
 package com.xebia.fulfillment.v2.domain;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import org.hibernate.annotations.Cascade;
 
 import javax.persistence.Entity;
@@ -9,94 +10,61 @@ import java.util.UUID;
 
 @Entity
 public class Clerk {
-    public final static int SHOPPING = 0;
-    public final static int PAYING = 0;
     public final static int FULFILLING = 0;
 
     @Id
     private UUID uuid;
-    private int status = SHOPPING;
-
-    @OneToOne(optional = false)
-    @Cascade(value={org.hibernate.annotations.CascadeType.MERGE})
-    private WebUser webUser;
+    private int status = FULFILLING;
     @OneToOne(optional = true)
-    @Cascade(value={org.hibernate.annotations.CascadeType.MERGE})
-    private Orderr orderr;
-    @OneToOne(optional = true)
-    @Cascade(value={org.hibernate.annotations.CascadeType.MERGE})
-    private Payment payment;
-    @OneToOne(optional = true)
-    @Cascade(value={org.hibernate.annotations.CascadeType.MERGE})
+    @Cascade(value = {org.hibernate.annotations.CascadeType.MERGE})
     private Shipment shipment;
-    @OneToOne(optional = true)
-    @Cascade(value={org.hibernate.annotations.CascadeType.MERGE})
-    private ShoppingCart shoppingCart;
 
-    public Clerk() {}
-    public Clerk(WebUser webUser, UUID uuid) {
-        this.webUser = webUser;
+    public Clerk() {
+    }
+
+    public Clerk(UUID uuid, int status) {
         this.uuid = uuid;
+        this.status = status;
     }
 
-    public Clerk(WebUser webUser) {
-        this.webUser = webUser;
-        this.uuid = UUID.randomUUID();
-    }
-
-    public ShoppingCart getShoppingCart() {
-        return shoppingCart;
-    }
-
-    public void setShoppingCart(ShoppingCart shoppingCart) {
-        this.shoppingCart = shoppingCart;
-    }
-
-    public void setShipment(Shipment shipment) {
-        this.shipment = shipment;
-    }
-
-    public Shipment getShipment() {
-        return shipment;
-    }
-
-    public void setPayment(Payment payment) {
-        this.payment = payment;
-    }
-
-    public Payment getPayment() {
-        return payment;
-    }
-
-    public Orderr getOrderr() {
-        return orderr;
-    }
-
-    public void setOrderr(Orderr orderr) {
-        this.orderr = orderr;
+    public Clerk(JsonNode document) {
+        setUuid(UUID.fromString(document.get("uuid").asText()));
+        setStatus(Integer.parseInt(document.get("status").asText()));
+        JsonNode shipmentNode = document.get("shipment");
+        if (shipmentNode != null && !shipmentNode.asText().equals("null")) {
+            this.setShipment(new Shipment(shipmentNode));
+        }
     }
 
     public int getStatus() {
         return status;
     }
 
-    public WebUser getWebUser() {
-        return webUser;
-    }
-
     public UUID getUuid() {
         return uuid;
+    }
+
+    public void setUuid(UUID uuid) {
+        this.uuid = uuid;
+    }
+
+    public void setStatus(int status) {
+        this.status = status;
+    }
+
+    public void setShipment(Shipment Shipment) {
+        this.shipment = Shipment;
+    }
+
+    public Shipment getShipment() {
+        return shipment;
     }
 
     @Override
     public String toString() {
         return "Clerk{" +
                 "uuid='" + uuid + '\'' +
-                ", status='" + status + '\'' +
-                ", orderr='" + orderr + '\'' +
-                ", payment='" + payment + '\'' +
-                ", cart='" + shoppingCart + '\'' +
-                ", webuser='" + webUser + "'}";
+                ", status='" + status + '\'' + "'}";
     }
 
     @Override

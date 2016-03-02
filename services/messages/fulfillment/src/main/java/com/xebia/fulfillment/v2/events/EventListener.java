@@ -1,12 +1,13 @@
 package com.xebia.fulfillment.v2.events;
 
-import java.nio.charset.StandardCharsets;
-import java.util.UUID;
-import java.util.concurrent.CountDownLatch;
-
-import com.xebia.fulfillment.v2.domain.Clerk;
-import com.xebia.fulfillment.v2.repositories.ClerkRepository;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.xebia.fulfillment.v2.Config;
+import com.xebia.fulfillment.v2.domain.Clerk;
+import com.xebia.fulfillment.v2.domain.Document;
+import com.xebia.fulfillment.v2.domain.Shipment;
+import com.xebia.fulfillment.v2.repositories.ClerkRepository;
+import com.xebia.fulfillment.v2.repositories.DocumentRepository;
+import com.xebia.fulfillment.v2.repositories.ShipmentRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.amqp.core.Message;
@@ -14,11 +15,10 @@ import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.xebia.fulfillment.v2.domain.Shipment;
-import com.xebia.fulfillment.v2.repositories.OrderRepository;
-import com.xebia.fulfillment.v2.repositories.ShipmentRepository;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.util.UUID;
+import java.util.concurrent.CountDownLatch;
 
 @Component
 public class EventListener {
@@ -28,12 +28,13 @@ public class EventListener {
 	private CountDownLatch latch = new CountDownLatch(1);
 
     @Autowired
-    private OrderRepository orderRepository;
-    @Autowired
     private ShipmentRepository shipmentRepository;
 
 	@Autowired
 	ClerkRepository clerkRepository;
+
+	@Autowired
+	DocumentRepository documentRepository;
 
 	@RabbitListener(queues = Config.handleFulfillment)
 	public void processFulfillmentMessage(Object message) {
@@ -48,7 +49,7 @@ public class EventListener {
 		latch.countDown();
 	}
 
-	public Shipment createShipment(Clerk clerk) throws java.io.IOException {
+	public Shipment createShipment(Clerk clerk) throws IOException {
 		Shipment shipment = new Shipment(UUID.randomUUID());
 		shipmentRepository.save(shipment);
 		clerk.setShipment(shipment);
@@ -57,10 +58,17 @@ public class EventListener {
 		return shipment;
 	}
 
-	public Shipment createShipment(String content) throws java.io.IOException {
-		mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-		Clerk clerk = mapper.readValue(content, Clerk.class);
+	public Shipment createShipment(Document document) throws IOException {
+		if (document.getUuid() == null) {
+			document.setUuid(UUID.randomUUID());
+		}
+		documentRepository.save(document);
+		Clerk clerk = document.getClerk();
 		return createShipment(clerk);
 	}
 
+	public Shipment createShipment(String content) throws IOException {
+		Document document = new Document(content);
+		return createShipment(document);
+	}
 }
