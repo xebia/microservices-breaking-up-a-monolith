@@ -1,11 +1,14 @@
 package com.xebia.payment.v2.domain;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.hibernate.annotations.Cascade;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.OneToOne;
+import javax.persistence.*;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.util.UUID;
 
 @Entity
@@ -15,12 +18,17 @@ public class Clerk {
     public final static int PAYING = 0;
     public final static int FULFILLING = 0;
 
+    private transient ObjectMapper mapper = new ObjectMapper();
+
     @Id
     private UUID uuid;
     private int status = SHOPPING;
     @OneToOne(optional = true)
     @Cascade(value = {org.hibernate.annotations.CascadeType.MERGE})
     private Payment payment;
+    @Column(columnDefinition = "clob")
+    @Lob
+    private String document;
 
     public Clerk() {
     }
@@ -28,13 +36,28 @@ public class Clerk {
     public Clerk(UUID uuid, int status) {
         this.uuid = uuid;
         this.status = status;
+        this.document = "{\"uuid\":\""+uuid+"\",\"status\":"+status+"}";
     }
 
-    public Clerk(JsonNode document) {
-        setUuid(UUID.fromString(document.get("uuid").asText()));
-        setStatus(Integer.parseInt(document.get("status").asText()));
-        JsonNode paymentNode = document.get("payment");
-        if (paymentNode != null && paymentNode.asText()!="null") {
+    public Clerk(String document) throws Exception {
+        loadFromString(document);
+    }
+
+    public Clerk(File file) throws Exception {
+        FileInputStream fis = new FileInputStream(file);
+        byte[] data = new byte[fis.available()];
+        fis.read(data);
+        fis.close();
+        loadFromString(new String(data));
+    }
+
+    private void loadFromString(String document) throws Exception {
+        this.document = document;
+        JsonNode jsonDocument = mapper.readValue(document, JsonNode.class);
+        this.uuid = UUID.fromString(jsonDocument.get("uuid").asText());
+        this.status = Integer.parseInt(jsonDocument.get("status").asText());
+        JsonNode paymentNode = jsonDocument.get("payment");
+        if (paymentNode != null && paymentNode.asText() != "null") {
             this.setPayment(new Payment(paymentNode));
         }
     }
@@ -55,12 +78,24 @@ public class Clerk {
         this.status = status;
     }
 
-    public void setPayment(Payment payment) {
+    public void setPayment(Payment payment) throws Exception {
         this.payment = payment;
     }
 
     public Payment getPayment() {
         return payment;
+    }
+
+    public void setDocument(String document) {
+        this.document = document;
+    }
+
+    public String getDocument() throws Exception {
+        ObjectMapper mapper = new ObjectMapper();
+        ObjectNode parsedDocument = (ObjectNode) mapper.readValue(document, JsonNode.class);
+        parsedDocument.replace("payment", this.payment.asJson());
+        this.document = mapper.writeValueAsString(parsedDocument);
+        return document;
     }
 
     @Override

@@ -3,10 +3,8 @@ package com.xebia.payment.v2.events;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.xebia.payment.v2.Config;
 import com.xebia.payment.v2.domain.Clerk;
-import com.xebia.payment.v2.domain.Document;
 import com.xebia.payment.v2.domain.Payment;
 import com.xebia.payment.v2.repositories.ClerkRepository;
-import com.xebia.payment.v2.repositories.DocumentRepository;
 import com.xebia.payment.v2.repositories.PaymentRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -31,9 +29,6 @@ public class EventListener {
     private PaymentRepository paymentRepository;
 
     @Autowired
-    private DocumentRepository documentRepository;
-
-    @Autowired
     private ClerkRepository clerkRepository;
 
     @RabbitListener(queues = Config.handlePayment)
@@ -49,7 +44,7 @@ public class EventListener {
         latch.countDown();
     }
 
-    public Payment createPayment(Clerk clerk) throws java.io.IOException {
+    public Payment createPayment(Clerk clerk) throws Exception {
         Payment payment = new Payment(UUID.randomUUID());
         paymentRepository.save(payment);
         clerk.setPayment(payment);
@@ -58,17 +53,8 @@ public class EventListener {
         return payment;
     }
 
-    public Payment createPayment(Document document) throws IOException {
-        if (document.getUuid() == null) {
-            document.setUuid(UUID.randomUUID());
-        }
-        documentRepository.save(document);
-        Clerk clerk = document.getClerk();
+    public Payment createPayment(String content) throws Exception {
+        Clerk clerk = new Clerk(content);
         return createPayment(clerk);
-    }
-
-    public Payment createPayment(String content) throws java.io.IOException {
-        Document document = new Document(content);
-        return createPayment(document);
     }
 }

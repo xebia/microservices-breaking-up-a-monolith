@@ -1,16 +1,13 @@
 package com.xebia.payment.v2.rest;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.xebia.payment.v2.Config;
 import com.xebia.payment.v2.PaymentApplication;
 import com.xebia.payment.v2.domain.Clerk;
-import com.xebia.payment.v2.domain.Document;
 import com.xebia.payment.v2.domain.Payment;
 import com.xebia.payment.v2.events.EventListener;
 import com.xebia.payment.v2.repositories.ClerkRepository;
-import com.xebia.payment.v2.repositories.DocumentRepository;
 import com.xebia.payment.v2.repositories.PaymentRepository;
 import org.junit.Before;
 import org.junit.Test;
@@ -19,7 +16,6 @@ import org.mockito.*;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.SpringApplicationConfiguration;
-import org.springframework.hateoas.alps.Doc;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
@@ -28,7 +24,6 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
 import java.io.File;
@@ -38,16 +33,14 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.UUID;
 
-import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.setup.MockMvcBuilders.webAppContextSetup;
 
@@ -73,9 +66,6 @@ public class ScenarioTest {
     PaymentRepository paymentRepository;
 
     @Autowired
-    DocumentRepository documentRepository;
-
-    @Autowired
     ClerkRepository clerkRepository;
 
     protected MediaType textType = new MediaType(MediaType.TEXT_PLAIN.getType());
@@ -96,11 +86,9 @@ public class ScenarioTest {
     @Test
     public void payForOrderTest() throws Exception {
         File file = new File(getClass().getClassLoader().getResource("basicDocument.json").getFile());
-        Document document = new Document(file);
-        Clerk clerk = document.getClerk();
+        Clerk clerk = new Clerk(file);
         clerk.setUuid(UUID.randomUUID());
-        document.setClerk(clerk);
-        Payment payment = eventListener.createPayment(document);
+        Payment payment = eventListener.createPayment(clerk);
         MvcResult resultActions;
         resultActions = mockMvc.perform(put("/payment/v2/pay/" + payment.getUuid() + "/creditcard/c123")
                 .contentType(jsonContentType))
@@ -122,30 +110,16 @@ public class ScenarioTest {
         Mockito.doNothing().when(rabbitTemplate).convertAndSend(anyString(), anyString(), anyString());
         ArgumentCaptor<String> argument = ArgumentCaptor.forClass(String.class);
         File file = new File(getClass().getClassLoader().getResource("clerk.json").getFile());
-        Document document = new Document(file);
-        documentRepository.save(document);
+        Clerk clerk = new Clerk(file);
+        clerkRepository.save(clerk);
         Payment payment = new Payment(UUID.randomUUID());
         paymentRepository.save(payment);
-        Clerk clerk = document.getClerk();
         clerk.setPayment(payment);
         clerkRepository.save(clerk);
         paymentController.updateDocument(payment.getUuid(), "c123");
         verify(rabbitTemplate, times(1)).convertAndSend(eq(Config.shopExchange), anyString(), argument.capture());
         // TODO: why is the status SHIPPED?
-        assertTrue(argument.getValue().indexOf("\"status\":\"SHIPPED\"")>0);
-    }
-
-    @Test
-    public void findDocumentByClerkTest() throws Exception{
-        File file = new File(getClass().getClassLoader().getResource("clerk.json").getFile());
-        Document document = new Document(file);
-        document.setUuid(UUID.randomUUID());
-        Clerk clerk = document.getClerk();
-        clerk.setUuid(UUID.randomUUID());
-        document.setClerk(clerk);
-        documentRepository.save(document);
-        Document document2 = documentRepository.findByClerkUuid(document.getClerk().getUuid());
-        assertEquals(document2.getUuid(), document.getUuid());
+        assertTrue(argument.getValue().indexOf("\"status\":\"SHIPPED\"") > 0);
     }
 
     protected String json(Object o) throws IOException {
