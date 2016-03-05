@@ -3,10 +3,8 @@ package com.xebia.fulfillment.v2.events;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.xebia.fulfillment.v2.Config;
 import com.xebia.fulfillment.v2.domain.Clerk;
-import com.xebia.fulfillment.v2.domain.Document;
 import com.xebia.fulfillment.v2.domain.Shipment;
 import com.xebia.fulfillment.v2.repositories.ClerkRepository;
-import com.xebia.fulfillment.v2.repositories.DocumentRepository;
 import com.xebia.fulfillment.v2.repositories.ShipmentRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -33,9 +31,6 @@ public class EventListener {
 	@Autowired
 	ClerkRepository clerkRepository;
 
-	@Autowired
-	DocumentRepository documentRepository;
-
 	@RabbitListener(queues = Config.handleFulfillment)
 	public void processFulfillmentMessage(Object message) {
 		if(!(message instanceof byte[])) message = ((Message) message).getBody();
@@ -49,7 +44,7 @@ public class EventListener {
 		latch.countDown();
 	}
 
-	public Shipment createShipment(Clerk clerk) throws IOException {
+	public Shipment createShipment(Clerk clerk) throws Exception {
 		Shipment shipment = new Shipment(UUID.randomUUID());
 		shipmentRepository.save(shipment);
 		clerk.setShipment(shipment);
@@ -58,17 +53,8 @@ public class EventListener {
 		return shipment;
 	}
 
-	public Shipment createShipment(Document document) throws IOException {
-		if (document.getUuid() == null) {
-			document.setUuid(UUID.randomUUID());
-		}
-		documentRepository.save(document);
-		Clerk clerk = document.getClerk();
+	public Shipment createShipment(String content) throws Exception {
+		Clerk clerk = new Clerk(content);
 		return createShipment(clerk);
-	}
-
-	public Shipment createShipment(String content) throws IOException {
-		Document document = new Document(content);
-		return createShipment(document);
 	}
 }

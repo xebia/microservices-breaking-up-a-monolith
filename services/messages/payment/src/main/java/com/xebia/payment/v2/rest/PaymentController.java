@@ -71,6 +71,9 @@ public class PaymentController {
     public ResponseEntity<PaymentResource> getOne(@PathVariable UUID paymentId, HttpServletRequest request) {
         LOG.info("URL: " + request.getRequestURL() + ", METHOD: " + request.getMethod());
         Payment payment = paymentRepository.findOne(paymentId);
+        if (payment == null) {
+            return new ResponseEntity<PaymentResource>(HttpStatus.NOT_FOUND);
+        }
         PaymentResource paymentResource = new PaymentResourceAssembler().toResource(payment);
         return new ResponseEntity(paymentResource, HttpStatus.OK);
     }

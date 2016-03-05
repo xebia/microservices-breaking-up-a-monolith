@@ -6,10 +6,8 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.xebia.fulfillment.v2.Config;
 import com.xebia.fulfillment.v2.domain.Clerk;
-import com.xebia.fulfillment.v2.domain.Document;
 import com.xebia.fulfillment.v2.domain.Shipment;
 import com.xebia.fulfillment.v2.repositories.ClerkRepository;
-import com.xebia.fulfillment.v2.repositories.DocumentRepository;
 import com.xebia.fulfillment.v2.repositories.ShipmentRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,8 +25,8 @@ import java.util.UUID;
 
 @RestController
 @RequestMapping("/fulfillment/v2/")
-@JsonIgnoreProperties(ignoreUnknown = true)
 public class ShipmentController {
+    private ObjectMapper mapper = new ObjectMapper();
 
     private static Logger LOG = LoggerFactory.getLogger(ShipmentController.class);
 
@@ -39,14 +37,9 @@ public class ShipmentController {
     private ShipmentRepository shipmentRepository;
 
     @Autowired
-    DocumentRepository documentRepository;
-
-    @Autowired
     ClerkRepository clerkRepository;
 
     private ShipmentResourceAssembler shipmentResourceAssembler = new ShipmentResourceAssembler();
-
-    ObjectMapper mapper;
 
     public ShipmentController() {
         mapper = new ObjectMapper();
@@ -66,28 +59,27 @@ public class ShipmentController {
     @RequestMapping(method = RequestMethod.PUT, value = "/shipIt/{shipmentId}")
     public ResponseEntity<ShipmentResource> shipIt(@PathVariable UUID shipmentId, HttpServletRequest request) {
         LOG.info("URL: " + request.getRequestURL() + ", METHOD: " + request.getMethod() + ", CONTENT: shipmentId=" + shipmentId.toString());
+        try {
         Shipment shipment = updateDocument(shipmentId);
-        if (shipment == null) {
-            return new ResponseEntity<ShipmentResource>(HttpStatus.NOT_FOUND);
-        } else {
             return new ResponseEntity(shipmentResourceAssembler.toResource(shipment), HttpStatus.OK);
-        }
+        } catch (Exception e) {
+                LOG.info("shipment: " + shipmentId + " not found");
+                return new ResponseEntity<ShipmentResource>(HttpStatus.NOT_FOUND);
+            }
     }
 
-    protected Shipment updateDocument(UUID shipmentId) {
+    protected Shipment updateDocument(UUID shipmentId) throws Exception {
         Shipment shipment = shipmentRepository.findOne(shipmentId);
         if (shipment == null) {
             LOG.info("shipment: " + shipmentId + " not found");
-            return null;
+            throw new NoDataFoundException();
         }
         shipment.ship();
         shipment = shipmentRepository.save(shipment);
         Clerk clerk = clerkRepository.findByShipment(shipment);
-        Document document = documentRepository.findByClerkUuid(clerk.getUuid());
-        document.setClerk(clerk);
-        String documentAsJson = document.toString();
-        LOG.info("Sending orderShipped event, new document: \n" + documentAsJson + "\n");
-        rabbitTemplate.convertAndSend(Config.shopExchange, Config.orderShipped, documentAsJson);
+
+        LOG.info("Sending orderShipped event, new document: \n" + clerk.getDocument() + "\n");
+        rabbitTemplate.convertAndSend(Config.shopExchange, Config.orderShipped, clerk.getDocument());
         return shipment;
     }
 
@@ -97,7 +89,7 @@ public class ShipmentController {
         Clerk clerk = clerkRepository.findOne(clerkId);
         Shipment shipment = clerk.getShipment();
         ShipmentResource resource = new ShipmentResourceAssembler().toResource(shipment);
-        return new ResponseEntity<ShipmentResource>(resource, HttpStatus.OK);
+        return new ResponseEntity(resource, HttpStatus.OK);
     }
 
 }
