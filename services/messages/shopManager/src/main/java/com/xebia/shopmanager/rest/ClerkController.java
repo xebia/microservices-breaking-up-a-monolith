@@ -54,35 +54,32 @@ public class ClerkController {
         if (user == null) {
             return new ResponseEntity(HttpStatus.NOT_FOUND);
         }
-        Clerk clerk = new Clerk(user);
-        clerkRepository.save(clerk);
-        ClerkResource resource = clerkResourceAssembler.toResource(clerk);
-        shopManager.registerClerk(clerk);
         try {
+            Clerk clerk = new Clerk(user);
+            clerkRepository.save(clerk);
+            ClerkResource resource = clerkResourceAssembler.toResource(clerk);
+            shopManager.registerClerk(clerk);
             String clerkAsJson = mapper.writeValueAsString(clerk);
             LOG.info("Sending startShopping event for clerk: \n" + clerkAsJson + "\n");
             rabbitTemplate.convertAndSend(Config.shopExchange, Config.startShopping, clerkAsJson);
             return new ResponseEntity(resource, HttpStatus.CREATED);
         } catch (Exception e) {
             LOG.error("Error: " + e.getMessage());
-            return new ResponseEntity(resource, HttpStatus.BAD_REQUEST);
+            return new ResponseEntity(HttpStatus.BAD_REQUEST);
         }
     }
 
     @RequestMapping(method = RequestMethod.GET, value = "/{uuid}", produces = "application/json")
     public ResponseEntity<ClerkResource> clerk(@PathVariable UUID uuid, HttpServletRequest request) {
-        LOG.info("URL: "+ request.getRequestURL()+ ", METHOD: "+ request.getMethod());
+        LOG.info("URL: " + request.getRequestURL() + ", METHOD: " + request.getMethod());
         Clerk clerk = clerkRepository.findOne(uuid);
         if (clerk != null) {
-            ClerkResource resource = clerkResourceAssembler.toResource(clerk);
             try {
-                String data = mapper.writeValueAsString(clerk);
-                LOG.info("Clerk in get by uuid: " + data);
-                LOG.info("resource: " + resource);
+                return new ResponseEntity(clerk.getDocument(), HttpStatus.OK);
             } catch (Exception e) {
                 e.printStackTrace();
+                return new ResponseEntity(HttpStatus.BAD_REQUEST);
             }
-            return new ResponseEntity(resource, HttpStatus.OK);
         } else {
             return new ResponseEntity(HttpStatus.NOT_FOUND);
         }

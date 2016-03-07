@@ -18,3 +18,5 @@ each process uses the correct version of each service. maybe, topic based versio
 alongside shopmanager version without problems
 - use a document to ship state around, keep away from magic technology because it causes code bloat
 and tighter coupling between business code and interface.
+- Try out Kamon to monitor request flow
+- Try out Netflix libs to track Clerk process and stop if it takes to long
