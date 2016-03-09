@@ -2,9 +2,7 @@ package com.xebia.shop.v2.domain;
 
 import org.hibernate.annotations.Cascade;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.OneToOne;
+import javax.persistence.*;
 import java.util.UUID;
 
 @Entity
@@ -32,6 +30,9 @@ public class Clerk {
     @OneToOne(optional = true)
     @Cascade(value={org.hibernate.annotations.CascadeType.MERGE})
     private ShoppingCart shoppingCart;
+    @Column(columnDefinition = "clob")
+    @Lob
+    private String document;
 
     public Clerk() {}
     public Clerk(WebUser webUser, UUID uuid) {
@@ -86,6 +87,14 @@ public class Clerk {
 
     public UUID getUuid() {
         return uuid;
+    }
+
+    public String getDocument() {
+        return document;
+    }
+
+    public void setDocument(String document) {
+        this.document = document;
     }
 
     @Override

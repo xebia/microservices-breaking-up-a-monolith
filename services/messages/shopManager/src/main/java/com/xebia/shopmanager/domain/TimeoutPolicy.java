@@ -4,7 +4,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class TimeoutPolicy {
-    private long timeout = 10000;
+    private long timeout = 1000000;
 
     public TimeoutPolicy() {}
 

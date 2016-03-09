@@ -1,8 +1,14 @@
 package com.xebia.payment.v2.domain;
 
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.*;
+
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.UUID;
 
@@ -27,7 +33,16 @@ public class Payment {
         this.description = description;
     }
 
-    public Payment() {}
+    public Payment() {
+    }
+
+    public Payment(JsonNode node) {
+        setUuid(UUID.fromString(node.get("uuid").asText()));
+        setDescription(node.get("description").asText());
+        setCardId(node.get("cardId").asText());
+        setDatePaid(new Date(node.get("datePaid").asLong()));
+        setTotal(node.get("total").asDouble());
+    }
 
     public String getCardId() {
         return cardId;
@@ -94,5 +109,20 @@ public class Payment {
                 ", cardId='" + cardId + '\'' +
                 ", description='" + description + '\'' +
                 '}';
+    }
+
+    public ObjectNode asJson() throws JsonProcessingException {
+        ObjectMapper mapper = new ObjectMapper();
+        ObjectNode node = mapper.createObjectNode();
+        node.set("uuid", new TextNode(uuid.toString()));
+        if (datePaid != null) {
+            node.set("datePaid", new LongNode(datePaid.getTime()));
+        }
+        node.set("total", new DoubleNode(total));
+        node.set("cardId", new TextNode(cardId));
+        if (description != null) {
+            node.set("description", new TextNode(description));
+        }
+        return node;
     }
 }

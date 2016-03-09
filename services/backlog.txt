@@ -8,3 +8,15 @@ Backlog
 - try out scale on demand, mesos? swarm?
 - design a user interface
 - 
+
+blog:
+
+- coordinator is necessary because process by itself is a concept in the domain, 
+to organise process, clean up junk.
+- versioning by deploying multiple versions of the container. needs routing component to make sure
+each process uses the correct version of each service. maybe, topic based version could live 
+alongside shopmanager version without problems
+- use a document to ship state around, keep away from magic technology because it causes code bloat
+and tighter coupling between business code and interface.
+- Try out Kamon to monitor request flow
+- Try out Netflix libs to track Clerk process and stop if it takes to long

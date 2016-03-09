@@ -1,0 +1,48 @@
+{
+  "uuid": "a89a65ae-6d1a-42e5-a8f1-11b6d190286e",
+  "status": 0,
+  "webUser": {
+    "uuid": "f7871043-9224-4ac7-8f5b-67976ff54137",
+    "username": "webuser051dcde5-43d7-434d-b363-3dee6dc137ce",
+    "password": "password"
+  },
+  "orderr": {
+    "uuid": "662dbb25-cf36-440b-998a-93bac6abbdaf",
+    "ordered": 1456001059094,
+    "shippingAddress": "shippingAddress",
+    "status": "approved",
+    "total": 0.0,
+    "paymentReceived": false
+  },
+  "payment": {
+    "uuid": "8a7aaa89-8e09-439f-b0eb-9175777c00d4",
+    "datePaid": 1456001061280,
+    "total": 0.0,
+    "cardId": "c123",
+    "description": null,
+    "orderUuid": null
+  },
+  "shipment": {
+    "uuid": "431666b4-3876-414f-8dbe-e62a6296d4de",
+    "status": "SHIPPED",
+    "address": null
+  },
+  "shoppingCart": {
+    "uuid": "10d90fc8-258a-4b1c-8460-ee5ec7004845",
+    "created": 1456001059094,
+    "lineItems": [
+      {
+        "uuid": "01d3abcc-d3ee-463b-ab3e-664fd2c7b8d1",
+        "quantity": 8,
+        "price": 51.420808805416065,
+        "product": {
+          "uuid": "e35bac5e-de07-4067-a7e0-315dff6afb0a",
+          "name": "product600",
+          "supplier": "supplier",
+          "price": 51.420808805416065
+        }
+      }
+    ],
+    "total": 0.0
+  }
+}

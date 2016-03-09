@@ -1,6 +1,5 @@
 package com.xebia.payment.v2.events;
 
-import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.xebia.payment.v2.Config;
 import com.xebia.payment.v2.domain.Clerk;
@@ -14,6 +13,7 @@ import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.UUID;
 import java.util.concurrent.CountDownLatch;
@@ -33,8 +33,8 @@ public class EventListener {
 
     @RabbitListener(queues = Config.handlePayment)
     public void processPaymentMessage(Object message) {
-        if(!(message instanceof byte[])) message = ((Message) message).getBody();
-        String content = new String((byte[])message, StandardCharsets.UTF_8);
+        if (!(message instanceof byte[])) message = ((Message) message).getBody();
+        String content = new String((byte[]) message, StandardCharsets.UTF_8);
         LOG.info("Received new order to be paid: " + content);
         try {
             createPayment(content);
@@ -44,7 +44,7 @@ public class EventListener {
         latch.countDown();
     }
 
-    public Payment createPayment(Clerk clerk) throws java.io.IOException {
+    public Payment createPayment(Clerk clerk) throws Exception {
         Payment payment = new Payment(UUID.randomUUID());
         paymentRepository.save(payment);
         clerk.setPayment(payment);
@@ -53,9 +53,8 @@ public class EventListener {
         return payment;
     }
 
-    public Payment createPayment(String content) throws java.io.IOException {
-        mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-        Clerk clerk = mapper.readValue(content, Clerk.class);
+    public Payment createPayment(String content) throws Exception {
+        Clerk clerk = new Clerk(content);
         return createPayment(clerk);
     }
 }

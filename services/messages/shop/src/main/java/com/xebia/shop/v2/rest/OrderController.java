@@ -43,11 +43,11 @@ public class OrderController {
         Orderr orderr = orderRepository.findOne(orderId);
 
         if (orderr == null) {
-            return new ResponseEntity<OrderResource>(HttpStatus.NOT_FOUND);
+            return new ResponseEntity(HttpStatus.NOT_FOUND);
         }
         OrderResource resource = orderAssembler.toResource(orderr);
 
-        return new ResponseEntity<OrderResource>(resource, HttpStatus.OK);
+        return new ResponseEntity(resource, HttpStatus.OK);
     }
 
     @RequestMapping(method = RequestMethod.PUT, consumes = "application/json", produces = "application/json")
@@ -55,7 +55,7 @@ public class OrderController {
         LOG.info("URL: " + request.getRequestURL() + ", METHOD: " + request.getMethod() + ", CONTENT: orderId=" + orderr.getUuid());
         orderr = orderRepository.save(orderr);
         OrderResource resource = orderAssembler.toResource(orderr);
-        return new ResponseEntity<OrderResource>(resource, HttpStatus.OK);
+        return new ResponseEntity(resource, HttpStatus.OK);
     }
 
     @RequestMapping(method = RequestMethod.PUT, value = "/{orderId}/approve", produces = "application/json")
@@ -77,11 +77,11 @@ public class OrderController {
             }
 
             OrderResource resource = orderAssembler.toResource(orderr);
-            return new ResponseEntity<OrderResource>(resource, HttpStatus.OK);
+            return new ResponseEntity(resource, HttpStatus.OK);
         } else {
             OrderResource resource = orderAssembler.toResource(orderr);
             LOG.info("Could not approve order with ID: " + orderId);
-            return new ResponseEntity<OrderResource>(resource, HttpStatus.FORBIDDEN);
+            return new ResponseEntity(resource, HttpStatus.FORBIDDEN);
         }
     }
 

@@ -1,3 +1,13 @@
+# Parse document using basic JSON
+
+The previous version of the shop required the full JSON document to be sent around. To parse the document we
+used Springs JSON integration. Because of that decision each service now needs all of the domain classes. The goal of
+this version is to introduce light weight JSON parsing and remove the dependency on Spring JSON. Each service will
+parse the Clerk document only in as far as necessary to retrieve the data it needs. 
+
+# History
+
+
 # Process coordinator
 
 This version of the shop will use an extra service that coordinates the process. The architecture is based on 

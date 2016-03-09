@@ -1,8 +1,17 @@
 package com.xebia.shopmanager.domain;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.DoubleNode;
+import com.fasterxml.jackson.databind.node.LongNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.fasterxml.jackson.databind.node.TextNode;
+
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.OneToOne;
+import java.util.Date;
 import java.util.UUID;
 
 @Entity
@@ -19,6 +28,12 @@ public class WebUser {
         this.uuid = uuid;
         this.password = password;
         this.username = username;
+    }
+
+    public WebUser(JsonNode node) {
+        setUuid(UUID.fromString(node.get("uuid").asText()));
+        setUsername(node.get("username").asText());
+        setPassword(node.get("password").asText());
     }
 
     public WebUser(String username, String password) {
@@ -47,6 +62,19 @@ public class WebUser {
 
     public void setUuid(UUID uuid) {
         this.uuid = uuid;
+    }
+
+    public ObjectNode asJson() throws JsonProcessingException {
+        ObjectMapper mapper = new ObjectMapper();
+        ObjectNode node = mapper.createObjectNode();
+        node.set("uuid", new TextNode(uuid.toString()));
+        if (username != null) {
+            node.set("username", new TextNode(username.toString()));
+        }
+        if (password != null) {
+            node.set("password", new TextNode(password.toString()));
+        }
+        return node;
     }
 
     @Override
