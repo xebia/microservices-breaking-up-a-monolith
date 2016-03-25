@@ -2,7 +2,7 @@ digraph G {
 # Legend
 	subgraph cluster_legend {
 		node [ style=filled ];
-		Aggregate [ color=green,shape=box ];
+		Aggregate [ color=green ];
 		Event [ color=orange ];
 		Query [ color=lightblue ];
 		Command [ color=yellow ];

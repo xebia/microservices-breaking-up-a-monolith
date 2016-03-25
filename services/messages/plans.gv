@@ -1,0 +1,29 @@
+digraph G {
+
+	subgraph cluster_model {
+    # Stages
+		node [color=green, style=filled, shape=oval];
+		Monolith [ label="Monolith" ];
+		BasicServices [ label="Basic Services" ];
+		ProcessAsAService [ label="Process as s Service" ]
+		node [color=grey, style=filled, shape=oval];
+		MovingState [ label="Moving State" ];
+		Messaging [ label="Messaging" ];
+		WhoKnows [ label="WhoKnows?"]
+
+
+	# Other topics
+		node [color=grey, style=filled, shape=oval];
+		Docker [ label=Docker ];
+		MultipleProcesses [ label="Multiple Processes" ];
+		ConcurrentVersion [ label="Concurrent Versions" ];
+
+    # Order
+		{ Monolith } ->  BasicServices;
+		{ BasicServices } -> ProcessAsAService;
+		{ ProcessAsAService } -> { MovingState, Docker };
+		{ MovingState } -> { Messaging, ConcurrentVersion, MultipleProcesses };
+		{ Messaging} -> WhoKnows;
+
+	}
+}
