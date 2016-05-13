@@ -33,10 +33,9 @@ public class IndexResource {
     return "<p>" +
       "I am the shop manager, my includes:" +
       "</p>"+
-      "<div>" +
+      "<div style=\"color:#0000FF\">" +
         "<esi:include src=\"/user\"/>" +
-      "</div>" +
-      "<div>" +
+      "</div style=\"color:#FAEBD7\">" +
         "<esi:include src=\"/shop/index.html\"/>" +
       "</div>";
   }
