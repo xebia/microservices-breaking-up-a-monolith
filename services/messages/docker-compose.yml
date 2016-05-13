@@ -1,40 +1,63 @@
-rabbit:
-  image: rabbitmq:3-management
-  ports:
-   - "15672:15672"
-   - "4369:4369"
-   - "5672:5672"
-   - "25672:25672"
-shopmanager:
-  image: xebia/shopmanager
-  ports:
-   - "9005:9005"
-  depends_on:
-   - "rabbit"
-shop:
-  image: xebia/shop_msg_v2
-  ports:
-   - "9002:9002"
-  depends_on:
-   - "rabbit"
-catalog:
-  image: xebia/catalog_msg
-  ports:
-   - "9000:9000"
-  depends_on:
-   - "rabbit"
-fulfillment:
-  image: xebia/fulfillment_msg_v2
-  ports:
-   - "9003:9003"
-  depends_on:
-   - "rabbit"
-payment:
-  image: xebia/payment_msg_v2
-  ports:
-   - "9001:9001"
-  depends_on:
-   - "rabbit"
+version: "2"
+services:
+  rabbit:
+    image: rabbitmq:3-management
+    ports:
+     - "15672:15672"
+     - "4369:4369"
+     - "5672:5672"
+     - "25672:25672"
+  rabbitsetup:
+    image: xebia/rabbitmq_msg_setup
+    links:
+     - rabbit
+    depends_on:
+     - "rabbit"
+  shopmanager:
+    image: xebia/shopmanager
+    ports:
+     - "9005:9005"
+    links:
+     - rabbit
+    depends_on:
+     - "rabbit"
+     - "rabbitsetup"
+  shop:
+    image: xebia/shop_msg_v2
+    ports:
+     - "9002:9002"
+    links:
+     - rabbit
+    depends_on:
+     - "rabbit"
+     - "rabbitsetup"
+  catalog:
+    image: xebia/catalog_msg
+    ports:
+     - "9000:9000"
+    links:
+     - rabbit
+    depends_on:
+     - "rabbit"
+     - "rabbitsetup"
+  fulfillment:
+    image: xebia/fulfillment_msg_v2
+    ports:
+     - "9003:9003"
+    links:
+     - rabbit
+    depends_on:
+     - "rabbit"
+     - "rabbitsetup"
+  payment:
+    image: xebia/payment_msg_v2
+    ports:
+     - "9001:9001"
+    links:
+     - rabbit
+    depends_on:
+     - "rabbit"
+     - "rabbitsetup"
 
 
 
