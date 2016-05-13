@@ -15,18 +15,10 @@ public class IndexResource {
         return "<!DOCTYPE html\n" +
           "PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\"\n" +
           "\"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">\n" +
-          "<!--\n" +
-          "This is a skeleton html file that you can use to get you started on each new\n" +
-          "HTML project\n" +
-          "\n" +
-          "Name: Your Name Here\n" +
-          "Class: CIS 3303\n" +
-          "Section: x\n" +
-          "-->\n" +
           "<html>\n" +
           "\n" +
           "<head>\n" +
-          "<title>My Title</title>\n" +
+          "<title>Vertical microservices app</title>\n" +
           "</head>\n" +
           "\n" +
           "<body>\n" +
@@ -38,6 +30,14 @@ public class IndexResource {
     }
 
   private String getBody() {
-    return "I am the shop manager";
+    return "<p>" +
+      "I am the shop manager, my includes:" +
+      "</p>"+
+      "<div>" +
+        "<esi:include src=\"/user\"/>" +
+      "</div>" +
+      "<div>" +
+        "<esi:include src=\"/shop/index.html\"/>" +
+      "</div>";
   }
 }
