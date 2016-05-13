@@ -2,21 +2,29 @@ Backlog
 
 - wrap services in a Docker container (see /Users/jan/dev/microservices/micro-a/containers)
 - replace Rabbit with Kafka
-	- find out what status of integration/Vagrantfile in micro-a project is 
+	- find out what status of integration/Vagrantfile in micro-a project is
 - investigate performance hit of introducing queues
 	- notify/query pattern
 - try out scale on demand, mesos? swarm?
 - design a user interface
-- 
+
+- one change at a time
+- support for multiple versions
+- try and migrate clients from v1 interface to v2 interface
+- follow request using some log trace tool
+- allocate response time budget to limit time use by a single service
+- routing based on version
+
 
 blog:
 
-- coordinator is necessary because process by itself is a concept in the domain, 
+- coordinator is necessary because process by itself is a concept in the domain,
 to organise process, clean up junk.
 - versioning by deploying multiple versions of the container. needs routing component to make sure
-each process uses the correct version of each service. maybe, topic based version could live 
+each process uses the correct version of each service. maybe, topic based version could live
 alongside shopmanager version without problems
 - use a document to ship state around, keep away from magic technology because it causes code bloat
 and tighter coupling between business code and interface.
 - Try out Kamon to monitor request flow
 - Try out Netflix libs to track Clerk process and stop if it takes to long
+
