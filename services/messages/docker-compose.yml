@@ -1,0 +1,33 @@
+shopmanager:
+  image: xebia/shopmanager
+  ports:
+   - "9005:9005"
+shop:
+  image: xebia/shop_msg_v2
+  ports:
+   - "9002:9002"
+catalog:
+  image: xebia/catalog_msg
+  ports:
+   - "9000:9000"
+fulfillment:
+  image: xebia/fulfillment_msg_v2
+  ports:
+   - "9003:9003"
+payment:
+  image: xebia/payment_msg_v2
+  ports:
+   - "9001:9001"
+rabbit:
+  image: rabbitmq:3-management
+  ports:
+   - "15672:15672"
+   - "4369:4369"
+   - "5672:5672"
+   - "25672:25672"
+
+
+
+
+
+
