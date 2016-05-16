@@ -58,6 +58,15 @@ services:
     depends_on:
      - "rabbit"
      - "rabbitsetup"
+  varnish:
+    image: xebia/varnish_msg
+    ports:
+     - "80:80"
+    links:
+     - "shopmanager"
+     - "shop"
+     - "payment"
+     - "fulfillment"
 
 
 
