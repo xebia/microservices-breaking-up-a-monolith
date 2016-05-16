@@ -31,7 +31,11 @@ public class WebUserController {
         if (users.size() > 0) {
             return new ResponseEntity<WebUserResource>(HttpStatus.FORBIDDEN);
         }
-        WebUser newWebUser = new WebUser(UUID.randomUUID(), webUserResource.getUsername(), webUserResource.getPassword());
+        return createWebUser(webUserResource.getUsername(),webUserResource.getPassword());
+    }
+
+    public ResponseEntity<WebUserResource> createWebUser(String username, String password) {
+        WebUser newWebUser = new WebUser(UUID.randomUUID(), username, password);
         WebUser webUser = webUserRepository.save(newWebUser);
         WebUserResource resource = webUserAssembler.toResource(webUser);
         return new ResponseEntity<WebUserResource>(resource, HttpStatus.CREATED);

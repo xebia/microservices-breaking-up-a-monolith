@@ -11,6 +11,7 @@ import java.util.UUID;
 
 public class WebUserResource extends ResourceSupport {
 
+
     private UUID uuid;
     private String password;
     private String username;
@@ -24,6 +25,7 @@ public class WebUserResource extends ResourceSupport {
         this.username = username;
         this.password = password;
     }
+
 
     public WebUserResource() {
     }
