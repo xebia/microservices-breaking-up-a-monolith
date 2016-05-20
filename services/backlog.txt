@@ -27,3 +27,4 @@ alongside shopmanager version without problems
 and tighter coupling between business code and interface.
 - Try out Kamon to monitor request flow
 - Try out Netflix libs to track Clerk process and stop if it takes to long
+
