@@ -2,12 +2,12 @@
 
 /**
  * @ngdoc function
- * @name angularTest3App.controller:AboutCtrl
+ * @name shop-app.controller:AboutCtrl
  * @description
  * # AboutCtrl
- * Controller of the angularTest3App
+ * Controller of the shop-app
  */
-angular.module('angularTest3App')
+angular.module('shop-app')
 
   //.service('itemslist', function($http) {
 

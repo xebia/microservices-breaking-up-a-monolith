@@ -15,7 +15,7 @@
     <link rel="stylesheet" href="styles/main.css">
     <!-- endbuild -->
   </head>
-  <body ng-app="angularTest3App">
+  <body ng-app="shop-app">
     <!--[if lt IE 7]>
       <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
     <![endif]-->
@@ -24,17 +24,22 @@
     <div class="container">
       <div class="header">
         <ul class="nav nav-pills pull-right">
-          <li class="active"><a ng-href="#main">Home</a></li>
-          <li><a ng-href="#/about">About</a></li>
-          <li><a ng-href="#">Contact</a></li>
+          <li class="active">
+            <a ng-href="#main">Home</a>
+          </li>
         </ul>
-        <h3 class="text-muted">angularTest3</h3>
+        <h3 class="text-muted">shop-app</h3>
       </div>
 
-      <div ng-view></div>
+        <div ng-view></div>
+        <!--
+        <div ng-include src="'views/shop.html'"></div>
+        <div ng-include src="'views/payment.html'"></div>
+        <div ng-include src="'views/fulfillment.html'"></div>
+            -->
 
-      <div class="footer">
-        <p><span class="glyphicon glyphicon-heart"></span> from the Yeoman team</p>
+        <div class="footer">
+        <p><span class="glyphicon glyphicon-heart"></span> </p>
       </div>
     </div>
 

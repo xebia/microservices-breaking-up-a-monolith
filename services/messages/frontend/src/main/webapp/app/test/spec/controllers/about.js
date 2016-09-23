@@ -3,7 +3,7 @@
 describe('Controller: AboutCtrl', function () {
 
   // load the controller's module
-  beforeEach(module('angularTest3App'));
+  beforeEach(module('shop-app'));
 
   var AboutCtrl,
     scope;

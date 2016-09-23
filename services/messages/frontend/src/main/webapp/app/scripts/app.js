@@ -2,14 +2,14 @@
 
 /**
  * @ngdoc overview
- * @name angularTest3App
+ * @name shop-app
  * @description
- * # angularTest3App
+ * # shop-app
  *
  * Main module of the application.
  */
 angular
-  .module('angularTest3App', [
+  .module('shop-app', [
     'ngAnimate',
     'ngCookies',
     'ngResource',
@@ -20,24 +20,12 @@ angular
   .config(function ($routeProvider) {
     $routeProvider
       .when('/', {
-        templateUrl: 'views/main.html',
-        controller: 'MainCtrl'
+        templateUrl: 'views/clerk.html',
+        controller: 'ClerkCtrl'
       })
-      .when('/main', {
-              templateUrl: 'views/main.html',
-              controller: 'MainCtrl'
-      })
-      .when('/about', {
-        templateUrl: 'views/about.html',
-        controller: 'AboutCtrl'
-      })
-      .when('/edit/:projectId', {
-        controller: 'ItemCtrl',
-        templateUrl: 'detail.html',
-      })
-      .when('/new', {
-        controller: 'ItemCtrl',
-        templateUrl: 'detail.html',
+      .when('/clerk', {
+              templateUrl: 'views/clerk.html',
+              controller: 'ClerkCtrl'
       })
       .otherwise({
         redirectTo: '/'
