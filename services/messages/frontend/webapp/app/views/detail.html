@@ -1,0 +1,22 @@
+<form name="myForm">
+    <div class="control-group" ng-class="{error: myForm.name.$invalid && !myForm.name.$pristine}">
+        <label>Name</label>
+        <input type="text" name="name" ng-model="itemCtrl.item.name" required>
+        <span ng-show="myForm.name.$error.required && !myForm.name.$pristine" class="help-inline">
+            Required {{myForm.name.$pristine}}</span>
+    </div>
+    <div class="control-group" ng-class="{error: myForm.url.$invalid && !myForm.url.$pristine}">
+        <label>Website</label>
+        <input type="url" name="url" ng-model="itemCtrl.item.url" required>
+        <span ng-show="myForm.url.$error.required && !myForm.url.$pristine" class="help-inline">
+            Required</span>
+        <span ng-show="myForm.url.$error.url" class="help-inline">
+            Not a URL</span>
+    </div>
+    <label>Description</label>
+    <textarea name="description" ng-model="itemCtrl.item.description"></textarea>
+    <br>
+    <a href="#/" class="btn">Cancel</a>
+    <button ng-click="itemCtrl.save()" ng-disabled="myForm.$invalid" class="btn btn-primary">Save</button>
+    <button ng-click="itemCtrl.destroy()" ng-show="itemCtrl.item.$id" class="btn btn-danger">Delete</button>
+</form>

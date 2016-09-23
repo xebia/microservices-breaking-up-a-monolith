@@ -16,6 +16,7 @@
         <module>shop</module>
         <module>payment</module>
         <module>shopmanager</module>
+        <module>frontend</module>
     </modules>
 
     <build>
