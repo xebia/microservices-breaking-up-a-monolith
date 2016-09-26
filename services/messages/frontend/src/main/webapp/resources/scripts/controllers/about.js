@@ -7,7 +7,7 @@
  * # AboutCtrl
  * Controller of the shop-app
  */
-angular.module('shop-app')
+angular.module('about')
 
   //.service('itemslist', function($http) {
 

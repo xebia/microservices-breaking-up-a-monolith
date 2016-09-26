@@ -7,7 +7,7 @@
  * # ClerkCtrl
  * Controller of the shop-app
  */
-angular.module('shop-app')
+angular.module('clerk')
 
   .controller('ClerkCtrl', function($scope) {
 
