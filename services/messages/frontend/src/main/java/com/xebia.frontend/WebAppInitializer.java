@@ -1,4 +1,4 @@
-package com.javacodegeeks.examples;
+package com.xebia.frontend;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;

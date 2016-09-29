@@ -1,4 +1,4 @@
-package com.javacodegeeks.examples.controller;
+package com.xebia.frontend.controller;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -9,6 +9,6 @@ public class MainController {
 
     @RequestMapping(value="/",method = RequestMethod.GET)
     public String homepage(){
-        return "index";
+        return "index.html";
     }
 }
