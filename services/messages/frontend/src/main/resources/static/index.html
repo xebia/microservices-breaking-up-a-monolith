@@ -13,23 +13,23 @@
 </head>
 <body>
 <h2>Administrator Panel</h2>
-<div class="home-section">
-    <ul class="menu-list">
-        <li><a href="#/users">Users</a></li>
-        <li><a href="#/roles">Roles</a></li>
-    </ul>
-    <div ng-include src="'views/clerk.html'"></div>
-    <div ng-include src="'views/shop.html'"></div>
-    <div ng-include src="'views/payment.html'"></div>
-    <div ng-include src="'views/fulfillment.html'"></div>
-
+<div class="container menu-box">
+    <a href="#/users">Users</a>
+    <a href="#/roles">Roles</a>
 </div>
+
+    <div ng-include src="'views/clerk.html'" class="box1 container"></div>
+  <!--  <div ng-include src="'views/shop.html'"></div>
+    <div ng-include src="'views/payment.html'"></div>    -->
+    <div ng-include src="'views/fulfillment.html'" class="box1 container"></div>
+
 <div ng-view></div>
 <script src="/webjars/angularjs/1.4.9/angular.js"></script>
 <script src="/webjars/angularjs/1.4.9/angular-resource.js"></script>
 <script src="/webjars/angularjs/1.4.9/angular-route.js"></script>
 <script src="/js/app.js"></script>
 <script src="/js/controller.js"></script>
+<script src="/js/services.js"></script>
 <link rel="stylesheet" href="/webjars/bootstrap/3.3.6/css/bootstrap.css">
 </body>
 </html>

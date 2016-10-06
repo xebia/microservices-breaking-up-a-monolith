@@ -1,6 +1,6 @@
-<p>Clerk</p>
 <div ng-controller="clerkController">
 
+    <!--
     <form name="myForm">
         <label>
             User name:
@@ -19,8 +19,24 @@
       <span class="error" ng-show="myForm.password.$error.required">
        Required!</span>
         </div>
-
     </form>
+   -->
+    <table class="table table-striped">
+        <thead>
+        <tr>
+            <th>Items</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr ng-repeat="item in itemslist">
+            <td><a ng-href="{{item.url}}" target="_blank">{{item.name}}</a></td>
+            <td>{{item.description}}</td>
+            <td>
+                <a ng-href="#/edit/{{item.$id}}">link<i class="icon-pencil"></i></a>
+            </td>
+        </tr>
+        </tbody>
+    </table>
 
 </div>
 

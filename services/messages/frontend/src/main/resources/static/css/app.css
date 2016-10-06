@@ -1,10 +1,18 @@
 .menu-list{
     padding-left: 30px;
     padding-top: 20px;
+    background: #ECF6CE;
+}
+.menu-box{
+    background: #ECF6CE;
+    float: left;
+    display: block;
+    border: 2px solid #585858;
+    margin-bottom: 10px;
 }
 .home-section{
     float:left;
-    width: 10%;
+    width: 30%;
 }
 .section{
     margin-left: 10%;
@@ -12,4 +20,12 @@
 }
 .photo{
     padding-right: 5px;
+}
+
+.box1{
+    background-color: #E1F5A9;
+    float: left;
+    display: block;
+    border: 2px solid #585858;
+    margin-bottom: 10px;
 }
