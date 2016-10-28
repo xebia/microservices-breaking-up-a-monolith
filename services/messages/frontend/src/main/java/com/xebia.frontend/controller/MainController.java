@@ -22,15 +22,33 @@ public class MainController {
         return "index.html";
     }
 
-    @RequestMapping("/list")
+    @RequestMapping("/clerk/list")
     @ResponseBody
-    String standardResponse() {
+    String listOfClerks() {
         logger.info("List method called!!");
         String json = "";
 
         List<Item> items = new ArrayList<Item>();
-        items.add(new Item("1","Angular", "https://angularjs.org/", "Angular description"));
-        items.add(new Item("2","Spring", "https://spring.io/", "Spring description"));
+        items.add(new Item("1","clerk 1", "https://angularjs.org/", "Clerk 1 description"));
+        items.add(new Item("2","clerk 2", "https://spring.io/", "Clerk 2 description"));
+        json = itemsToJson(items);
+
+        return json;
+    }
+
+    @RequestMapping("/fulfillment/list")
+    @ResponseBody
+    String listOfFulfillments() {
+        logger.info("List method called!!");
+
+        List<Item> items = new ArrayList<Item>();
+        items.add(new Item("1","fulfillment 1", "https://angularjs.org/", "Fulfillment 1 description"));
+        items.add(new Item("2","fulfillment 2", "https://spring.io/", "Fulfillment 2 description"));
+        return itemsToJson(items);
+    }
+
+    private String itemsToJson(List<Item> items) {
+        String json = "[]";
         ObjectMapper objectMapper = new ObjectMapper();
 
         try {
@@ -40,7 +58,6 @@ public class MainController {
         catch (JsonProcessingException ex){
             logger.error(ex.getMessage());
         }
-
         return json;
     }
 
