@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @Controller
@@ -29,8 +30,9 @@ public class MainController {
         String json = "";
 
         List<Item> items = new ArrayList<Item>();
-        items.add(new Item("1","clerk 1", "https://angularjs.org/", "Clerk 1 description"));
-        items.add(new Item("2","clerk 2", "https://spring.io/", "Clerk 2 description"));
+        Date date = new Date();
+        items.add(new Item("1","clerk 1", "https://angularjs.org/", "Clerk 1 " + date));
+        items.add(new Item("2","clerk 2", "https://spring.io/", "Clerk 2 " + date));
         json = itemsToJson(items);
 
         return json;
