@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -24,9 +25,10 @@ public class MainController {
     }
 
     @RequestMapping("/clerk/list")
+    @CrossOrigin(origins = "http://localhost:*")
     @ResponseBody
     String listOfClerks() {
-        logger.info("List method called!!");
+        logger.info(">>>> 8082 - clerk - List method");
         String json = "";
 
         List<Item> items = new ArrayList<Item>();
@@ -41,7 +43,7 @@ public class MainController {
     @RequestMapping("/fulfillment/list")
     @ResponseBody
     String listOfFulfillments() {
-        logger.info("List method called!!");
+        logger.info(">>>> 8082 - fulfillment - List method");
 
         List<Item> items = new ArrayList<Item>();
         items.add(new Item("1","fulfillment 1", "https://angularjs.org/", "Fulfillment 1 description"));

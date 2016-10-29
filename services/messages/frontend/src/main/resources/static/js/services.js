@@ -3,5 +3,5 @@ app.service("Clerks", function($resource) {
 })
 
 app.service("Fulfillments", function($resource) {
-    return $resource("http://localhost:8082/fulfillment/list");
+    return $resource("http://localhost:8083/fulfillment/list");
 })
