@@ -1,25 +1,28 @@
 <!DOCTYPE html>
-<!--[if lt IE 7]>      <html lang="en" ng-app="app" class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
-<!--[if IE 7]>         <html lang="en" ng-app="app" class="no-js lt-ie9 lt-ie8"> <![endif]-->
-<!--[if IE 8]>         <html lang="en" ng-app="app" class="no-js lt-ie9"> <![endif]-->
-<!--[if gt IE 8]><!--> <html lang="en" ng-app="app" class="no-js"> <!--<![endif]-->
+<!--[if lt IE 7]>
+<html lang="en" ng-app="app" class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>
+<html lang="en" ng-app="app" class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>
+<html lang="en" ng-app="app" class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]><!-->
+<html lang="en" ng-app="app" class="no-js"> <!--<![endif]-->
 <head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>Spring boot and Angularjs Tutorial</title>
-    <meta name="description" content="">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="/css/app.css">
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>Spring boot and Angularjs Tutorial</title>
+  <meta name="description" content="">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="/css/app.css">
 </head>
 <body>
-<h2>Administrator Panel</h2>
-<div class="container menu-box">
+<div ng-controller="navigation as nav" class="container">
+  <ul class="nav nav-pills" role="tablist">
+    <li class="active"><a href="#/">home</a></li>
+    <li><a href="#/login">login</a></li>
+    <li ng-show="authenticated"><a href="" ng-click="nav.logout()">logout</a></li>
+  </ul>
 </div>
-
-    <div ng-include src="'views/clerk.html'" class="box1 container"></div>
-  <!--  <div ng-include src="'views/shop.html'"></div>
-    <div ng-include src="'views/payment.html'"></div>    -->
-    <div ng-include src="'views/fulfillment.html'" class="box1 container"></div>
 
 <div ng-view></div>
 <script src="/webjars/angularjs/1.4.9/angular.js"></script>
