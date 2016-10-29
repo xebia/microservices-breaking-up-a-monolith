@@ -40,17 +40,6 @@ public class MainController {
         return json;
     }
 
-    @RequestMapping("/fulfillment/list")
-    @ResponseBody
-    String listOfFulfillments() {
-        logger.info(">>>> 8082 - fulfillment - List method");
-
-        List<Item> items = new ArrayList<Item>();
-        items.add(new Item("1","fulfillment 1", "https://angularjs.org/", "Fulfillment 1 description"));
-        items.add(new Item("2","fulfillment 2", "https://spring.io/", "Fulfillment 2 description"));
-        return itemsToJson(items);
-    }
-
     private String itemsToJson(List<Item> items) {
         String json = "[]";
         ObjectMapper objectMapper = new ObjectMapper();
