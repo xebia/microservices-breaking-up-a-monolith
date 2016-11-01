@@ -4,17 +4,16 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.context.annotation.Bean;
+import org.springframework.session.web.http.HeaderHttpSessionStrategy;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-@Controller
+@RestController
 public class MainController {
 
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
@@ -25,7 +24,8 @@ public class MainController {
     }
 
     @RequestMapping("/fulfillment/list")
-    @CrossOrigin(origins = "http://localhost:8082")
+    @CrossOrigin(origins = "http://localhost:8082", maxAge = 3600,
+        allowedHeaders={"x-auth-token", "x-requested-with"})
     @ResponseBody
     String listOfFulfillments() {
         logger.info(">>>> 8083 - Fulfillment - List method");
@@ -34,6 +34,11 @@ public class MainController {
         items.add(new Item("1","fulfillment 1", "https://angularjs.org/", "Fulfillment 1 " + date));
         items.add(new Item("2","fulfillment 2", "https://spring.io/", "Fulfillment 2 " + date));
         return itemsToJson(items);
+    }
+
+    @Bean
+    HeaderHttpSessionStrategy sessionStrategy() {
+        return new HeaderHttpSessionStrategy();
     }
 
     private String itemsToJson(List<Item> items) {

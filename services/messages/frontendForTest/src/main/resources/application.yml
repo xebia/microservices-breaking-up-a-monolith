@@ -1,5 +1,6 @@
 security:
   user:
     password: password
+  sessions: NEVER
 server:
   port: 8083
