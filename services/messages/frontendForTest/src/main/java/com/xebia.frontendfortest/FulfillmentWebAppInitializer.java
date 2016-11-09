@@ -13,9 +13,6 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.session.web.http.HeaderHttpSessionStrategy;
 import org.springframework.web.bind.annotation.RestController;
 
-@Configuration
-@EnableAutoConfiguration
-@ComponentScan("com.xebia.frontendfortest")
 @SpringBootApplication
 @RestController
 public class FulfillmentWebAppInitializer extends WebSecurityConfigurerAdapter {
