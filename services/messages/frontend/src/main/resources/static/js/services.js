@@ -3,14 +3,15 @@ app.service("Clerks", function($resource) {
 })
 
 app.service("Fulfillments", function($resource, $http) {
-    return $resource($http.get('token')
-    .then(function(response) {
-            $http({
-              url : 'http://localhost:8083/fulfillment/list',
+
+    var token= $resource("http://localhost:8082/token").get;
+
+    var res = $resource('http://localhost:8083/fulfillment/list', {}, {
+        get: {
               method : 'GET',
-              headers : {
-                'X-Auth-Token' : response.data.token
-              }
+              isArray:false,
+              headers : {'X-Auth-Token' : token}
+            },
             });
-        }));
+    return res;
 })

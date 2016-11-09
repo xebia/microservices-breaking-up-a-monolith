@@ -21,10 +21,6 @@ import java.security.Principal;
 import java.util.Collections;
 import java.util.Map;
 
-
-@Configuration
-@EnableAutoConfiguration
-@ComponentScan("com.xebia.frontend")
 @SpringBootApplication
 @RestController
 public class ClerkWebAppInitializer {
@@ -35,26 +31,29 @@ public class ClerkWebAppInitializer {
   protected static class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
+      // @formatter:off
       http
-          .httpBasic()
-          .and()
+          .httpBasic().and()
+          .logout().and()
           .authorizeRequests()
           .antMatchers("/index.html", "/home.html", "/login.html", "/").permitAll()
           .anyRequest().authenticated().and()
           .csrf()
           .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse());
+      // @formatter:on
     }
   }
 
   @RequestMapping("/user")
   public Principal user(Principal user) {
-    logger.info("/user");
+    logger.info("/user: " + user);
     return user;
   }
 
   @RequestMapping("/token")
   @ResponseBody
   public Map<String,String> token(HttpSession session) {
+    logger.info("/token: " + session.getId());
     return Collections.singletonMap("token", session.getId());
   }
 
