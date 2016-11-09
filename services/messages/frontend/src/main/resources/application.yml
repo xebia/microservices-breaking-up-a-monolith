@@ -3,3 +3,6 @@ security:
     password: password
 server:
   port: 8082
+spring:
+  session:
+    store-type: redis
