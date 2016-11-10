@@ -4,10 +4,22 @@ app.controller('clerkController', function($scope, Clerks) {
     });
 });
 
-app.controller('fulfillmentController', function($scope, Fulfillments) {
-    Fulfillments.query(function(data) {
-        $scope.fulfillmentslist = data;
-    });
+app.controller('fulfillmentController', function($scope, $http) {
+//    Fulfillments.query(function(data) {
+//        $scope.fulfillmentslist = data;
+//    });
+    $http.get('token').success(function(token) {
+    		$http({
+    			url : 'http://localhost:8083/fulfillment/list',
+    			method : 'GET',
+    			headers : {
+    				'X-Auth-Token' : token.token
+    			}
+    		}).success(function(data) {
+               $scope.fulfillmentslist = data;
+    		});
+    	})
+
 });
 
 app.controller('navigation',

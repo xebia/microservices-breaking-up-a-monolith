@@ -3,8 +3,6 @@ security:
     password: password
 server:
   port: 8082
-logging:
-  level:
-    org.springframework:
-      security: DEBUG
-      session: TRACE
+spring:
+  session:
+    store-type: redis
