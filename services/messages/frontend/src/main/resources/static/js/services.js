@@ -1,4 +1,4 @@
-app.service("Clerks", function($resource) {
+dapp.service("Clerks", function($resource) {
     return $resource("http://localhost:8082/clerk/list");
 })
 
