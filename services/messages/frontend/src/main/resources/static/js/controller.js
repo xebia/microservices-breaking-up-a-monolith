@@ -4,23 +4,10 @@ app.controller('clerkController', function($scope, Clerks) {
     });
 });
 
-app.controller('fulfillmentController', function($scope, $http) {
-//    Fulfillments.query(function(data) {
-//        $scope.fulfillmentslist = data;
-//    });
-    $http.get('token').success(function(token) {
-    		$http({
-    			url : '/fulfillment/list',
-    			method : 'GET',
-    			headers : {
-    				'X-Auth-Token' : token.token
-    			}
-    		}).success(function(data) {
-               $scope.fulfillmentslist = data;
-    		});
-    	})
-
-});
+app.controller('fulfillmentController', function($scope, Fulfillments, $http) {
+    Fulfillments.fetchFulfillments().then(function(result) {
+        $scope.fulfillmentslist = result.data;
+    });
 
 app.controller('navigation',
 
@@ -28,28 +15,26 @@ app.controller('navigation',
 
          var self = this
 
-         var authenticate = function(credentials, callback) {
+         var authenticate = function(credentials) {
            var headers = credentials ? {authorization : "Basic "
                + btoa(credentials.username + ":" + credentials.password)
            } : {};
 
-           $http.get('user', {headers : headers}).then(function(response) {
+           return $http.get('user', {headers : headers}).then(function(response) {
              if (response.data.name) {
                $rootScope.authenticated = true;
              } else {
                $rootScope.authenticated = false;
              }
-             callback && callback();
            }, function() {
              $rootScope.authenticated = false;
-             callback && callback();
            });
          }
 
          authenticate();
          self.credentials = {};
          self.login = function() {
-             authenticate(self.credentials, function() {
+             authenticate (self.credentials).then(function() {
                if ($rootScope.authenticated) {
                  $location.path("/");
                  self.error = false;
