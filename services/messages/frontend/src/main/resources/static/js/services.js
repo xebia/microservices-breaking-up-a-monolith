@@ -1,28 +1,19 @@
-dapp.service("Clerks", function($resource) {
+app.service("Clerks", function($resource) {
     return $resource("http://localhost:8082/clerk/list");
 })
 
-app.service("Fulfillments", function($http) {
-    $http.get('token').success(function(token) {
-		$http({
-			url : 'http://localhost:8083/fulfillment/list',
-			method : 'GET',
-			headers : {
-				'X-Auth-Token' : token.token
-			}
-		}).success(function(data) {
-           return data
-		});
-	})
+app.service("Fulfillments", function($resource, $http) {
+        this.fetchFulfillments = function() { return $http.get('token').then(function(result) {
+    		return $http({
+    			url : 'http://localhost:8083/fulfillment/list',
+    			method : 'GET',
+    			headers : {
+    				'X-Auth-Token' : result.data.token
+    			}
+    		});
+    	})
+    	}
 
-//    return $resource($http.get('token')
-//    .then(function(response) {
-//            $http({
-//              url : 'http://localhost:8083/fulfillment/list',
-//              method : 'GET',
-//              headers : {
-//                'X-Auth-Token' : response.data.token
-//              }
-//            });
-//        }));
 })
+
+
