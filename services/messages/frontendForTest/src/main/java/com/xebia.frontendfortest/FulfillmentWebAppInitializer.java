@@ -12,18 +12,23 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.web.csrf.CsrfTokenRepository;
 import org.springframework.security.web.csrf.HttpSessionCsrfTokenRepository;
+import org.springframework.session.data.redis.config.annotation.web.http.EnableRedisHttpSession;
 import org.springframework.session.web.http.HeaderHttpSessionStrategy;
 import org.springframework.web.bind.annotation.RestController;
 
 @SpringBootApplication
+@EnableRedisHttpSession
 @RestController
 @Order(SecurityProperties.ACCESS_OVERRIDE_ORDER)
-public class FulfillmentWebAppInitializer extends WebSecurityConfigurerAdapter {
+public class FulfillmentWebAppInitializer extends WebSecurityConfigurerAdapter  {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http.cors().and().authorizeRequests()
-                .anyRequest().authenticated();
+  //      http.cors().and().authorizeRequests()
+  //              .anyRequest().authenticated();
+        http.httpBasic().disable();
+        http.authorizeRequests().anyRequest().authenticated();
+
     }
 
 

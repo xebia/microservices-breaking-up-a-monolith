@@ -17,8 +17,7 @@ import java.util.Date;
 import java.util.List;
 
 @RestController
-@EnableRedisHttpSession
-@Order(Ordered.HIGHEST_PRECEDENCE)
+//@Order(Ordered.HIGHEST_PRECEDENCE)
 public class MainController {
 
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
@@ -29,9 +28,9 @@ public class MainController {
     }
 
     @RequestMapping("/fulfillment/list")
-    @CrossOrigin(origins = "*", maxAge = 3600)
+//    @CrossOrigin(origins = "*", maxAge = 3600)
 //    @CrossOrigin(origins = "http://localhost:8082", maxAge = 3600,
-//        allowedHeaders={"x-auth-token", "x-requested-with"})
+//       allowedHeaders={"x-auth-token", "x-requested-with"})
     @ResponseBody
     String listOfFulfillments() {
         logger.info(">>>> 8083 - Fulfillment - List method");
@@ -42,10 +41,6 @@ public class MainController {
         return itemsToJson(items);
     }
 
-    @Bean
-    HeaderHttpSessionStrategy sessionStrategy() {
-        return new HeaderHttpSessionStrategy();
-    }
 
     private String itemsToJson(List<Item> items) {
         String json = "[]";
