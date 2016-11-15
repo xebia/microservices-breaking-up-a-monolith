@@ -10,7 +10,7 @@ app.controller('fulfillmentController', function($scope, $http) {
 //    });
     $http.get('token').success(function(token) {
     		$http({
-    			url : 'http://localhost:8083/fulfillment/list',
+    			url : '/fulfillment/list',
     			method : 'GET',
     			headers : {
     				'X-Auth-Token' : token.token

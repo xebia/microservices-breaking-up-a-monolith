@@ -6,3 +6,9 @@ server:
 spring:
   session:
     store-type: redis
+zuul:
+  routes:
+    resource:
+      path: /fulfillment/**
+      url: http://localhost:8083/fulfillment
+      sensitive-headers:

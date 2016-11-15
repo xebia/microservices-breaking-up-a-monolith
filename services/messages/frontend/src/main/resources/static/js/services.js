@@ -15,14 +15,4 @@ app.service("Fulfillments", function($http) {
 		});
 	})
 
-//    return $resource($http.get('token')
-//    .then(function(response) {
-//            $http({
-//              url : 'http://localhost:8083/fulfillment/list',
-//              method : 'GET',
-//              headers : {
-//                'X-Auth-Token' : response.data.token
-//              }
-//            });
-//        }));
 })
