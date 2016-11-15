@@ -8,11 +8,11 @@ app.controller('fulfillmentController', function($scope, Fulfillments, $http) {
     Fulfillments.fetchFulfillments().then(function(result) {
         $scope.fulfillmentslist = result.data;
     });
+});
 
 app.controller('navigation',
 
      function($rootScope, $http, $location) {
-
          var self = this
 
          var authenticate = function(credentials) {
