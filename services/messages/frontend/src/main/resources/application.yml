@@ -1,11 +1,15 @@
 security:
-  user:
-    password: password
+  oauth2:
+    client:
+      clientId: 6098cda20f6484d544e6
+      clientSecret: 67807937a2de55967d969b9d458b33e635b0390c
+      accessTokenUri: https://github.com/login/oauth/access_token
+      userAuthorizationUri: https://github.com/login/oauth/authorize
+      clientAuthenticationScheme: form
+    resource:
+      userInfoUri: https://api.github.com/user
 server:
   port: 8082
-spring:
-  session:
-    store-type: redis
 zuul:
   routes:
     resource:

@@ -19,9 +19,12 @@
 <div ng-controller="navigation as nav" class="container">
   <ul class="nav nav-pills" role="tablist">
     <li class="active"><a href="#/">home</a></li>
-    <li><a href="#/login">login</a></li>
+    <li><a href="/login">login</a></li>
     <li ng-show="authenticated"><a href="" ng-click="nav.logout()">logout</a></li>
   </ul>
+  <div class="container" ng-show="authenticated">
+    Logged in as: <span ng-bind="user"></span>
+  </div>
 </div>
 
 <div ng-view></div>

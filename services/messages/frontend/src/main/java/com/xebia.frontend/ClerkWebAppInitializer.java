@@ -6,6 +6,8 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.security.SecurityProperties;
+import org.springframework.boot.autoconfigure.security.oauth2.client.EnableOAuth2Sso;
+import org.springframework.boot.autoconfigure.security.oauth2.client.OAuth2SsoDefaultConfiguration;
 import org.springframework.cloud.netflix.zuul.EnableZuulProxy;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
@@ -13,7 +15,6 @@ import org.springframework.core.annotation.Order;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.web.csrf.*;
-import org.springframework.session.data.redis.config.annotation.web.http.EnableRedisHttpSession;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -34,27 +35,35 @@ import javax.servlet.FilterChain;
 import javax.servlet.http.Cookie;
 
 
-@Configuration
-@EnableAutoConfiguration
 @ComponentScan("com.xebia.frontend")
 @SpringBootApplication
 @EnableZuulProxy
 @RestController
-@EnableRedisHttpSession
-public class ClerkWebAppInitializer {
+//@EnableRedisHttpSession
+@EnableOAuth2Sso
+public class ClerkWebAppInitializer extends WebSecurityConfigurerAdapter {
   private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-  @Configuration
-  @Order(SecurityProperties.ACCESS_OVERRIDE_ORDER)
-  protected static class SecurityConfiguration extends WebSecurityConfigurerAdapter {
+    @RequestMapping("/user")
+    public Principal user(Principal user) {
+    return user;
+  }
+
     @Override
-    protected void configure(HttpSecurity http) throws Exception {
-      http.httpBasic().and().authorizeRequests()
-              .antMatchers("/index.html", "/home.html", "/login.html", "/").permitAll().anyRequest()
-              .authenticated().and().csrf()
-              .csrfTokenRepository(csrfTokenRepository()).and()
-              .addFilterAfter(csrfHeaderFilter(), CsrfFilter.class);
+    public void configure(HttpSecurity http) throws Exception {
+
+
+        http.antMatcher("/**").authorizeRequests().antMatchers("/", "/index.html", "/login**", "/webjars/**").permitAll().anyRequest()
+                .authenticated()
+                .and()
+                .csrf()
+                .csrfTokenRepository(csrfTokenRepository())
+                .and()
+                .addFilterAfter(csrfHeaderFilter(), CsrfFilter.class)
+      ;
+
     }
+
 
     private Filter csrfHeaderFilter() {
       return new OncePerRequestFilter() {
@@ -84,24 +93,12 @@ public class ClerkWebAppInitializer {
       repository.setHeaderName("X-XSRF-TOKEN");
       return repository;
     }
-  }
 
-
-
-  @RequestMapping("/user")
-  public Principal user(Principal user) {
-    logger.info("/user");
-    return user;
-  }
-
-  @RequestMapping("/token")
-  @ResponseBody
-  public Map<String,String> token(HttpSession session) {
-    return Collections.singletonMap("token", session.getId());
-  }
 
   public static void main(String[] args) throws Exception {
     SpringApplication.run(ClerkWebAppInitializer.class, args);
   }
+
+
 }
 

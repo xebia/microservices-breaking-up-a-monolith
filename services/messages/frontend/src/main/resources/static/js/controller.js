@@ -4,54 +4,43 @@ app.controller('clerkController', function($scope, Clerks) {
     });
 });
 
-app.controller('fulfillmentController', function($scope, Fulfillments, $http) {
-    Fulfillments.fetchFulfillments().then(function(result) {
-        $scope.fulfillmentslist = result.data;
+app.controller('fulfillmentController', function($scope, Fulfillments) {
+    Fulfillments.query(function(data) {
+        $scope.fulfillmentslist = data;
     });
 });
 
 app.controller('navigation',
 
-     function($rootScope, $http, $location) {
-         var self = this
+    function($rootScope, $scope, $http, $location, $route) {
 
-         var authenticate = function(credentials) {
-           var headers = credentials ? {authorization : "Basic "
-               + btoa(credentials.username + ":" + credentials.password)
-           } : {};
+    	$scope.tab = function(route) {
+    		return $route.current && route === $route.current.controller;
+    	};
 
-           return $http.get('user', {headers : headers}).then(function(response) {
-             if (response.data.name) {
-               $rootScope.authenticated = true;
-             } else {
-               $rootScope.authenticated = false;
-             }
-           }, function() {
-             $rootScope.authenticated = false;
-           });
-         }
+    	$http.get('user').success(function(data) {
+    		if (data.userAuthentication.principal) {
+    		    $scope.user = data.userAuthentication.principal;
+    			$rootScope.authenticated = true;
+    		} else {
+    			$rootScope.authenticated = false;
+    		}
+    	}).error(function() {
+    		$rootScope.authenticated = false;
+    	});
 
-         authenticate();
-         self.credentials = {};
-         self.login = function() {
-             authenticate (self.credentials).then(function() {
-               if ($rootScope.authenticated) {
-                 $location.path("/");
-                 self.error = false;
-                 $rootScope.authenticated = true;
-               } else {
-                 $location.path("/login");
-                 self.error = true;
-                 $rootScope.authenticated = false;
-               }
-             });
-         };
+    	$scope.credentials = {};
 
-         self.logout = function() {
-            $http.post('logout', {}).finally(function() {
-                $rootScope.authenticated = false;
-                $location.path("/");
-            });
-         };
+    	$scope.logout = function() {
+    		$http.post('logout', {}).success(function() {
+    			$rootScope.authenticated = false;
+    			$location.path("/");
+    		}).error(function(data) {
+    			console.log("Logout failed")
+    			$rootScope.authenticated = false;
+    		});
+    	}
 
-   });
+});
+
+
