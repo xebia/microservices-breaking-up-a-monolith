@@ -39,7 +39,6 @@ import javax.servlet.http.Cookie;
 @SpringBootApplication
 @EnableZuulProxy
 @RestController
-//@EnableRedisHttpSession
 @EnableOAuth2Sso
 public class ClerkWebAppInitializer extends WebSecurityConfigurerAdapter {
   private final Logger logger = LoggerFactory.getLogger(this.getClass());
@@ -55,12 +54,10 @@ public class ClerkWebAppInitializer extends WebSecurityConfigurerAdapter {
 
         http.antMatcher("/**").authorizeRequests().antMatchers("/", "/index.html", "/login**", "/webjars/**").permitAll().anyRequest()
                 .authenticated()
-                .and()
-                .csrf()
-                .csrfTokenRepository(csrfTokenRepository())
-                .and()
-                .addFilterAfter(csrfHeaderFilter(), CsrfFilter.class)
-      ;
+                .and().csrf().csrfTokenRepository(csrfTokenRepository())
+                .and().logout().logoutSuccessUrl("/").permitAll()
+                .and().addFilterAfter(csrfHeaderFilter(), CsrfFilter.class)
+        ;
 
     }
 

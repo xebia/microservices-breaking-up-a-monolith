@@ -10,6 +10,12 @@ app.controller('fulfillmentController', function($scope, Fulfillments) {
     });
 });
 
+app.controller('cleanup',
+	function() {
+		$rootScope.authenticated = false;
+	}
+);
+
 app.controller('navigation',
 
     function($rootScope, $scope, $http, $location, $route) {
@@ -19,6 +25,7 @@ app.controller('navigation',
     	};
 
     	$http.get('user').success(function(data) {
+            console.log("get user success")
     		if (data.userAuthentication.principal) {
     		    $scope.user = data.userAuthentication.principal;
     			$rootScope.authenticated = true;
@@ -32,11 +39,13 @@ app.controller('navigation',
     	$scope.credentials = {};
 
     	$scope.logout = function() {
+    		console.log("<<<< do logout");
     		$http.post('logout', {}).success(function() {
     			$rootScope.authenticated = false;
     			$location.path("/");
+                console.log(">>> Logout successful")
     		}).error(function(data) {
-    			console.log("Logout failed")
+    			console.log("Logout failed");
     			$rootScope.authenticated = false;
     		});
     	}

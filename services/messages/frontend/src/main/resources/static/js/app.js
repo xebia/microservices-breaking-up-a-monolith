@@ -13,11 +13,6 @@ app.config(function($routeProvider, $httpProvider){
             templateUrl: '/views/fulfillment.html',
             controller: 'fulfillmentController'
         })
-        //.when('/login', {
-        //         templateUrl : 'login.html',
-        //         controller : 'navigation',
-        //         controllerAs: 'controller'
-       //        })
         .otherwise(
             { redirectTo: '/'}
         );
