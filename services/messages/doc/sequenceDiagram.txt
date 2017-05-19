@@ -1,0 +1,16 @@
+# Proces with websequencediagrams.com
+
+participant "Environment" as env
+participant "payment - EventListener" as event
+participant "PaymentController" as payment
+participant "payment - Clerk" as clerk
+participant "payment - RabbitTemplate" as rabbit
+
+env->event:new Clerk document
+event->clerk: createPayment(document)
+env->payment: PUT /pay/{paymentId}/creditcard/{cardNo}
+payment->payment: updateDocument
+payment->payment: update cardId and datePaid
+payment->clerk: getDocument
+payment->rabbit: convertAndSend
+
