@@ -1,6 +1,15 @@
 # Microservices: breaking up a monolith
 
-This repository is used in the meetup about refactoring a monolith to Microservices (http://www.meetup.com/devops-engineers/events/216306592/).
+This repository is used in:
+
+- a series of blogs about refactoring
+- the meetup about refactoring a monolith to Microservices (http://www.meetup.com/devops-engineers/events/216306592/).
+
+### Refactor blogs
+
+See the code in services/messages
+
+### Meetup
 
 The presentation of this meetup: [meetup-dde-refactoring-mono2micro-20150808-v2.pdf](https://github.com/xebia/microservices-breaking-up-a-monolith/blob/master/meetup-dde-refactoring-mono2micro-20150808-v2.pdf).
 

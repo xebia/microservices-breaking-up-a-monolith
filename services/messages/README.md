@@ -1,18 +1,18 @@
 # Refactoring a monolith to microservices
 
 This project documents my microservices journey. It started end 2015 when we started investigating microservices
-at [Xebia] ( http://www.xebia.com ). Since then I worked on several versions of the software, trying out new 
+at [Xebia](http://www.xebia.com). Since then I worked on several versions of the software, trying out new 
 microservices related concepts. 
 
 ### History
 
 For more history about this project see these blogs:
 
-[refactoring-a-monolith-to-microservices] (http://blog.xebia.com/refactoring-a-monolith-to-microservices/)
+[refactoring-a-monolith-to-microservices](http://blog.xebia.com/refactoring-a-monolith-to-microservices/)
 
-[introducing-a-process-manager] (http://blog.xebia.com/refactoring-to-microservices-introducing-a-process-manager/)
+[introducing-a-process-manager](http://blog.xebia.com/refactoring-to-microservices-introducing-a-process-manager/)
 
-[using-document-state] (http://blog.xebia.com/refactoring-microservices-using-document-state/)
+[using-document-state](http://blog.xebia.com/refactoring-microservices-using-document-state/)
 
 ## Build and run
 
