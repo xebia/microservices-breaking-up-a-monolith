@@ -2,7 +2,7 @@
 # Assuming rabbitmqadmin & rabbitmqctl are available
 # and rabbitmq-server has started
 # Run 'runRabbit.sh' to start RabbitMQ in a container
-RABBIT_MQ_HOST=192.168.99.101
+RABBIT_MQ_HOST=localhost
 DIR=`dirname $0`
 
 $DIR/rabbitmqadmin -H $RABBIT_MQ_HOST delete exchange name="shop"
