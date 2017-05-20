@@ -1,8 +1,15 @@
 #!/usr/bin/env bash
-# Assuming rabbitmqadmin & rabbitmqctl are available
-# and rabbitmq-server has started
-# Run 'runRabbit.sh' to start RabbitMQ in a container
-RABBIT_MQ_HOST=localhost
+
+# configure queues
+# This script waits until the Rabbit container is running
+
+until $(curl --output /dev/null --silent --head --fail http://rabbit:15672); do
+    printf '.'
+    sleep 1
+done
+
+
+RABBIT_MQ_HOST=rabbit
 DIR=`dirname $0`
 
 $DIR/rabbitmqadmin -H $RABBIT_MQ_HOST delete exchange name="shop"
