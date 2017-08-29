@@ -26,12 +26,3 @@ public class OrderResourceAssembler extends ResourceAssemblerSupport<Orderr, Ord
         return orderr;
     }
 }
-/*
-    private UUID uuid;
-    private Date ordered;
-    private String shippingAddress;
-    private String status;
-    private double total;
-    private boolean paymentReceived;
-
- */

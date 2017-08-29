@@ -40,7 +40,7 @@ import static org.springframework.test.web.servlet.setup.MockMvcBuilders.webAppC
 @SpringApplicationConfiguration(classes = FulfillmentApplication.class)
 @WebAppConfiguration
 public class ScenarioTest extends TestBase {
-    private static Logger LOG = LoggerFactory.getLogger(ScenarioTest.class);
+    private static final Logger LOG = LoggerFactory.getLogger(ScenarioTest.class);
 
     @Autowired
     protected EventListener eventListener;
@@ -99,7 +99,7 @@ public class ScenarioTest extends TestBase {
         clerk.setShipment(shipment);
         clerkRepository.save(clerk);
         shipmentController.updateDocument(shipment.getUuid());
-        verify(rabbitTemplate, times(1)).convertAndSend(eq(Config.shopExchange), anyString(), argument.capture());
+        verify(rabbitTemplate, times(1)).convertAndSend(eq(Config.SHOP_EXCHANGE), anyString(), argument.capture());
         // TODO: why is the status SHIPPED?
         assertTrue(argument.getValue().indexOf("\"status\":\"SHIPPED\"") > 0);
         assertTrue(argument.getValue().indexOf("\"cardId\":\"c123\"") > 0);

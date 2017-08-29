@@ -73,7 +73,7 @@ public class TestBase {
         UUID webUserUuid = UUID.randomUUID();
         String id = webUserUuid.toString().substring(1, 5);
         WebUser user = new WebUser(webUserUuid, "user"+id, "password");
-        ShoppingCart cart = shoppingCartRepository.findOne(cartId);
+        shoppingCartRepository.findOne(cartId);
         return webUserRepository.save(user);
     }
 
@@ -105,13 +105,11 @@ public class TestBase {
     }
 
     protected Orderr createAndSaveOrderFromShoppingCart() {
-        UUID orderUuid = UUID.randomUUID();
         Orderr order = new Orderr(createAndSaveShoppingCart());
         return orderRepository.save(order);
     }
 
     protected Orderr createAndSaveOrderFromShoppingCart(ShoppingCart cart) {
-        UUID orderUuid = UUID.randomUUID();
         Orderr order = new Orderr(cart);
         return orderRepository.save(order);
     }

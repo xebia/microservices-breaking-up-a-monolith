@@ -20,7 +20,9 @@ public class LineItem {
     @Cascade(value={org.hibernate.annotations.CascadeType.MERGE})
     private Product product;
 
-    public LineItem() {}
+    public LineItem() {
+        // Empty constructor required by framework
+    }
 
     public LineItem(UUID uuid, int quantity, double price, Product product) {
         this.uuid = uuid;

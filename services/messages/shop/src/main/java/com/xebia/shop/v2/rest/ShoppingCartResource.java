@@ -27,6 +27,7 @@ public class ShoppingCartResource extends ResourceSupport {
     }
 
     public ShoppingCartResource() {
+        // Empty constructor required by framework
     }
 
     public List<LineItem> getLineItems() {

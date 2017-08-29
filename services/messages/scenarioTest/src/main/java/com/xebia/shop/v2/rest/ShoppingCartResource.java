@@ -14,7 +14,7 @@ import java.util.UUID;
 public class ShoppingCartResource extends ResourceSupport {
 
     private Date created;
-    private List<LineItem> lineItems = new ArrayList<LineItem>();
+    private List<LineItem> lineItems = new ArrayList();
     private UUID uuid;
 
     @JsonCreator
@@ -27,6 +27,7 @@ public class ShoppingCartResource extends ResourceSupport {
     }
 
     public ShoppingCartResource() {
+        // Empty constructor required by framework
     }
 
     public List<LineItem> getLineItems() {

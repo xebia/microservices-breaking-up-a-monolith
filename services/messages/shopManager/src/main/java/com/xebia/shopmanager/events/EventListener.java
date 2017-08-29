@@ -31,19 +31,21 @@ public class EventListener {
     @Autowired
     ShopManager shopManager;
 
-    private static Logger LOG = LoggerFactory.getLogger(EventListener.class);
+    private static final Logger LOG = LoggerFactory.getLogger(EventListener.class);
     private ObjectMapper mapper = new ObjectMapper();
     private CountDownLatch latch = new CountDownLatch(1);
 
-    @RabbitListener(queues = Config.orderCompleted)
+    @RabbitListener(queues = Config.ORDER_COMPLETED)
     public void processOrderCompletedMessage(Object message) {
-        if (!(message instanceof byte[])) message = ((Message) message).getBody();
+        if (!(message instanceof byte[])) {
+            message = ((Message) message).getBody();
+        }
         String content = new String((byte[]) message, StandardCharsets.UTF_8);
-        LOG.info("Received orderCompleted: " + content);
+        LOG.info("Received ORDER_COMPLETED: " + content);
         try {
             Clerk clerk = new Clerk(content);
             clerkRepository.save(clerk);
-            rabbitTemplate.convertAndSend(Config.shopExchange, Config.handlePayment, content);
+            rabbitTemplate.convertAndSend(Config.SHOP_EXCHANGE, Config.HANDLE_PAYMENT, content);
             LOG.info("Sent " + content + " to payment");
         } catch (Exception e) {
             LOG.error("Error: " + e.getMessage());
@@ -51,15 +53,17 @@ public class EventListener {
         latch.countDown();
     }
 
-    @RabbitListener(queues = Config.orderPaid)
+    @RabbitListener(queues = Config.ORDER_PAID)
     public void processOrderPaidMessage(Object message) {
-        if (!(message instanceof byte[])) message = ((Message) message).getBody();
+        if (!(message instanceof byte[])) {
+            message = ((Message) message).getBody();
+        }
         String content = new String((byte[]) message, StandardCharsets.UTF_8);
-        LOG.info("Received orderPaid: " + content);
+        LOG.info("Received ORDER_PAID: " + content);
         try {
             Clerk clerk = new Clerk(content);
             clerkRepository.save(clerk);
-            rabbitTemplate.convertAndSend(Config.shopExchange, Config.handleFulfillment, content);
+            rabbitTemplate.convertAndSend(Config.SHOP_EXCHANGE, Config.HANDLE_FULFILLMENT, content);
             LOG.info("sent " + content + " to fulfillment");
         } catch (Exception e) {
             LOG.error("Error: " + e.getMessage());
@@ -67,11 +71,13 @@ public class EventListener {
         latch.countDown();
     }
 
-    @RabbitListener(queues = Config.orderShipped)
+    @RabbitListener(queues = Config.ORDER_SHIPPED)
     public void processOrderShippedMessage(Object message) {
-        if (!(message instanceof byte[])) message = ((Message) message).getBody();
+        if (!(message instanceof byte[])) {
+            message = ((Message) message).getBody();
+        }
         String content = new String((byte[]) message, StandardCharsets.UTF_8);
-        LOG.info("Received orderShipped: " + content);
+        LOG.info("Received ORDER_SHIPPED: " + content);
         try {
             Clerk clerk = new Clerk(content);
             clerkRepository.save(clerk);
@@ -83,11 +89,13 @@ public class EventListener {
         latch.countDown();
     }
 
-    @RabbitListener(queues = Config.sessionExpired)
+    @RabbitListener(queues = Config.SESSION_EXPIRED)
     public void sessionExpiredMessage(Object message) {
-        if (!(message instanceof byte[])) message = ((Message) message).getBody();
+        if (!(message instanceof byte[])) {
+            message = ((Message) message).getBody();
+        }
         String content = new String((byte[]) message, StandardCharsets.UTF_8);
-        LOG.info("Received sessionExpired: " + content);
+        LOG.info("Received SESSION_EXPIRED: " + content);
         try {
             Session session = mapper.readValue(content, Session.class);
             processSessionExpiredMessage(session);

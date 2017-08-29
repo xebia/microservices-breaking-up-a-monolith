@@ -1,7 +1,5 @@
 package com.xebia.shop.v2;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.context.embedded.FilterRegistrationBean;
@@ -16,8 +14,6 @@ import org.springframework.web.filter.CommonsRequestLoggingFilter;
 @ComponentScan
 public class Application {
 
-    private static Logger LOG = LoggerFactory.getLogger(Application.class);
-
     @Bean
     public FilterRegistrationBean commonsRequestLoggingFilter()
     {
@@ -26,10 +22,9 @@ public class Application {
         return registrationBean;
     }
 
-
     public static void main(String[] args) {
         ApplicationContext applicationContext = SpringApplication.run(Application.class, args);
-        Application application = applicationContext.getBean(Application.class);
+        applicationContext.getBean(Application.class);
     }
 
 }

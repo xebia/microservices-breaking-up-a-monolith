@@ -26,6 +26,7 @@ public class ProductResource extends ResourceSupport {
     }
 
     public ProductResource() {
+        // Empty constructor required by framework
     }
 
     public UUID getUuid() {

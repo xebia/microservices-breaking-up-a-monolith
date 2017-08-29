@@ -1,21 +1,18 @@
 package com.xebia.payment.v2;
 
 public class Config {
-    // General name for the exchange to use
-    public final static String shopExchange = "shop";
 
-    // Sent by Clerk when handling control to shop process
-    public final static String startShopping = "startShopping";
+    private Config() {
+    }
+
+    // General name for the exchange to use
+    public static final String SHOP_EXCHANGE = "shop";
 
     // Sent by Clerk when Order is received to initiate payment
-    public final static String handlePayment = "handlePayment";
+    public static final String HANDLE_PAYMENT = "HANDLE_PAYMENT";
 
-    // Sent by Clerk when Payment is received to initiate fulfillment
-    public final static String handleFulfillment = "handleFulfillment";
 
     // Results received by Clerk from other services
-    public static final String orderCompleted = "orderCompleted";
-    public static final String orderPaid = "orderPaid";
-    public static final String orderShipped = "orderShipped";
+    public static final String ORDER_PAID = "ORDER_PAID";
 
 }

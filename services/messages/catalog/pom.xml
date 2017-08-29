@@ -65,13 +65,17 @@
             <artifactId>freemarker</artifactId>
             <version>2.3.20</version>
         </dependency>
-
-      <dependency>
-        <groupId>com.mangofactory</groupId>
-        <artifactId>swagger-springmvc</artifactId>
-        <version>1.0.2</version>
-        <type>jar</type>
-      </dependency>
+        <dependency>
+            <groupId>org.jacoco</groupId>
+            <artifactId>jacoco-maven-plugin</artifactId>
+            <version>0.7.9</version>
+        </dependency>
+        <dependency>
+            <groupId>com.mangofactory</groupId>
+            <artifactId>swagger-springmvc</artifactId>
+            <version>1.0.2</version>
+            <type>jar</type>
+        </dependency>
 
     </dependencies>
 
@@ -108,6 +112,26 @@
                                 <argument>${build.finalName}.jar</argument>
                             </arguments>
                         </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.jacoco</groupId>
+                <artifactId>jacoco-maven-plugin</artifactId>
+                <version>0.7.9</version>
+                <executions>
+                    <execution>
+                        <id>default-prepare-agent</id>
+                        <goals>
+                            <goal>prepare-agent</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>default-report</id>
+                        <phase>prepare-package</phase>
+                        <goals>
+                            <goal>report</goal>
+                        </goals>
                     </execution>
                 </executions>
             </plugin>

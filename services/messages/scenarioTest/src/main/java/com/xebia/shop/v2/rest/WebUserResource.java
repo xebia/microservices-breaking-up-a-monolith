@@ -26,6 +26,7 @@ public class WebUserResource extends ResourceSupport {
     }
 
     public WebUserResource() {
+        // Empty constructor required by framework
     }
 
     public String getUsername() {

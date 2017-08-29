@@ -21,17 +21,15 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.UUID;
-import java.util.concurrent.CountDownLatch;
 
 @Component
 @RestController
 @RequestMapping("/shop/session")
 public class ClerkController {
 
-    private static Logger LOG = LoggerFactory.getLogger(ClerkController.class);
+    private static final Logger LOG = LoggerFactory.getLogger(ClerkController.class);
 
     private ObjectMapper mapper = new ObjectMapper();
-    private CountDownLatch latch = new CountDownLatch(1);
 
     @Autowired
     private WebUserRepository webUserRepository;
@@ -60,8 +58,8 @@ public class ClerkController {
             ClerkResource resource = clerkResourceAssembler.toResource(clerk);
             shopManager.registerClerk(clerk);
             String clerkAsJson = mapper.writeValueAsString(clerk);
-            LOG.info("Sending startShopping event for clerk: \n" + clerkAsJson + "\n");
-            rabbitTemplate.convertAndSend(Config.shopExchange, Config.startShopping, clerkAsJson);
+            LOG.info("Sending START_SHOPPING event for clerk: \n" + clerkAsJson + "\n");
+            rabbitTemplate.convertAndSend(Config.SHOP_EXCHANGE, Config.START_SHOPPING, clerkAsJson);
             return new ResponseEntity(resource, HttpStatus.CREATED);
         } catch (Exception e) {
             LOG.error("Error: " + e.getMessage());
@@ -77,7 +75,7 @@ public class ClerkController {
             try {
                 return new ResponseEntity(clerk.getDocument(), HttpStatus.OK);
             } catch (Exception e) {
-                e.printStackTrace();
+                LOG.error("Error creating ResponseEntity " + e.getMessage());
                 return new ResponseEntity(HttpStatus.BAD_REQUEST);
             }
         } else {

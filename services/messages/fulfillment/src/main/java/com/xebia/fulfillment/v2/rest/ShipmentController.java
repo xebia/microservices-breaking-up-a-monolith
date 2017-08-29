@@ -1,7 +1,5 @@
 package com.xebia.fulfillment.v2.rest;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.xebia.fulfillment.v2.Config;
@@ -28,7 +26,7 @@ import java.util.UUID;
 public class ShipmentController {
     private ObjectMapper mapper = new ObjectMapper();
 
-    private static Logger LOG = LoggerFactory.getLogger(ShipmentController.class);
+    private static final Logger LOG = LoggerFactory.getLogger(ShipmentController.class);
 
     @Autowired
     RabbitTemplate rabbitTemplate;
@@ -51,9 +49,9 @@ public class ShipmentController {
         LOG.info("URL: " + request.getRequestURL() + ", METHOD: " + request.getMethod());
         Shipment shipment = shipmentRepository.findOne(uuid);
         if (shipment == null) {
-            return new ResponseEntity<ShipmentResource>(HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
-        return new ResponseEntity<ShipmentResource>(shipmentResourceAssembler.toResource(shipment), HttpStatus.OK);
+        return new ResponseEntity<>(shipmentResourceAssembler.toResource(shipment), HttpStatus.OK);
     }
 
     @RequestMapping(method = RequestMethod.PUT, value = "/shipIt/{shipmentId}")
@@ -64,7 +62,7 @@ public class ShipmentController {
             return new ResponseEntity(shipmentResourceAssembler.toResource(shipment), HttpStatus.OK);
         } catch (Exception e) {
                 LOG.info("shipment: " + shipmentId + " not found");
-                return new ResponseEntity<ShipmentResource>(HttpStatus.NOT_FOUND);
+                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
             }
     }
 
@@ -78,8 +76,8 @@ public class ShipmentController {
         shipment = shipmentRepository.save(shipment);
         Clerk clerk = clerkRepository.findByShipment(shipment);
 
-        LOG.info("Sending orderShipped event, new document: \n" + clerk.getDocument() + "\n");
-        rabbitTemplate.convertAndSend(Config.shopExchange, Config.orderShipped, clerk.getDocument());
+        LOG.info("Sending ORDER_SHIPPED event, new document: \n" + clerk.getDocument() + "\n");
+        rabbitTemplate.convertAndSend(Config.SHOP_EXCHANGE, Config.ORDER_SHIPPED, clerk.getDocument());
         return shipment;
     }
 

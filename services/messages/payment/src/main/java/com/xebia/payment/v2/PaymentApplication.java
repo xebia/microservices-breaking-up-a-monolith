@@ -4,8 +4,6 @@ import com.mangofactory.swagger.configuration.SpringSwaggerConfig;
 import com.mangofactory.swagger.models.dto.ApiInfo;
 import com.mangofactory.swagger.plugin.EnableSwagger;
 import com.mangofactory.swagger.plugin.SwaggerSpringMvcPlugin;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.amqp.rabbit.connection.CachingConnectionFactory;
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,7 +20,6 @@ import org.springframework.context.annotation.Configuration;
 @ComponentScan
 @EnableSwagger
 public class PaymentApplication {
-    private static Logger LOG = LoggerFactory.getLogger(PaymentApplication.class);
 
     @Value("${rabbitmq.hostname}")
     private String hostname = "";
@@ -33,8 +30,11 @@ public class PaymentApplication {
     @Value("${rabbitmq.username}")
     private String username = "";
 
+    @SuppressWarnings("all")
     @Value("${rabbitmq.password}")
     private String password = "";
+
+    private SpringSwaggerConfig springSwaggerConfig;
 
     @Bean
     public ConnectionFactory connectionFactory() {
@@ -43,8 +43,6 @@ public class PaymentApplication {
         connectionFactory.setConnectionTimeout(10);
         return connectionFactory;
     }
-
-    private SpringSwaggerConfig springSwaggerConfig;
 
     @Autowired
     public void setSpringSwaggerConfig(SpringSwaggerConfig springSwaggerConfig) {

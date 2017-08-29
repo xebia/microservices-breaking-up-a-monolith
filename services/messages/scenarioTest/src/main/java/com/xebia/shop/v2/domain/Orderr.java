@@ -14,28 +14,30 @@ public class Orderr {
     private String status;
     private double total;
 
-    public Orderr() {}
+    public Orderr() {
+        // Empty constructor required by framework
+    }
 
     public Orderr(UUID uuid, Date ordered, String status) {
         this.uuid = uuid;
-        this.ordered = ordered;
+        this.ordered = new Date(ordered.getTime());
         this.status = status;
     }
 
     public Orderr(Date ordered, String status) {
         this.uuid = UUID.randomUUID();
-        this.ordered = ordered;
+        this.ordered = new Date(ordered.getTime());
         this.status = status;
     }
 
     public Orderr(ShoppingCart cart) {
         this.uuid = UUID.randomUUID();
-        this.ordered = cart.getCreated();
+        this.ordered = new Date(cart.getCreated().getTime());
         this.status = "created";
     }
 
     public boolean canBeApproved() {
-        return (shippingAddress != null);
+        return shippingAddress != null;
     }
 
     public UUID getUuid() {
@@ -91,11 +93,13 @@ public class Orderr {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
         Orderr orderr = (Orderr) o;
-
         return uuid.equals(orderr.uuid);
 
     }

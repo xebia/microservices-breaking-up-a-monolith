@@ -13,8 +13,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Component
-public class ShopManager {
-
+public final class ShopManager {
+    // This class is final because it's constuctor starts Thread.
     @Autowired
     TimeoutPolicy timeoutPolicy;
 
@@ -23,7 +23,7 @@ public class ShopManager {
 
     private ObjectMapper mapper = new ObjectMapper();
 
-    private static Logger LOG = LoggerFactory.getLogger(ShopManager.class);
+    private static final Logger LOG = LoggerFactory.getLogger(ShopManager.class);
 
     private final List<Session> sessions = new ArrayList<>();
 
@@ -51,26 +51,31 @@ public class ShopManager {
         @Override
         public void run() {
             while (true) {
-                for (Session session : sessions) {
-                    if (session.getEta() < System.currentTimeMillis()) {
-                        try {
-                            String sessionAsJson = mapper.writeValueAsString(session);
-                            rabbitTemplate.convertAndSend(Config.shopExchange, Config.sessionExpired, sessionAsJson);
-                        } catch (JsonProcessingException e) {
-                            e.printStackTrace();
-                        } finally {
-                            LOG.info("adding " + session + " to expired sessions");
-                            expiredSessions.add(session);
-                        }
-                    } else {
-                        break;
-                    }
-                }
+                examineSessions();
                 sessions.removeAll(expiredSessions);
                 try {
                     Thread.sleep(100);
                 } catch (InterruptedException e) {
-                    e.printStackTrace();
+                    LOG.info("Error while calling Thread.sleep() " + e.getMessage());
+                    Thread.currentThread().interrupt();
+                }
+            }
+        }
+
+        private void examineSessions() {
+            for (Session session : sessions) {
+                if (session.getEta() < System.currentTimeMillis()) {
+                    try {
+                        String sessionAsJson = mapper.writeValueAsString(session);
+                        rabbitTemplate.convertAndSend(Config.SHOP_EXCHANGE, Config.SESSION_EXPIRED, sessionAsJson);
+                    } catch (JsonProcessingException e) {
+                        LOG.error("Error processing Json: " + e.getMessage());
+                    } finally {
+                        LOG.info("adding " + session + " to expired sessions");
+                        expiredSessions.add(session);
+                    }
+                } else {
+                    break;
                 }
             }
         }
@@ -97,7 +102,7 @@ public class ShopManager {
                 break;
             }
         }
-        if (result.size()==0) {
+        if (result.size() == 0) {
             throw new InvalidStatusException("No session for clerk " + clerk);
         }
         return result.get(0);

@@ -12,6 +12,7 @@ public class WebUser {
     private String password;
 
     public WebUser() {
+        // Empty constructor required by framework
     }
 
     public WebUser(UUID uuid, String username, String password) {
@@ -48,24 +49,26 @@ public class WebUser {
         this.uuid = uuid;
     }
 
+    @SuppressWarnings("all")
     @Override
     public String toString() {
         return "WebUser{" +
                 ", uuid='" + uuid + '\'' +
-                "password='" + password + '\'' +
+                ", password='****'" +
                 ", username='" + username + '\'' +
                 '}';
     }
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
         WebUser webUser = (WebUser) o;
-
         return uuid.equals(webUser.uuid);
-
     }
 
     @Override

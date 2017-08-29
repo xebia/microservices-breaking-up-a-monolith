@@ -68,13 +68,15 @@ public class ScenarioTest {
     @Autowired
     ClerkRepository clerkRepository;
 
-    protected MediaType textType = new MediaType(MediaType.TEXT_PLAIN.getType());
-
     protected MockMvc mockMvc;
 
     ObjectMapper objectMapper = new ObjectMapper();
 
     protected HttpMessageConverter mappingJackson2HttpMessageConverter;
+
+    protected MediaType jsonContentType = new MediaType(MediaType.APPLICATION_JSON.getType(),
+            MediaType.APPLICATION_JSON.getSubtype(),
+            Charset.forName("utf8"));
 
     @Before
     public void setup() throws Exception {
@@ -117,7 +119,7 @@ public class ScenarioTest {
         clerk.setPayment(payment);
         clerkRepository.save(clerk);
         paymentController.updateDocument(payment.getUuid(), "c123");
-        verify(rabbitTemplate, times(1)).convertAndSend(eq(Config.shopExchange), anyString(), argument.capture());
+        verify(rabbitTemplate, times(1)).convertAndSend(eq(Config.SHOP_EXCHANGE), anyString(), argument.capture());
         // TODO: why is the status SHIPPED?
         assertTrue(argument.getValue().indexOf("\"status\":\"SHIPPED\"") > 0);
     }
@@ -180,9 +182,5 @@ public class ScenarioTest {
         org.junit.Assert.assertNotNull("the JSON message converter must not be null",
                 this.mappingJackson2HttpMessageConverter);
     }
-
-    protected MediaType jsonContentType = new MediaType(MediaType.APPLICATION_JSON.getType(),
-            MediaType.APPLICATION_JSON.getSubtype(),
-            Charset.forName("utf8"));
 
 }

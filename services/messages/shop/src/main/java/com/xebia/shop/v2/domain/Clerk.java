@@ -18,22 +18,25 @@ public class Clerk {
     private int status = SHOPPING;
 
     @OneToOne(optional = false)
-    @Cascade(value={org.hibernate.annotations.CascadeType.MERGE})
+    @Cascade(value = {org.hibernate.annotations.CascadeType.MERGE})
     private WebUser webUser;
     @OneToOne(optional = true)
-    @Cascade(value={org.hibernate.annotations.CascadeType.MERGE})
+    @Cascade(value = {org.hibernate.annotations.CascadeType.MERGE})
     private Orderr orderr;
     @OneToOne(optional = true)
-    @Cascade(value={org.hibernate.annotations.CascadeType.MERGE})
+    @Cascade(value = {org.hibernate.annotations.CascadeType.MERGE})
     private Payment payment;
     @OneToOne(optional = true)
-    @Cascade(value={org.hibernate.annotations.CascadeType.MERGE})
+    @Cascade(value = {org.hibernate.annotations.CascadeType.MERGE})
     private Shipment shipment;
     @OneToOne(optional = true)
-    @Cascade(value={org.hibernate.annotations.CascadeType.MERGE})
+    @Cascade(value = {org.hibernate.annotations.CascadeType.MERGE})
     private ShoppingCart shoppingCart;
 
-    public Clerk() {}
+    public Clerk() {
+        // Empty constructor required by framework
+    }
+
     public Clerk(WebUser webUser, UUID uuid) {
         this.webUser = webUser;
         this.uuid = uuid;
@@ -101,8 +104,12 @@ public class Clerk {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
         Clerk clerk = (Clerk) o;
         return uuid.equals(clerk.uuid);
     }

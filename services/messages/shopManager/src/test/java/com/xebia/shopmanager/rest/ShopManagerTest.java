@@ -15,7 +15,8 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
-import org.mockito.internal.exceptions.ExceptionIncludingMockitoWarnings;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.amqp.core.Message;
 import org.springframework.amqp.core.MessageProperties;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
@@ -41,6 +42,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringApplicationConfiguration(classes = ShopManagerApplication.class)
 @WebAppConfiguration
 public class ShopManagerTest extends TestBase {
+    private static final Logger LOG = LoggerFactory.getLogger(ShopManagerTest.class);
 
     @Mock
     RabbitTemplate rabbitTemplate;
@@ -92,12 +94,12 @@ public class ShopManagerTest extends TestBase {
         MvcResult resultActions = mockMvc.perform(post("/shop/session/" + user.getUuid()))
                 .andExpect(status().isCreated()).andReturn();
         String data = resultActions.getResponse().getContentAsString();
-        Clerk clerk = objectMapper.readValue(data, Clerk.class);
+        objectMapper.readValue(data, Clerk.class);
 
         wait2secondsSoSessionWillBeRemovedAgain();
 
-        verify(rabbitTemplate, times(1)).convertAndSend(eq(Config.shopExchange), eq(Config.startShopping), anyString());
-        verify(rabbitTemplate, times(1)).convertAndSend(eq(Config.shopExchange), eq(Config.sessionExpired), anyString());
+        verify(rabbitTemplate, times(1)).convertAndSend(eq(Config.SHOP_EXCHANGE), eq(Config.START_SHOPPING), anyString());
+        verify(rabbitTemplate, times(1)).convertAndSend(eq(Config.SHOP_EXCHANGE), eq(Config.SESSION_EXPIRED), anyString());
     }
 
     @Test
@@ -108,7 +110,7 @@ public class ShopManagerTest extends TestBase {
                 .andExpect(status().isCreated()).andReturn();
         String data = resultActions.getResponse().getContentAsString();
         Clerk clerk = objectMapper.readValue(data, Clerk.class);
-        Session    session = shopManager.findSessionByClerk(clerk);
+        Session session = shopManager.findSessionByClerk(clerk);
         Message message = new Message(objectMapper.writeValueAsBytes(clerk), new MessageProperties());
         eventListener.processOrderShippedMessage(message);
         assertFalse(shopManager.getSessions().contains(session));
@@ -130,8 +132,9 @@ public class ShopManagerTest extends TestBase {
         try {
             Thread.sleep(2000);
         } catch (InterruptedException e) {
+            LOG.trace("Error in sleep " + e.getMessage());
             fail("Exception while waiting");
-            e.printStackTrace();
+            Thread.currentThread().interrupt();
         }
     }
 

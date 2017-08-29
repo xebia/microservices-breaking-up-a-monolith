@@ -3,8 +3,6 @@ package com.xebia.fulfillment.v2.domain;
 import org.junit.Test;
 
 import java.io.File;
-import java.io.IOException;
-import java.util.Date;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -25,8 +23,8 @@ public class DocumentTest {
         Clerk clerk = new Clerk(file);
         assertEquals("a89a65ae-6d1a-42e5-a8f1-11b6d190286e", clerk.getUuid().toString());
         String newData = clerk.getDocument();
-        assertTrue(newData.indexOf("\"uuid\":\"" + clerk.getUuid() + "\",") > 0);
-        assertTrue(newData.indexOf("\"address\":\"" + clerk.getShipment().getAddress() + "\"") > 0);
-        assertTrue(newData.indexOf("\"price\":51.420808805416065") > 0);
+        assertTrue(newData.indexOf("\"uuid\":\"" + clerk.getUuid() + "\",") >= 0);
+        assertTrue(newData.indexOf("\"address\":\"" + clerk.getShipment().getAddress() + "\"") >= 0);
+        assertTrue(newData.indexOf("\"price\":51.420808805416065") >= 0);
     }
 }

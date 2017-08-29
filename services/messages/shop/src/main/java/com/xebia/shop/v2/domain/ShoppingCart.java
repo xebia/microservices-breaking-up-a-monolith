@@ -26,6 +26,7 @@ public class ShoppingCart {
     private Clerk clerk;
 
     public ShoppingCart() {
+        // Empty constructor required by framework
     }
 
     public ShoppingCart(Date created, UUID uuid) {
@@ -90,13 +91,14 @@ public class ShoppingCart {
     private double total;
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
         ShoppingCart that = (ShoppingCart) o;
-
         return uuid.equals(that.uuid);
-
     }
 
     @Override
