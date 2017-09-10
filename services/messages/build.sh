@@ -2,4 +2,4 @@
 
 mvn clean install
 
-(cd ./rabbit/rabbitSetup && ./buildDockerImages.sh)
+(cd ./rabbit/rabbitSetup && ./buildDockerImage.sh)
