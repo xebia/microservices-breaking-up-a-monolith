@@ -2,11 +2,11 @@ package com.xebia.shop.v2.events;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.xebia.shop.v2.repositories.OrderRepository;
 import com.xebia.shop.v2.Config;
 import com.xebia.shop.v2.domain.Clerk;
 import com.xebia.shop.v2.domain.ShoppingCart;
 import com.xebia.shop.v2.repositories.ClerkRepository;
+import com.xebia.shop.v2.repositories.OrderRepository;
 import com.xebia.shop.v2.repositories.ShoppingCartRepository;
 import com.xebia.shop.v2.repositories.WebUserRepository;
 import com.xebia.shop.v2.rest.ShoppingCartController;
@@ -20,15 +20,13 @@ import org.springframework.stereotype.Component;
 import java.nio.charset.StandardCharsets;
 import java.util.Date;
 import java.util.UUID;
-import java.util.concurrent.CountDownLatch;
 
 
 @Component
 public class EventListener {
 
-    private static Logger LOG = LoggerFactory.getLogger(EventListener.class);
+    private static final Logger LOG = LoggerFactory.getLogger(EventListener.class);
     private ObjectMapper mapper = new ObjectMapper();
-    private CountDownLatch latch = new CountDownLatch(1);
 
     @Autowired
     private OrderRepository orderRepository;
@@ -45,15 +43,17 @@ public class EventListener {
     @Autowired
     ClerkRepository clerkRepository;
 
-    @RabbitListener(queues = Config.startShopping)
+    @RabbitListener(queues = Config.START_SHOPPING)
     public void processStartShoppingMessage(Object message) {
-        if (!(message instanceof byte[])) message = ((Message) message).getBody();
+        if (!(message instanceof byte[])) {
+            message = ((Message) message).getBody();
+        }
         String content = new String((byte[]) message, StandardCharsets.UTF_8);
-        LOG.info("Received on startShopping: " + content);
+        LOG.info("Received on START_SHOPPING: " + content);
         try {
             createCart(content);
         } catch (Exception e) {
-            LOG.error("error parsing clerk from message: " + content);
+            LOG.error("error parsing clerk from message: " + content + ", exception: " + e.getMessage());
         }
     }
 

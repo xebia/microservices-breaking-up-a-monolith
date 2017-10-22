@@ -15,7 +15,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -23,7 +22,7 @@ import java.util.UUID;
 @RequestMapping("/shop/v2/orders/")
 public class OrderController {
 	
-    private static Logger LOG = LoggerFactory.getLogger(OrderController.class);
+    private static final Logger LOG = LoggerFactory.getLogger(OrderController.class);
     private ObjectMapper mapper = new ObjectMapper();
 
 	@Autowired
@@ -70,8 +69,8 @@ public class OrderController {
 
             try {
                 Clerk clerk = clerkRepository.findByOrderr(orderr);
-                LOG.info("Sending orderCompleted " + mapper.writeValueAsString(clerk));
-                rabbitTemplate.convertAndSend(Config.shopExchange, Config.orderCompleted, mapper.writeValueAsString(clerk));
+                LOG.info("Sending ORDER_COMPLETED " + mapper.writeValueAsString(clerk));
+                rabbitTemplate.convertAndSend(Config.SHOP_EXCHANGE, Config.ORDER_COMPLETED, mapper.writeValueAsString(clerk));
             } catch (Exception e) {
                 LOG.error("Error: " + e.getMessage());
             }
@@ -88,8 +87,7 @@ public class OrderController {
     @RequestMapping(method = RequestMethod.GET)
     public List<OrderResource> allOrders(HttpServletRequest request) {
         LOG.info("URL: "+ request.getRequestURL()+ ", METHOD: "+ request.getMethod());
-        List<OrderResource> orderResources = new ArrayList<OrderResource>();
-        orderResources = orderAssembler.toResources(orderRepository.findAll());
+        List<OrderResource> orderResources = orderAssembler.toResources(orderRepository.findAll());
         return orderResources;
     }
 }

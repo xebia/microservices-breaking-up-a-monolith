@@ -24,8 +24,8 @@ public class DocumentTest {
         Clerk clerk = new Clerk(file);
         assertEquals("a89a65ae-6d1a-42e5-a8f1-11b6d190286e", clerk.getUuid().toString());
         String newData = clerk.getDocument();
-        assertTrue(newData.indexOf("\"uuid\":\"" + clerk.getUuid() + "\",") > 0);
-        assertTrue(newData.indexOf("\"cardId\":\"" + clerk.getPayment().getCardId() + "\",") > 0);
-        assertTrue(newData.indexOf("\"price\":51.420808805416065") > 0);
+        assertTrue(newData.indexOf("\"uuid\":\"" + clerk.getUuid() + "\",") >= 0);
+        assertTrue(newData.indexOf("\"cardId\":\"" + clerk.getPayment().getCardId() + "\",") >= 0);
+        assertTrue(newData.indexOf("\"price\":51.420808805416065") >= 0);
     }
 }

@@ -7,7 +7,6 @@ import org.springframework.amqp.rabbit.connection.ConnectionFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
-import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
@@ -26,10 +25,11 @@ public class ShopManagerApplication {
     @Value("${rabbitmq.username}")
     private String username="";
 
+    @SuppressWarnings("all")
     @Value("${rabbitmq.password}")
     private String password="";
 
-    private static Logger LOG = LoggerFactory.getLogger(ShopManagerApplication.class);
+    private static final Logger LOG = LoggerFactory.getLogger(ShopManagerApplication.class);
 
     @Bean
     public ConnectionFactory connectionFactory() {

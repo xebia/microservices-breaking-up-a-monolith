@@ -47,6 +47,7 @@ public class OrderResource extends ResourceSupport {
     }
 
     public OrderResource() {
+        // Empty constructor required by framework
     }
 
     public OrderResource(Orderr orderr) {

@@ -28,7 +28,9 @@ public class ProductResource extends ResourceSupport {
         this.dateAdded = new Date();
     }
 
-    public ProductResource() {}
+    public ProductResource() {
+        // Empty constructor required by framework
+    }
 
     public UUID getUuid() {
         return uuid;
@@ -83,9 +85,15 @@ public class ProductResource extends ResourceSupport {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        if (!super.equals(o)) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        if (!super.equals(o)) {
+            return false;
+        }
 
         ProductResource that = (ProductResource) o;
 

@@ -5,6 +5,8 @@ import com.xebia.shopmanager.domain.WebUser;
 import com.xebia.shopmanager.repositories.WebUserRepository;
 import org.junit.Before;
 import org.mockito.MockitoAnnotations;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.HttpMessageConverter;
@@ -24,6 +26,7 @@ import static org.junit.Assert.fail;
 import static org.springframework.test.web.servlet.setup.MockMvcBuilders.webAppContextSetup;
 
 public class TestBase {
+    private static final Logger LOG = LoggerFactory.getLogger(TestBase.class);
     @Autowired
     protected WebApplicationContext webApplicationContext;
     protected MediaType jsonContentType = new MediaType(MediaType.APPLICATION_JSON.getType(),
@@ -47,6 +50,7 @@ public class TestBase {
         try {
             Thread.sleep(intervalInMs);
         } catch (Exception e) {
+            LOG.debug(e.getMessage());
             fail("Exception in testModifiedSinceReturnsOnlyNewPayments");
         }
     }
@@ -69,7 +73,7 @@ public class TestBase {
     }
 
     @Before
-    public void setup() throws Exception {
+    public void setup() {
         MockitoAnnotations.initMocks(this);
         this.mockMvc = webAppContextSetup(webApplicationContext).build();
     }

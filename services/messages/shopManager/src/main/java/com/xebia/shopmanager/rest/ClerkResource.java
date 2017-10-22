@@ -31,6 +31,7 @@ public class ClerkResource extends ResourceSupport {
     }
 
     public ClerkResource() {
+        // Empty constructor required by framework
     }
 
     public UUID getUuid() {

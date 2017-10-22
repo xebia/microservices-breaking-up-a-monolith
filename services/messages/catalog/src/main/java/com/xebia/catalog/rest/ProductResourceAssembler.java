@@ -21,7 +21,7 @@ public class ProductResourceAssembler extends ResourceAssemblerSupport<Product, 
     }
 
     public List<ProductResource> toResource(List<Product> products) {
-        List<ProductResource> result = new ArrayList<ProductResource>();
+        List<ProductResource> result = new ArrayList<>();
         for (Product product:products) {
             result.add(toResource(product));
         }

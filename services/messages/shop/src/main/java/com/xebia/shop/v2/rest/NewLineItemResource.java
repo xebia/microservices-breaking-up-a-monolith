@@ -22,6 +22,7 @@ public class NewLineItemResource extends ResourceSupport {
     }
 
     public NewLineItemResource() {
+        // Empty constructor required by framework
     }
 
     public UUID getProductId() {

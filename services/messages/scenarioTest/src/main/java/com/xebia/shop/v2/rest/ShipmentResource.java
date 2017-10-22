@@ -24,7 +24,9 @@ public class ShipmentResource extends ResourceSupport {
         this.address = address;
     }
 
-    public ShipmentResource() {}
+    public ShipmentResource() {
+        // Empty constructor required by framework
+    }
 
     public UUID getUuid() {
         return uuid;

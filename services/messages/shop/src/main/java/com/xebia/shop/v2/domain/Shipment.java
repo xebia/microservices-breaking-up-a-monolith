@@ -17,6 +17,7 @@ public class Shipment {
     public static final String TO_BE_PAID = "TO_BE_PAID";
 
     public Shipment() {
+        // Empty constructor required by framework
     }
 
     public Shipment(UUID uuid, String status, String address) {
@@ -68,13 +69,14 @@ public class Shipment {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
         Shipment shipment = (Shipment) o;
-
         return uuid.equals(shipment.uuid);
-
     }
 
     @Override

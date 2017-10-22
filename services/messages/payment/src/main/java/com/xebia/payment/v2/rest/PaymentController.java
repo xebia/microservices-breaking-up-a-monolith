@@ -26,7 +26,7 @@ import java.util.UUID;
 public class PaymentController {
     private ObjectMapper mapper = new ObjectMapper();
 
-    private static Logger LOG = LoggerFactory.getLogger(PaymentController.class);
+    private static final Logger LOG = LoggerFactory.getLogger(PaymentController.class);
 
     @Autowired
     RabbitTemplate rabbitTemplate;
@@ -62,8 +62,8 @@ public class PaymentController {
         payment.setDatePaid(new Date());
         payment = paymentRepository.save(payment);
         Clerk clerk = clerkRepository.findByPayment(payment);
-        LOG.info("Sending orderPaid event, new document: \n" + clerk.getDocument() + "\n");
-        rabbitTemplate.convertAndSend(Config.shopExchange, Config.orderPaid, clerk.getDocument());
+        LOG.info("Sending ORDER_PAID event, new document: \n" + clerk.getDocument() + "\n");
+        rabbitTemplate.convertAndSend(Config.SHOP_EXCHANGE, Config.ORDER_PAID, clerk.getDocument());
         return payment;
     }
 
@@ -72,7 +72,7 @@ public class PaymentController {
         LOG.info("URL: " + request.getRequestURL() + ", METHOD: " + request.getMethod());
         Payment payment = paymentRepository.findOne(paymentId);
         if (payment == null) {
-            return new ResponseEntity<PaymentResource>(HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
         PaymentResource paymentResource = new PaymentResourceAssembler().toResource(payment);
         return new ResponseEntity(paymentResource, HttpStatus.OK);

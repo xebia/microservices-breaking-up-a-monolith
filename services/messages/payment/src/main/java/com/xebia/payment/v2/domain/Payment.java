@@ -4,11 +4,13 @@ package com.xebia.payment.v2.domain;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.*;
+import com.fasterxml.jackson.databind.node.DoubleNode;
+import com.fasterxml.jackson.databind.node.LongNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.fasterxml.jackson.databind.node.TextNode;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
-import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.UUID;
 
@@ -34,6 +36,7 @@ public class Payment {
     }
 
     public Payment() {
+        // Empty constructor required by framework
     }
 
     public Payment(JsonNode node) {
@@ -86,13 +89,14 @@ public class Payment {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
         Payment payment = (Payment) o;
-
         return uuid.equals(payment.uuid);
-
     }
 
     @Override

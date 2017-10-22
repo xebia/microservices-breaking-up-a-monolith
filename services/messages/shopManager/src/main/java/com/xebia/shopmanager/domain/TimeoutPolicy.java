@@ -6,7 +6,9 @@ import org.springframework.stereotype.Component;
 public class TimeoutPolicy {
     private long timeout = 1000000;
 
-    public TimeoutPolicy() {}
+    public TimeoutPolicy() {
+        // Empty constructor required by framework
+    }
 
     public TimeoutPolicy(long timeout) {
         this.timeout = timeout;

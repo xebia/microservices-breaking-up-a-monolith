@@ -13,7 +13,6 @@ import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.UUID;
 import java.util.concurrent.CountDownLatch;
@@ -21,7 +20,7 @@ import java.util.concurrent.CountDownLatch;
 @Component
 public class EventListener {
 
-    private static Logger LOG = LoggerFactory.getLogger(EventListener.class);
+    private static final Logger LOG = LoggerFactory.getLogger(EventListener.class);
     private ObjectMapper mapper = new ObjectMapper();
 	private CountDownLatch latch = new CountDownLatch(1);
 
@@ -31,9 +30,11 @@ public class EventListener {
 	@Autowired
 	ClerkRepository clerkRepository;
 
-	@RabbitListener(queues = Config.handleFulfillment)
+	@RabbitListener(queues = Config.HANDLE_FULFILLMENT)
 	public void processFulfillmentMessage(Object message) {
-		if(!(message instanceof byte[])) message = ((Message) message).getBody();
+		if(!(message instanceof byte[])) {
+			message = ((Message) message).getBody();
+		}
 		String content = new String((byte[])message, StandardCharsets.UTF_8);
 		LOG.info("Received new order to be paid: " + content);
 		try {

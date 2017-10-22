@@ -14,6 +14,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.web.client.RestTemplate;
 
+import java.security.SecureRandom;
 import java.util.Date;
 import java.util.Random;
 import java.util.UUID;
@@ -30,9 +31,9 @@ public class ScenarioTest {
     public static final String SHOP_ENDPOINT = PROTOCOL_AND_HOST + ":9002/shop/v2";
     public static final String FF_ENDPOINT = PROTOCOL_AND_HOST + ":9003/fulfillment/v2";
     public static final String SHOPMANAGER_ENDPOINT = PROTOCOL_AND_HOST + ":9005/shop";
-    private static Logger LOG = LoggerFactory.getLogger(ScenarioTest.class);
+    private static final Logger LOG = LoggerFactory.getLogger(ScenarioTest.class);
 
-    Random rnd = new Random();
+    Random rnd = new SecureRandom();
 
     @Test
     public void createAccountAndOrderStuff() throws Exception {
@@ -49,7 +50,7 @@ public class ScenarioTest {
 
         LOG.info("Creating WebUser");
         WebUser webUser = createWebUser(objectMapper);
-        WebUser remoteUser = getWebUser(objectMapper, webUser);
+        getWebUser(objectMapper, webUser);
 
         LOG.info("Creating Clerk");
         Clerk clerk = createClerk(objectMapper, webUser);
@@ -91,22 +92,21 @@ public class ScenarioTest {
         LOG.info("Process completed, clerk: " + objectMapper.writeValueAsString(clerk4));
     }
 
-    private Shipment findShipment (ObjectMapper objectMapper, Clerk clerk) throws Exception {
+    private Shipment findShipment(ObjectMapper objectMapper, Clerk clerk) throws Exception {
         RestTemplate restTemplate = new RestTemplate();
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
-        HttpEntity<String> requestEntity = new HttpEntity<String>("{}", headers);
+        HttpEntity<String> requestEntity = new HttpEntity("{}", headers);
         ResponseEntity<String> responseEntity = restTemplate.exchange(FF_ENDPOINT + "/forClerk/" + clerk.getUuid(), HttpMethod.GET, requestEntity, String.class);
         String data = responseEntity.getBody().toString();
-        Shipment shipment = objectMapper.readValue(data, Shipment.class);
-        return shipment;
+        return objectMapper.readValue(data, Shipment.class);
     }
 
     private Clerk findClerk(ObjectMapper objectMapper, Clerk clerk) throws Exception {
         RestTemplate restTemplate = new RestTemplate();
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
-        HttpEntity<String> requestEntity = new HttpEntity<String>("{}", headers);
+        HttpEntity<String> requestEntity = new HttpEntity("{}", headers);
         ResponseEntity<String> responseEntity = restTemplate.exchange(SHOPMANAGER_ENDPOINT + "/session/" + clerk.getUuid(), HttpMethod.GET, requestEntity, String.class);
         String data = responseEntity.getBody().toString();
         return objectMapper.readValue(data, Clerk.class);
@@ -116,22 +116,21 @@ public class ScenarioTest {
         RestTemplate restTemplate = new RestTemplate();
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
-        HttpEntity<String> requestEntity = new HttpEntity<String>("{}", headers);
+        HttpEntity<String> requestEntity = new HttpEntity("{}", headers);
         ResponseEntity<String> responseEntity = restTemplate.exchange(FF_ENDPOINT + "/shipIt/" + shipment.getUuid(), HttpMethod.PUT, requestEntity, String.class);
         String data = responseEntity.getBody().toString();
         ShipmentResource shipmentResource = objectMapper.readValue(data, ShipmentResource.class);
         LOG.info("Shipment: " + shipmentResource.getUuid() + " has been sent.");
     }
 
-    private Payment findPayment (ObjectMapper objectMapper, Clerk clerk) throws Exception {
+    private Payment findPayment(ObjectMapper objectMapper, Clerk clerk) throws Exception {
         RestTemplate restTemplate = new RestTemplate();
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
-        HttpEntity<String> requestEntity = new HttpEntity<String>("{}", headers);
+        HttpEntity<String> requestEntity = new HttpEntity("{}", headers);
         ResponseEntity<String> responseEntity = restTemplate.exchange(PAY_ENDPOINT + "/forClerk/" + clerk.getUuid(), HttpMethod.GET, requestEntity, String.class);
         String data = responseEntity.getBody().toString();
-        Payment payment = objectMapper.readValue(data, Payment.class);
-        return payment;
+        return objectMapper.readValue(data, Payment.class);
     }
 
     private Payment sendPayment(ObjectMapper objectMapper, Payment payment) throws Exception {
@@ -141,8 +140,8 @@ public class ScenarioTest {
         payment.setCardId("c123");
         payment.setDatePaid(new Date());
         payment.setDescription("desc");
-        HttpEntity<String> requestEntity = new HttpEntity<String>(objectMapper.writeValueAsString(payment), headers);
-        ResponseEntity<String> responseEntity = restTemplate.exchange(PAY_ENDPOINT + "/pay/" + payment.getUuid() +"/creditcard/" + payment.getCardId(), HttpMethod.PUT, requestEntity, String.class);
+        HttpEntity<String> requestEntity = new HttpEntity(objectMapper.writeValueAsString(payment), headers);
+        ResponseEntity<String> responseEntity = restTemplate.exchange(PAY_ENDPOINT + "/pay/" + payment.getUuid() + "/creditcard/" + payment.getCardId(), HttpMethod.PUT, requestEntity, String.class);
         String data = responseEntity.getBody().toString();
         PaymentResource paymentResource = objectMapper.readValue(data, PaymentResource.class);
         LOG.info("Payment: " + paymentResource.getUuid() + " has been paid.");
@@ -156,8 +155,8 @@ public class ScenarioTest {
         RestTemplate restTemplate = new RestTemplate();
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
-        HttpEntity<String> requestEntity = new HttpEntity<String>("{}", headers);
-        ResponseEntity<String> responseEntity = restTemplate.exchange(SHOP_ENDPOINT + "/orders/" + orderr.getUuid() + "/approve", HttpMethod.PUT, requestEntity, String.class);
+        HttpEntity<String> requestEntity = new HttpEntity("{}", headers);
+        restTemplate.exchange(SHOP_ENDPOINT + "/orders/" + orderr.getUuid() + "/approve", HttpMethod.PUT, requestEntity, String.class);
         LOG.info("Orderr: " + orderr.getUuid() + " was approved");
     }
 
@@ -166,9 +165,9 @@ public class ScenarioTest {
         RestTemplate restTemplate = new RestTemplate();
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
-        HttpEntity<String> requestEntity = new HttpEntity<String>(objectMapper.writeValueAsString(orderr), headers);
+        HttpEntity<String> requestEntity = new HttpEntity(objectMapper.writeValueAsString(orderr), headers);
         headers.setContentType(MediaType.APPLICATION_JSON);
-        ResponseEntity<String> responseEntity = restTemplate.exchange(SHOP_ENDPOINT + "/orders/", HttpMethod.PUT, requestEntity, String.class);
+        restTemplate.exchange(SHOP_ENDPOINT + "/orders/", HttpMethod.PUT, requestEntity, String.class);
         LOG.info("Orderr: " + orderr.getUuid() + " - shippingAddress added");
         return orderr;
     }
@@ -177,7 +176,7 @@ public class ScenarioTest {
         RestTemplate restTemplate = new RestTemplate();
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
-        HttpEntity<String> requestEntity = new HttpEntity<String>("{}", headers);
+        HttpEntity<String> requestEntity = new HttpEntity("{}", headers);
         ResponseEntity<String> responseEntity = restTemplate.exchange(SHOP_ENDPOINT + "/cart/" + cart.getUuid() + "/order", HttpMethod.POST, requestEntity, String.class);
         String data = responseEntity.getBody().toString();
         Orderr orderr = objectMapper.readValue(data, Orderr.class);
@@ -189,7 +188,7 @@ public class ScenarioTest {
         RestTemplate restTemplate = new RestTemplate();
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
-        HttpEntity<String> requestEntity = new HttpEntity<String>("{}", headers);
+        HttpEntity<String> requestEntity = new HttpEntity("{}", headers);
         ResponseEntity<String> responseEntity = restTemplate.exchange(SHOPMANAGER_ENDPOINT + "/users/" + webUser.getUuid(), HttpMethod.GET, requestEntity, String.class);
         String data = responseEntity.getBody().toString();
         return objectMapper.readValue(data, WebUser.class);
@@ -200,7 +199,7 @@ public class ScenarioTest {
         RestTemplate restTemplate = new RestTemplate();
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
-        HttpEntity<String> requestEntity = new HttpEntity<String>(objectMapper.writeValueAsString(lineItem), headers);
+        HttpEntity<String> requestEntity = new HttpEntity(objectMapper.writeValueAsString(lineItem), headers);
         ResponseEntity<String> responseEntity = restTemplate.exchange(SHOP_ENDPOINT + "/cart/" + cart.getUuid() + "/add", HttpMethod.POST, requestEntity, String.class);
         String data = responseEntity.getBody().toString();
         cart = objectMapper.readValue(data, ShoppingCart.class);
@@ -213,7 +212,7 @@ public class ScenarioTest {
         RestTemplate restTemplate = new RestTemplate();
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
-        HttpEntity<String> requestEntity = new HttpEntity<String>(objectMapper.writeValueAsString(product), headers);
+        HttpEntity<String> requestEntity = new HttpEntity(objectMapper.writeValueAsString(product), headers);
         ResponseEntity<String> responseEntity = restTemplate.exchange(SHOP_ENDPOINT + "/products/", HttpMethod.POST, requestEntity, String.class);
         String data = responseEntity.getBody().toString();
         LOG.info("Created product:" + data);
@@ -224,7 +223,7 @@ public class ScenarioTest {
         RestTemplate restTemplate = new RestTemplate();
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
-        HttpEntity<String> requestEntity = new HttpEntity<String>("{}", headers);
+        HttpEntity<String> requestEntity = new HttpEntity("{}", headers);
         ResponseEntity<String> responseEntity = restTemplate.exchange(SHOP_ENDPOINT + "/cart/forClerk/" + clerk.getUuid(), HttpMethod.GET, requestEntity, String.class);
         String data = responseEntity.getBody().toString();
         ShoppingCart cart = objectMapper.readValue(data, ShoppingCart.class);
@@ -236,7 +235,7 @@ public class ScenarioTest {
     private Clerk createClerk(ObjectMapper objectMapper, WebUser webUser) throws Exception {
         RestTemplate restTemplate = new RestTemplate();
         HttpHeaders headers = new HttpHeaders();
-        HttpEntity<String> requestEntity = new HttpEntity<String>("{}", headers);
+        HttpEntity<String> requestEntity = new HttpEntity("{}", headers);
         ResponseEntity<String> responseEntity = restTemplate.exchange(SHOPMANAGER_ENDPOINT + "/session/" + webUser.getUuid(), HttpMethod.POST, requestEntity, String.class);
         String data = responseEntity.getBody().toString();
         return objectMapper.readValue(data, Clerk.class);
@@ -247,7 +246,7 @@ public class ScenarioTest {
         RestTemplate restTemplate = new RestTemplate();
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
-        HttpEntity<String> requestEntity = new HttpEntity<String>(objectMapper.writeValueAsString(webUserResource), headers);
+        HttpEntity<String> requestEntity = new HttpEntity(objectMapper.writeValueAsString(webUserResource), headers);
         ResponseEntity<String> responseEntity = restTemplate.exchange(SHOPMANAGER_ENDPOINT + "/users/register", HttpMethod.POST, requestEntity, String.class);
         String data = responseEntity.getBody().toString();
         LOG.info("Created WebUser: " + data);

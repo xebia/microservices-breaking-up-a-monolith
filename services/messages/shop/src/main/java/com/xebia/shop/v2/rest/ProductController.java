@@ -11,7 +11,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -22,7 +21,7 @@ import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
 @RequestMapping("/shop/v2/products")
 public class ProductController {
 
-    private static Logger LOG = LoggerFactory.getLogger(ProductController.class);
+    private static final Logger LOG = LoggerFactory.getLogger(ProductController.class);
 
     @Autowired
     private ProductRepository productRepository;
@@ -31,10 +30,7 @@ public class ProductController {
     @RequestMapping(method = RequestMethod.GET)
     public List<ProductResource> allProducts(HttpServletRequest request) {
         LOG.info("URL: "+ request.getRequestURL()+ ", METHOD: "+ request.getMethod());
-        List<ProductResource> orderResources = new ArrayList<ProductResource>();
-
-        orderResources = assembler.toResources(productRepository.findAll());
-
+        List<ProductResource> orderResources = assembler.toResources(productRepository.findAll());
         return orderResources;
     }
 
@@ -48,7 +44,7 @@ public class ProductController {
         }
         ProductResource resource = assembler.toResource(product);
 
-        return new ResponseEntity<ProductResource>(resource, HttpStatus.OK);
+        return new ResponseEntity<>(resource, HttpStatus.OK);
     }
 
     @RequestMapping(method = RequestMethod.POST, consumes = "application/json", produces = "application/json")
@@ -60,6 +56,6 @@ public class ProductController {
         HttpHeaders headers = new HttpHeaders();
         headers.add("ETag", Integer.toString(responseProduct.hashCode()));
         headers.setLocation(linkTo(methodOn(getClass()).viewProduct(responseProduct.getUuid().toString(), request)).toUri());
-        return new ResponseEntity<ProductResource>(responseResource, HttpStatus.CREATED);
+        return new ResponseEntity<>(responseResource, HttpStatus.CREATED);
     }
 }

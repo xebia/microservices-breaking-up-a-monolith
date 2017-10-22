@@ -25,7 +25,9 @@ public class Payment {
         this.orderUuid = orderUuid;
     }
 
-    public Payment() {}
+    public Payment() {
+        // Empty constructor required by framework
+    }
 
     public String getCardId() {
         return cardId;
@@ -77,13 +79,14 @@ public class Payment {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
         Payment payment = (Payment) o;
-
         return uuid.equals(payment.uuid);
-
     }
 
     @Override

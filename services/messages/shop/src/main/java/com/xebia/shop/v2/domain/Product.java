@@ -13,7 +13,9 @@ public class Product {
     private String supplier;
     private double price;
 
-    public Product() {}
+    public Product() {
+        // Empty constructor required by framework
+    }
 
     public Product(UUID uuid, String name, String supplier, Double price) {
         this.uuid = uuid;
@@ -55,13 +57,14 @@ public class Product {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
         Product product = (Product) o;
-
         return supplier.equals(product.supplier);
-
     }
 
     @Override

@@ -14,7 +14,9 @@ public class Orderr {
     private String status;
     private double total;
 
-    public Orderr() {}
+    public Orderr() {
+        // Empty constructor required by framework
+    }
 
     public Orderr(UUID uuid, Date ordered, String status) {
         this.uuid = uuid;
@@ -91,13 +93,14 @@ public class Orderr {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
         Orderr orderr = (Orderr) o;
-
         return uuid.equals(orderr.uuid);
-
     }
 
     @Override

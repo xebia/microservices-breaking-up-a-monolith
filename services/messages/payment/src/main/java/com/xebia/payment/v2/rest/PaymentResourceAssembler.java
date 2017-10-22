@@ -21,7 +21,7 @@ public class PaymentResourceAssembler extends ResourceAssemblerSupport<Payment, 
     }
 
     public List<PaymentResource> toResource(List<Payment> payments) {
-        List<PaymentResource> result = new ArrayList<PaymentResource>();
+        List<PaymentResource> result = new ArrayList<>();
         for (Payment payment:payments) {
             result.add(toResource(payment));
         }

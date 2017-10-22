@@ -16,7 +16,7 @@ import java.util.UUID;
 @RequestMapping("/shop/v2/cart/")
 public class ShoppingCartController {
 
-    private static Logger LOG = LoggerFactory.getLogger(ShoppingCartController.class);
+    private static final Logger LOG = LoggerFactory.getLogger(ShoppingCartController.class);
 
     @Autowired
     private ShoppingCartRepository shoppingCartRepository;

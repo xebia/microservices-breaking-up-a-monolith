@@ -31,18 +31,23 @@ public class PaymentResource extends ResourceSupport {
         this.orderUuid = orderUuid;
     }
 
-    public PaymentResource() {}
+    public PaymentResource(){
+        // Empty constructor required by framework
+    }
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        if (!super.equals(o)) return false;
-
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        if (!super.equals(o)) {
+            return false;
+        }
         PaymentResource that = (PaymentResource) o;
-
         return !(uuid != null ? !uuid.equals(that.uuid) : that.uuid != null);
-
     }
 
     @Override

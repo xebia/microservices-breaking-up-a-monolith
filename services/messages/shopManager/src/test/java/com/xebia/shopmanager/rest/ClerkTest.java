@@ -64,15 +64,15 @@ public class ClerkTest extends TestBase {
         String data = resultActions.getResponse().getContentAsString();
         Clerk clerk = objectMapper.readValue(data, Clerk.class);
         assertEquals(user.getUsername(), clerk.getWebUser().getUsername());
-        verify(rabbitTemplate, times(1)).convertAndSend(eq(Config.shopExchange), eq(Config.startShopping), anyString());
+        verify(rabbitTemplate, times(1)).convertAndSend(eq(Config.SHOP_EXCHANGE), eq(Config.START_SHOPPING), anyString());
         Message dummyMessage = new Message(json(clerk).getBytes(), new MessageProperties());
         eventListener.processOrderCompletedMessage(dummyMessage);
-        verify(rabbitTemplate, times(1)).convertAndSend(eq(Config.shopExchange), eq(Config.handlePayment), anyString());
+        verify(rabbitTemplate, times(1)).convertAndSend(eq(Config.SHOP_EXCHANGE), eq(Config.HANDLE_PAYMENT), anyString());
 
         eventListener.processOrderPaidMessage(dummyMessage);
-        verify(rabbitTemplate, times(1)).convertAndSend(eq(Config.shopExchange), eq(Config.handleFulfillment), anyString());
+        verify(rabbitTemplate, times(1)).convertAndSend(eq(Config.SHOP_EXCHANGE), eq(Config.HANDLE_FULFILLMENT), anyString());
 
-        // TODO: if orderShipped is received, expect order archived ??
+        // TODO: if ORDER_SHIPPED is received, expect order archived ??
     }
 
 }

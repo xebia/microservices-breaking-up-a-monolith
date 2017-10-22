@@ -3,15 +3,11 @@ package com.xebia.shopmanager.domain;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.DoubleNode;
-import com.fasterxml.jackson.databind.node.LongNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.fasterxml.jackson.databind.node.TextNode;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
-import javax.persistence.OneToOne;
-import java.util.Date;
 import java.util.UUID;
 
 @Entity
@@ -22,6 +18,7 @@ public class WebUser {
     private String password;
 
     public WebUser() {
+        // Empty constructor required by framework
     }
 
     public WebUser(UUID uuid, String username, String password) {
@@ -77,24 +74,26 @@ public class WebUser {
         return node;
     }
 
+    @SuppressWarnings("all")
     @Override
     public String toString() {
         return "WebUser{" +
                 ", uuid='" + uuid + '\'' +
-                "password='" + password + '\'' +
+                ", password='****'" +
                 ", username='" + username + '\'' +
                 '}';
     }
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
         WebUser webUser = (WebUser) o;
-
         return uuid.equals(webUser.uuid);
-
     }
 
     @Override

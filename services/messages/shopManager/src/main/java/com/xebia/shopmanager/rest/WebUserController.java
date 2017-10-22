@@ -17,7 +17,7 @@ import java.util.UUID;
 @RequestMapping("/shop/users")
 public class WebUserController {
 
-    private static Logger LOG = LoggerFactory.getLogger(WebUserController.class);
+    private static final Logger LOG = LoggerFactory.getLogger(WebUserController.class);
 
     @Autowired
     private WebUserRepository webUserRepository;

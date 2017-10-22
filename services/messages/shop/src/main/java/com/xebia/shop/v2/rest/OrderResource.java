@@ -47,6 +47,7 @@ public class OrderResource extends ResourceSupport {
     }
 
     public OrderResource() {
+        // Empty constructor required by framework
     }
 
     public OrderResource(Orderr orderr) {
@@ -97,5 +98,20 @@ public class OrderResource extends ResourceSupport {
         this.total = total;
     }
 
+    public Date getShipped() {
+        return shipped;
+    }
+
+    public void setShipped(Date shipped) {
+        this.shipped = shipped;
+    }
+
+    public boolean isPaymentReceived() {
+        return paymentReceived;
+    }
+
+    public void setPaymentReceived(boolean paymentReceived) {
+        this.paymentReceived = paymentReceived;
+    }
 }
 

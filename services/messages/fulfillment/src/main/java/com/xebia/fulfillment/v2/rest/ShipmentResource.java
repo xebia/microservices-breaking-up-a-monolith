@@ -27,6 +27,7 @@ public class ShipmentResource extends ResourceSupport {
     }
 
     public ShipmentResource() {
+        // Empty constructor required by framework
     }
 
     public UUID getUuid() {

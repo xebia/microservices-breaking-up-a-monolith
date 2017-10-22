@@ -73,11 +73,11 @@ public class OrderrTest extends TestBase {
         ;
 
         Mockito.doNothing().when(rabbitTemplate).convertAndSend(anyString(), anyString(), anyString());
-        MvcResult resultActions = mockMvc.perform(put("/shop/v2/orders/" + orderr.getUuid() + "/approve"))
+        mockMvc.perform(put("/shop/v2/orders/" + orderr.getUuid() + "/approve"))
                 .andExpect(status().is2xxSuccessful())
                 .andReturn()
         ;
-        verify(rabbitTemplate, times(1)).convertAndSend(eq(Config.shopExchange), eq(Config.orderCompleted), anyString());
+        verify(rabbitTemplate, times(1)).convertAndSend(eq(Config.SHOP_EXCHANGE), eq(Config.ORDER_COMPLETED), anyString());
     }
 
     private Orderr createOrderr() throws IOException {

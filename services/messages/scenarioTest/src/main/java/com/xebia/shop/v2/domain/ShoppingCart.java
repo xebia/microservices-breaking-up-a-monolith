@@ -16,16 +16,18 @@ public class ShoppingCart {
     @Id
     private UUID uuid;
     private Date created;
+    private double total;
 
     @OneToMany(mappedBy = "shoppingCart", targetEntity = LineItem.class, fetch = FetchType.EAGER)
     @Cascade(value={org.hibernate.annotations.CascadeType.MERGE})
     @JsonManagedReference
-    private List<LineItem> lineItems = new ArrayList<LineItem>();
+    private List<LineItem> lineItems = new ArrayList();
     @OneToOne(fetch= FetchType.LAZY)
     @JsonBackReference
     private Clerk clerk;
 
     public ShoppingCart() {
+        // Empty constructor required by framework
     }
 
     public ShoppingCart(Date created, UUID uuid) {
@@ -87,16 +89,16 @@ public class ShoppingCart {
         this.total = total;
     }
 
-    private double total;
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
         ShoppingCart that = (ShoppingCart) o;
-
         return uuid.equals(that.uuid);
-
     }
 
     @Override
