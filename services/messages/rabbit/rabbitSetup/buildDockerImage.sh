@@ -1,5 +1,6 @@
 #!/bin/bash
 
-docker build -t xebia/rabbitmq_msg_setup .
+# Remove first so container will be rebuild even if only the setup script changes
+docker rmi -f xebia/rabbitmq_msg_setup
 
-#./rabbit/rabbitSetup/
+docker build -t xebia/rabbitmq_msg_setup .
