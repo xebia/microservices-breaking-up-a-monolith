@@ -3,3 +3,5 @@
 *.log
 target
 .vagrant
+nohup.out
+.scannerwork
