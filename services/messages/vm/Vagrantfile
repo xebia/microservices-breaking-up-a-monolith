@@ -9,28 +9,39 @@ echo dev:dev | /usr/sbin/chpasswd
 usermod -G sudo dev
 usermod -s /bin/bash dev
 mkdir -p /home/dev/.ssh
-echo "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDVZbKDrYnRDEkDjvUUt2NcmRhrQAQh0W9ZeW1gNrZ3vE7q38zOzzpg8W1tovRfVu2nVznybEWtx/3rsJnRauzP3GVgzbKJY1g8YwRwQw6gSJYNtkwfaO2AfkAVWO3r378EH//xD2O4bJ3xwWTrr7aXIQGEoAcHBFGlAko0nWwn13VTa6Hp5cZULi+qgGKaQTSJHQ+jvP8puf7efbLs1bHsxCXUn72aFdeyDGS0F9MuIeyZneHVpwKtmKWZXAoac9E7zdeiSiV+vq4YBLmntQoC0uHYuQ9w1uyw0+QeO6fE05vMuSzrO5eWShCeXJPAOMwfPv6xt3+Pb/n9FBIkCWqH jvermeir@hotmail.com" >> /home/jan/.ssh/authorized_keys
+echo "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDVZbKDrYnRDEkDjvUUt2NcmRhrQAQh0W9ZeW1gNrZ3vE7q38zOzzpg8W1tovRfVu2nVznybEWtx/3rsJnRauzP3GVgzbKJY1g8YwRwQw6gSJYNtkwfaO2AfkAVWO3r378EH//xD2O4bJ3xwWTrr7aXIQGEoAcHBFGlAko0nWwn13VTa6Hp5cZULi+qgGKaQTSJHQ+jvP8puf7efbLs1bHsxCXUn72aFdeyDGS0F9MuIeyZneHVpwKtmKWZXAoac9E7zdeiSiV+vq4YBLmntQoC0uHYuQ9w1uyw0+QeO6fE05vMuSzrO5eWShCeXJPAOMwfPv6xt3+Pb/n9FBIkCWqH jvermeir@hotmail.com" >> /home/dev/.ssh/authorized_keys
 apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 36A1D7869245C8950F966E92D8576A8BA88D21E9
-echo "deb https://get.docker.com/ubuntu docker main" > /etc/apt/sources.list.d/docker.list
-apt-get update
-apt-get install -y lxc-docker
 
-echo 'DOCKER_OPTS="--ip=0.0.0.0 --host=tcp://0.0.0.0:2375"' > /etc/default/docker
-reboot
+sudo apt-get remove docker docker-engine docker.io
+sudo apt-get update
+sudo apt-get install \
+    apt-transport-https \
+    ca-certificates \
+    curl \
+    software-properties-common
+curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
+sudo apt-key fingerprint 0EBFCD88
+sudo add-apt-repository \
+   "deb [arch=amd64] https://download.docker.com/linux/ubuntu \
+   $(lsb_release -cs) \
+   stable"
+sudo apt-get update
+sudo apt-get install docker-ce -y
+
 SCRIPT
 
 Vagrant.configure(2) do |config|
-  config.vm.box = "ubuntu/trusty64"
+  config.vm.box = "ubuntu/xenial64"
 
   config.vm.hostname = 'docker.localdomain'
   config.vm.network 'private_network', ip: '192.168.99.101'
-
-  config.vm.provider :virtualbox do |vb|
-    vb.gui = true
-    vb.name = "microServicesDev"
-    vb.customize ['modifyvm', :id, '--memory', 4048]
+  config.vm.provider "virtualbox" do |v|
+    v.customize ["modifyvm", :id, "--natdnshostresolver1", "on"]
+    v.customize ["modifyvm", :id, "--natdnsproxy1", "on"]
+    v.gui = true
+    v.name = "microServicesDev"
+    v.customize ['modifyvm', :id, '--memory', 1024]
   end
 
-  config.vm.synced_folder "/Users/jan/dev/microservices/microservices-breaking-up-a-monolith/services/messages/", "/src/", type: "nfs"
   config.vm.provision 'shell', inline: $installation
 end
