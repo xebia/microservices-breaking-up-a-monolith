@@ -2,12 +2,14 @@
 
 # configure queues
 # This script waits until the Rabbit container is running
+echo "Waiting for Rabbit server to start"
 
 until $(curl --output /dev/null --silent --head --fail http://rabbit:15672); do
     printf '.'
     sleep 1
 done
 
+echo "Rabbit up, configure 'shop' exchange"
 
 RABBIT_MQ_HOST=rabbit
 DIR=`dirname $0`
@@ -35,3 +37,5 @@ $DIR/rabbitmqadmin -H $RABBIT_MQ_HOST declare binding source="shop" destination=
 
 $DIR/rabbitmqadmin -H $RABBIT_MQ_HOST declare queue name="SESSION_EXPIRED"
 $DIR/rabbitmqadmin -H $RABBIT_MQ_HOST declare binding source="shop" destination="SESSION_EXPIRED" routing_key="SESSION_EXPIRED"
+
+exit 0

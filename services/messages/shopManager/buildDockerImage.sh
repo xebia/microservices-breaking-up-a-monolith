@@ -7,5 +7,8 @@ fi
 
 cat src/main/docker/Dockerfile | sed "s/JARFILENAME/$1/" > target/Dockerfile
 
-(cd target &&docker build -t xebia/shopmanager .)
-
+(cd target &&
+  docker build -t shopmanager . &&
+  docker tag shopmanager jvermeir/shop-shopmanager:v1
+  docker push jvermeir/shop-shopmanager:v1
+)

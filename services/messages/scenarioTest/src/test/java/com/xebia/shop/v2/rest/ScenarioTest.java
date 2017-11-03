@@ -26,7 +26,7 @@ import static junit.framework.TestCase.assertNotNull;
 @SpringApplicationConfiguration(classes = Application.class)
 @WebAppConfiguration
 public class ScenarioTest {
-    public static final String PROTOCOL_AND_HOST = "http://localhost";
+    public static final String PROTOCOL_AND_HOST = "http://192.168.99.101";
     public static final String PAY_ENDPOINT = PROTOCOL_AND_HOST + ":9001/payment/v2";
     public static final String SHOP_ENDPOINT = PROTOCOL_AND_HOST + ":9002/shop/v2";
     public static final String FF_ENDPOINT = PROTOCOL_AND_HOST + ":9003/fulfillment/v2";

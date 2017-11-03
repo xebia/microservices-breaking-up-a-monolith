@@ -7,25 +7,53 @@ services:
      - "4369:4369"
      - "5672:5672"
      - "25672:25672"
+    networks:
+     - webnet
   rabbitsetup:
-    image: xebia/rabbitmq_msg_setup
+    image: jvermeir/shop-rabbitmq_msg_setup:v1
+    restart: on-failure
+    networks:
+     - webnet
   shopmanager:
-    image: xebia/shopmanager
+    image: jvermeir/shop-shopmanager:v1
     ports:
      - "9005:9005"
+    networks:
+     - webnet
   shop:
-    image: xebia/shop_msg_v2
+    image: jvermeir/shop-shop:v1
     ports:
      - "9002:9002"
+    networks:
+     - webnet
   catalog:
-    image: xebia/catalog_msg
+    image: jvermeir/shop-catalog:v1
     ports:
      - "9000:9000"
+    networks:
+     - webnet
   fulfillment:
-    image: xebia/fulfillment_msg_v2
+    image: jvermeir/shop-fulfillment:v1
     ports:
      - "9003:9003"
+    networks:
+     - webnet
   payment:
-    image: xebia/payment_msg_v2
+    image: jvermeir/shop-payment:v1
     ports:
      - "9001:9001"
+    networks:
+     - webnet
+  visualizer:
+    image: dockersamples/visualizer:stable
+    ports:
+      - "8080:8080"
+    volumes:
+      - "/var/run/docker.sock:/var/run/docker.sock"
+    deploy:
+      placement:
+        constraints: [node.role == manager]
+    networks:
+      - webnet
+networks:
+  webnet:
