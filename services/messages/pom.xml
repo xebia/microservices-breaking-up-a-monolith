@@ -15,7 +15,7 @@
         <module>fulfillment</module>
         <module>shop</module>
         <module>payment</module>
-        <module>shopmanager</module>
+        <module>shopManager</module>
     </modules>
 
     <build>
