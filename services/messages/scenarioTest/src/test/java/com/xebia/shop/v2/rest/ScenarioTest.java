@@ -2,16 +2,15 @@ package com.xebia.shop.v2.rest;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.xebia.shop.v2.Application;
 import com.xebia.shop.v2.domain.*;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.boot.test.SpringApplicationConfiguration;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.*;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import org.springframework.test.context.web.WebAppConfiguration;
+import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.web.client.RestTemplate;
 
 import java.security.SecureRandom;
@@ -22,21 +21,26 @@ import java.util.UUID;
 import static junit.framework.TestCase.assertEquals;
 import static junit.framework.TestCase.assertNotNull;
 
-@RunWith(SpringJUnit4ClassRunner.class)
-@SpringApplicationConfiguration(classes = Application.class)
-@WebAppConfiguration
+@RunWith(SpringRunner.class)
+@SpringBootTest
 public class ScenarioTest {
-    public static final String PROTOCOL_AND_HOST = "http://192.168.99.101";
-    public static final String PAY_ENDPOINT = PROTOCOL_AND_HOST + ":9001/payment/v2";
-    public static final String SHOP_ENDPOINT = PROTOCOL_AND_HOST + ":9002/shop/v2";
-    public static final String FF_ENDPOINT = PROTOCOL_AND_HOST + ":9003/fulfillment/v2";
-    public static final String SHOPMANAGER_ENDPOINT = PROTOCOL_AND_HOST + ":9005/shop";
+
     private static final Logger LOG = LoggerFactory.getLogger(ScenarioTest.class);
 
-    Random rnd = new SecureRandom();
+    @Value("${protocol.and.host}")
+    private String PROTOCOL_AND_HOST;
+
+    private String PAY_ENDPOINT;
+    private String SHOP_ENDPOINT;
+    private String FF_ENDPOINT;
+    private String SHOPMANAGER_ENDPOINT;
 
     @Test
     public void createAccountAndOrderStuff() throws Exception {
+        PAY_ENDPOINT = PROTOCOL_AND_HOST + ":9001/payment/v2";
+        SHOP_ENDPOINT = PROTOCOL_AND_HOST + ":9002/shop/v2";
+        FF_ENDPOINT = PROTOCOL_AND_HOST + ":9003/fulfillment/v2";
+        SHOPMANAGER_ENDPOINT = PROTOCOL_AND_HOST + ":9005/shop";
 
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
@@ -91,6 +95,8 @@ public class ScenarioTest {
         assertEquals(Shipment.SHIPPED, clerk4.getShipment().getStatus());
         LOG.info("Process completed, clerk: " + objectMapper.writeValueAsString(clerk4));
     }
+    Random rnd = new SecureRandom();
+
 
     private Shipment findShipment(ObjectMapper objectMapper, Clerk clerk) throws Exception {
         RestTemplate restTemplate = new RestTemplate();
