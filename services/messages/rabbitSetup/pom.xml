@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>com.xebia.shop</groupId>
+    <artifactId>rabbitmqsetup</artifactId>
+    <version>1.0-${maven.build.timestamp}</version>
+
+
+    <properties>
+        <maven.build.timestamp.format>yyyyMMdd'T'HHmm</maven.build.timestamp.format>
+        <start-class>com.xebia.fulfillment.v2.FulfillmentApplication</start-class>
+        <dockerHubUsername/>
+        <localOrRemote>LOCAL</localOrRemote>
+        <imageName>rabbitmq_msg_setup</imageName>
+    </properties>
+
+    <dependencies>
+    </dependencies>
+
+    <repositories>
+    </repositories>
+
+    <build>
+        <plugins>
+            <plugin>
+                <artifactId>exec-maven-plugin</artifactId>
+                <groupId>org.codehaus.mojo</groupId>
+                <executions>
+                    <execution>
+                        <id>Create Docker image</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>exec</goal>
+                        </goals>
+                        <configuration>
+                            <executable>${basedir}/../tools/buildDockerImage.sh</executable>
+                            <arguments>
+                                <argument>${build.finalName}.jar</argument>
+                                <argument>${dockerHubUsername}</argument>
+                                <argument>${localOrRemote}</argument>
+                                <argument>${imageName}</argument>
+                            </arguments>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+
+</project>

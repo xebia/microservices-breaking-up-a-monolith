@@ -14,6 +14,9 @@ echo "Rabbit up, configure 'shop' exchange"
 RABBIT_MQ_HOST=rabbit
 DIR=`dirname $0`
 
+echo "dir = #$DIR#"
+ls -ltra $DIR/rabbitmqadmin
+
 $DIR/rabbitmqadmin -H $RABBIT_MQ_HOST delete exchange name="shop"
 $DIR/rabbitmqadmin -H $RABBIT_MQ_HOST declare exchange name="shop" type="topic"
 

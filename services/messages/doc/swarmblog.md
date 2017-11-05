@@ -1,13 +1,13 @@
 used local images till now.
 doesn't work with swarm, need a registry, might use local, but dockerhub works fine
 
-create account
+create account on Docker hub
 
 in each buildDockerImages.sh script:
    
     (cd target &&
       docker build -t $(service_name) . &&
-      docker tag fulfillment $(docker_hub_username)/shop-$(service_name):v1
+      docker tag $(service_name) $(docker_hub_username)/shop-$(service_name):v1
       docker push $(docker_hub_username)/shop-$(service_name):v1
     )
 
@@ -21,6 +21,10 @@ and made sure rabbitsetup runs only once:
         image: jvermeir/shop-rabbitmq_msg_setup:v1
         restart: on-failure            
 
+build:
+
+	./tools/build_docker_hub.sh jvermeir
+	
 somewhere on your filesystem in a terminal:
 
     docker swarm init
@@ -52,6 +56,11 @@ run the scenarioTest, don't forget to enter the ip address of the swarm manager 
     
 shows the status of all services, or http://192.168.99.101:8080/ in your browser.
 
+Remove all images from local
+
+	docker rmi --force `docker images -q`
+	
+	
 next up: 
 
 - multiple instances -> need a database server

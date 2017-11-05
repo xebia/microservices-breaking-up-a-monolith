@@ -17,6 +17,9 @@
     <properties>
         <maven.build.timestamp.format>yyyyMMdd'T'HHmm</maven.build.timestamp.format>
         <start-class>com.xebia.fulfillment.v2.FulfillmentApplication</start-class>
+        <dockerHubUsername/>
+        <localOrRemote>LOCAL</localOrRemote>
+        <imageName>fulfillment</imageName>
     </properties>
 
     <dependencies>
@@ -104,9 +107,12 @@
                             <goal>exec</goal>
                         </goals>
                         <configuration>
-                            <executable>${basedir}/buildDockerImage.sh</executable>
+                            <executable>${basedir}/../tools/buildDockerImage.sh</executable>
                             <arguments>
                                 <argument>${build.finalName}.jar</argument>
+                                <argument>${dockerHubUsername}</argument>
+                                <argument>${localOrRemote}</argument>
+                                <argument>${imageName}</argument>
                             </arguments>
                         </configuration>
                     </execution>
